@@ -1,6 +1,4 @@
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.mail import EmailMessage
-import threading
 from rest_email_auth.admin import models
 
 
