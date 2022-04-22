@@ -8,6 +8,7 @@ django = "*"
 django-allauth = "*"
 django-rest-email-auth = "*"
 whitenoise = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

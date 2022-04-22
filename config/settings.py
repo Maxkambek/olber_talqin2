@@ -25,8 +25,12 @@ SECRET_KEY = 'django-insecure-m!+d_2&e-oq+(dttt%c^3rhx(d_c5%)r0!@jf&00(ouvjv*&!u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
 
+CORS_ALLOWED_ORIGINS = [
+    '.herokuapp.com',
+    '127.0.0.1'
+]
 
 # Application definition
 
@@ -44,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_email_auth',
+    'corsheaders',
 
     #internal apps
     'user',
@@ -55,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
