@@ -150,8 +150,8 @@ AUTHENTICATION_BACKENDS = [
 
 
 REST_EMAIL_AUTH = {
-    'EMAIL_VERIFICATION_URL': 'https://dostavka-api.herokuapp.com/user/verify-email/{key}',
-    'PASSWORD_RESET_URL': 'https://127.0.0.1:8000/reset/{key}',
+    'EMAIL_VERIFICATION_URL': 'dostavka-api.herokuapp.com/verify/{key}',
+    'PASSWORD_RESET_URL': 'dostavka-api.herokuapp.com/reset/{key}',
 }
 SITE_ID=1
 AUTH_USER_MODEL = "user.User"
