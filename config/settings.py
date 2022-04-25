@@ -28,8 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
 
 CORS_ALLOWED_ORIGINS = [
-    '.herokuapp.com',
-    '127.0.0.1'
+    'https://dostavka-android.herokuapp.com',
+    'http://127.0.0.1'
 ]
 
 # Application definition
@@ -148,18 +148,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#         'user.authentication.TokenAuthentication'
-#     )
-# }
-#
-# SIMPLE_JWT = {
-#     "AUTH_HEADER_TYPES": ["Bearer"],
-#     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(seconds=60),
-#     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(minutes=2),
-# }
 
 REST_EMAIL_AUTH = {
     'EMAIL_VERIFICATION_URL': 'Email verifikatsiya uchun kalit: {key}',
@@ -171,7 +159,7 @@ AUTH_USER_MODEL = "user.User"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'shuhratxayitov@gmail.com'
-EMAIL_HOST_PASSWORD = 'napster!23'
+EMAIL_HOST_USER = 'shxbiznes@gmail.com'
+EMAIL_HOST_PASSWORD = 'biznes!23'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
