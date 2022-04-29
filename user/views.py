@@ -4,8 +4,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from .models import User
-from .serializers import LoginSerializer, UserSerializer
+from .models import User, Cargo
+from .serializers import LoginSerializer, UserSerializer, CargoSerializer
 from .utils import check_email
 
 
@@ -39,3 +39,8 @@ class LoginView(generics.GenericAPIView):
 class UsersView(generics.ListAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+
+
+class CargoView(generics.ListCreateAPIView):
+    serializer_class = CargoSerializer
+    queryset = Cargo.objects.all()
