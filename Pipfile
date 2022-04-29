@@ -10,6 +10,7 @@ django-rest-email-auth = "*"
 whitenoise = "*"
 django-cors-headers = "*"
 gunicorn = "*"
+pillow = "*"
 
 [dev-packages]
 

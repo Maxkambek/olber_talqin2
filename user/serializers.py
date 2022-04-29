@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import User
-from django.contrib.auth.hashers import make_password
+from .models import User, Cargo
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,3 +30,9 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'password')
+
+
+class CargoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cargo
+        fields = '__all__'
