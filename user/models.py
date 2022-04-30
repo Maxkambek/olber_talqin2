@@ -45,3 +45,16 @@ class Cargo(models.Model):
 
     def __str__(self):
         self.title
+
+
+class Car(models.Model):
+    CAR_TYPES = (
+        ('1', "Kichik"),
+        ('2', "O'rta"),
+        ('3', "Katta"),
+    )
+    user = models.ForeignKey(User, verbose_name="Haydovchi", on_delete=models.CASCADE)
+    car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES)
+    drive_license = models.CharField(max_length=50, verbose_name="Guvohnoma raqami")
+    drive_doc = models.CharField(max_length=50, verbose_name="Guvohnoma raqami")
+    tech_inspect = models.CharField(max_length=50, verbose_name="Texnik ko'rik")
