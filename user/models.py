@@ -15,6 +15,7 @@ class User(AbstractUser):
 class Cargo(models.Model):
 
     class Meta:
+        managed=False
         verbose_name="Jo'natma"
         verbose_name_plural="Jo'natmalar"
 
