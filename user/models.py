@@ -48,6 +48,7 @@ class Cargo(models.Model):
 
     def save(self, *args, **kwargs):
         self.distance = calc_distance(self.from_adrress, self.to_adrress)
+        self.distance = round(self.distance, 2)
         super(Cargo, self).save(*args, **kwargs)
 
 
