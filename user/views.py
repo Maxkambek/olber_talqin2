@@ -25,7 +25,6 @@ class LoginView(generics.GenericAPIView):
             user = User.objects.get(email=email)
             check = user.check_password(password)
             verify = user.is_email_verified
-            print(check)
             print(verify)
             if check and verify:
                 token, created = Token.objects.get_or_create(user=user)
