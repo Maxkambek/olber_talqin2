@@ -63,3 +63,12 @@ class Car(models.Model):
     drive_license = models.CharField(max_length=50, verbose_name="Guvohnoma raqami")
     drive_doc = models.CharField(max_length=50, verbose_name="Guvohnoma raqami")
     tech_inspect = models.CharField(max_length=50, verbose_name="Texnik ko'rik")
+
+
+class VerifyEmail(models.Model):
+    class Meta:
+        verbose_name="Email tasdiqlash"
+        verbose_name_plural="Email tasdiqlash"
+
+    email = models.CharField(max_length=100, verbose_name="Email")
+    code = models.CharField(max_length=10, verbose_name="Kod")

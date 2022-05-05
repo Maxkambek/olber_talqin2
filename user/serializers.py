@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Cargo
+from .models import User, Cargo, Car, VerifyEmail
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -26,6 +26,19 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'username', 'password')
+
+
+class VerifySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VerifyEmail
+        fields = '__all__'
+
+
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -42,3 +55,9 @@ class CargoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cargo
         fields = ('id', 'title', 'weight', 'price', 'status', 'when', 'image1', 'distance')
+
+
+class CarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Car
+        fields = '__all__'
