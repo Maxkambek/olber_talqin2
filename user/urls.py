@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import LoginView, UsersView, CargoCreateView, CargoListView, CarCreateView, RegisterView, VerifyView
+from .views import LoginView, UsersView, CargoCreateView, CargoListView, CarCreateView, RegisterView, VerifyView, \
+    CargoDetailView
 
 urlpatterns = [
     path('register/', RegisterView.as_view()),
@@ -7,6 +8,7 @@ urlpatterns = [
     path('login', LoginView.as_view()),
     path('users', UsersView.as_view()),
     path('cargo', CargoCreateView.as_view()),
+    path('cargo/<int:pk>', CargoDetailView.as_view()),
     path('cargo/list', CargoListView.as_view()),
     path('car', CarCreateView.as_view()),
 
