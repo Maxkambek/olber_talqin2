@@ -1,3 +1,5 @@
+import math
+
 from django.core.mail import EmailMessage
 from rest_email_auth.admin import models
 
@@ -10,6 +12,8 @@ def check_email(mail):
             return True
         else:
             return False
+
+
 
 
 #

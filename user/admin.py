@@ -8,6 +8,6 @@ admin.site.register(User, UserAdmin)
 
 
 class CargoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price', 'status', 'description')
+    list_display = ('title', 'price', 'status', 'description', 'distance')
 
 admin.site.register(Cargo, CargoAdmin)

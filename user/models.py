@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from user.calculation import calc_distance
+
 
 class User(AbstractUser):
 
@@ -15,7 +17,6 @@ class User(AbstractUser):
 class Cargo(models.Model):
 
     class Meta:
-        managed=False
         verbose_name="Jo'natma"
         verbose_name_plural="Jo'natmalar"
 
@@ -42,9 +43,12 @@ class Cargo(models.Model):
     image3 = models.ImageField(null=True, blank=True)
     image4 = models.ImageField(null=True, blank=True)
     status = models.CharField(max_length=25, choices=STATUS_CHOISES, default="new")
+    distance = models.FloatField(null=True, blank=True)
 
-    def __str__(self):
-        self.title
+
+    def save(self, *args, **kwargs):
+        self.distance = calc_distance(self.from_adrress, self.to_adrress)
+        super(Cargo, self).save(*args, **kwargs)
 
 
 class Car(models.Model):
