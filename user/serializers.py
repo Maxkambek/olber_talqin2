@@ -61,3 +61,10 @@ class CarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
         fields = '__all__'
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    items = CargoListSerializer(required=False, many=True)
+    class Meta:
+        model = User
+        fields = ("username", "email", 'items')

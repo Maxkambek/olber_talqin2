@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import User, Cargo, Car, VerifyEmail
 from .serializers import LoginSerializer, UserSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
-    RegisterSerializer, VerifySerializer
+    RegisterSerializer, VerifySerializer, UserDetailSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -73,22 +73,23 @@ class LoginView(generics.GenericAPIView):
 
     @staticmethod
     def post(request):
-        try:
-            email = request.data.get('email')
-            password = request.data.get('password')
-            user = User.objects.get(email=email)
-            check = user.check_password(password)
-            verify = user.is_verified
-            if check and verify:
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({
-                    'token': token.key,
-                    'email': email
-                })
-            else:
+        # try:
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = User.objects.get(email=email)
+        check = user.check_password(password)
+        verify = user.is_verified
+        if check and verify:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'token': token.key,
+                'email': email,
+                'id': user.id
+            })
+        else:
                 return Response("Неверное имя пользователя или пароль", status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        # except:
+        #     return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class UsersView(generics.ListAPIView):
@@ -114,3 +115,8 @@ class CargoDetailView(generics.RetrieveAPIView):
 class CarCreateView(generics.CreateAPIView):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
+
+
+class UserDetailView(generics.RetrieveAPIView):
+    serializer_class = UserDetailSerializer
+    queryset = User.objects.all()
