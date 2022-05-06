@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import User, Cargo, Car, VerifyEmail
 from .serializers import LoginSerializer, UserSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
-    RegisterSerializer, VerifySerializer, UserDetailSerializer
+    RegisterSerializer, VerifySerializer, UserDetailSerializer, UserListSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -93,7 +93,7 @@ class LoginView(generics.GenericAPIView):
 
 
 class UsersView(generics.ListAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserListSerializer
     queryset = User.objects.all()
 
 
