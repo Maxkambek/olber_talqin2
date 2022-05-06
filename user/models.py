@@ -10,7 +10,7 @@ class User(AbstractUser):
         verbose_name="Foydalanuvchi"
         verbose_name_plural="Foydalanuvchilar"
 
-    is_email_verified = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
     phone = models.CharField(max_length=20, null=True, blank=True)
 
 

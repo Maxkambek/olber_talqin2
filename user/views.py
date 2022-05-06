@@ -24,7 +24,7 @@ class LoginView(generics.GenericAPIView):
             password = request.data.get('password')
             user = User.objects.get(email=email)
             check = user.check_password(password)
-            verify = user.is_email_verified
+            verify = user.is_verified
             print(verify)
             if check and verify:
                 token, created = Token.objects.get_or_create(user=user)
@@ -50,11 +50,11 @@ class RegisterView(generics.GenericAPIView):
         if serializer.is_valid():
             subject = "Emailni tasdiqlash"
             code = str(random.randint(100000, 1000000))
-            msg = "Emailni tasdiqlash uchun bir martalik kod: " + code
+            msg = "Emailni tasdiqlash uchun bir martalik kod "
             to = request.data.get('email')
             res = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
             if (res == 1):
-                msg1 = str(msg) + " " + to + " ga jo'natildi "
+                msg1 = str(msg) + to + " ga jo'natildi "
                 VerifyEmail.objects.create(email=email, code=code)
                 User.objects.create_user(email=email, username=username, password=password)
             else:
@@ -73,7 +73,7 @@ class VerifyView(generics.GenericAPIView):
         code = request.data.get('code')
         if VerifyEmail.objects.filter(email=email, code=code).first():
             user = User.objects.get(email=email)
-            user.is_email_verified = True
+            user.is_verified = True
             user.save()
             return Response({
                     'msg': "Email is verified",
