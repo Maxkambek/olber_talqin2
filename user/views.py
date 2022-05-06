@@ -28,7 +28,7 @@ class RegisterView(generics.GenericAPIView):
             msg = "Emailni tasdiqlash uchun bir martalik kod "
             to = request.data.get('email')
             result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
-            if VerifyEmail.objects.get(email=email):
+            if VerifyEmail.objects.filter(email=email).first():
                 verify = VerifyEmail.objects.get(email=email)
                 verify.delete()
             if (result == 1):
