@@ -75,7 +75,10 @@ class VerifyView(generics.GenericAPIView):
             user = User.objects.get(email=email)
             user.is_email_verified = True
             user.save()
-            return Response("Email is verified", status=status.HTTP_200_OK)
+            return Response({
+                    'msg': "Email is verified",
+                    'email': email
+                }, status=status.HTTP_200_OK)
         else:
             return Response("Email or code invalid", status=status.HTTP_400_BAD_REQUEST)
 
