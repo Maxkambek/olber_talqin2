@@ -25,7 +25,7 @@ class Cargo(models.Model):
         ('sent', "Yo'lda"),
         ('finished', "Yopilgan"),
     )
-    user = models.ForeignKey(User, verbose_name="Foydalanuvchi", null=True, blank=True, on_delete=models.SET_NULL, related_name="items")
+    user = models.ForeignKey(User, verbose_name="Foydalanuvchi", on_delete=models.CASCADE, related_name="items")
     title = models.CharField(max_length=150)
     price = models.CharField(max_length=150)
     weight = models.CharField(max_length=10)
