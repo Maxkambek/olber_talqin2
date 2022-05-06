@@ -25,14 +25,14 @@ class RegisterView(generics.GenericAPIView):
         if serializer.is_valid():
             subject = "Emailni tasdiqlash"
             code = str(random.randint(100000, 1000000))
-            msg = "Emailni tasdiqlash uchun bir martalik kod "
+            msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
             to = request.data.get('email')
             result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
             if VerifyEmail.objects.filter(email=email).first():
                 verify = VerifyEmail.objects.get(email=email)
                 verify.delete()
             if (result == 1):
-                msg1 = str(msg) + to + " ga jo'natildi "
+                msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi "
                 VerifyEmail.objects.create(email=email, code=code)
                 User.objects.create_user(email=email, username=username, password=password)
                 print(code)
