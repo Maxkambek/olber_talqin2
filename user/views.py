@@ -59,9 +59,12 @@ class RegisterView(generics.GenericAPIView):
                 User.objects.create_user(email=email, username=username, password=password)
             else:
                 msg1 = "Ma'lumotlarda xatolik!"
-            print(msg1)
             print(email)
-            return Response(msg1, status=status.HTTP_201_CREATED)
+            return Response({
+                "email": email,
+                "username": username,
+                "msg": msg1
+            }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
