@@ -146,16 +146,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-AUTHENTICATION_BACKENDS = [
-    'rest_email_auth.authentication.VerifiedEmailBackend',
-    'django.contrib.auth.backends.ModelBackend',
-]
 
 
-REST_EMAIL_AUTH = {
-    'EMAIL_VERIFICATION_URL': 'Email verifikatsiya uchun kalit: {key}',
-    'PASSWORD_RESET_URL': 'https://127.0.0.1:8000/reset/{key}',
-}
 SITE_ID=1
 AUTH_USER_MODEL = "user.User"
 
