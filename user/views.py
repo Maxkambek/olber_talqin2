@@ -51,19 +51,22 @@ class VerifyView(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
     def post(self, request):
-        email = request.data.get('email')
-        code = request.data.get('code')
-        verify = VerifyEmail.objects.filter(email=email, code=code).first()
-        if verify:
-            user = User.objects.get(email=email)
-            user.is_verified = True
-            user.save()
-            verify.delete()
-            return Response({
-                    'msg': "Email is verified",
-                    'email': email
-                }, status=status.HTTP_200_OK)
-        else:
+        try:
+            email = request.data.get('email')
+            code = request.data.get('code')
+            verify = VerifyEmail.objects.filter(email=email, code=code).first()
+            if verify:
+                user = User.objects.filter(email=email).first()
+                user.is_verified = True
+                user.save()
+                verify.delete()
+                return Response({
+                        'msg': "Email is verified",
+                        'email': email
+                    }, status=status.HTTP_200_OK)
+            else:
+                return Response("Email or code invalid", status=status.HTTP_400_BAD_REQUEST)
+        except:
             return Response("Email or code invalid", status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -97,6 +100,11 @@ class UsersView(generics.ListAPIView):
     queryset = User.objects.all()
 
 
+class UserDetailView(generics.RetrieveAPIView):
+    serializer_class = UserDetailSerializer
+    queryset = User.objects.all()
+
+
 class CargoCreateView(generics.CreateAPIView):
     serializer_class = CargoSerializer
     queryset = Cargo.objects.all()
@@ -115,8 +123,3 @@ class CargoDetailView(generics.RetrieveAPIView):
 class CarCreateView(generics.CreateAPIView):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
-
-
-class UserDetailView(generics.RetrieveAPIView):
-    serializer_class = UserDetailSerializer
-    queryset = User.objects.all()
