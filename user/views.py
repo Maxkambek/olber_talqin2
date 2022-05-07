@@ -3,6 +3,7 @@ import random
 from django.conf import settings
 from django.contrib import auth
 from django.core.mail import send_mail
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -115,9 +116,16 @@ class CargoListView(generics.ListAPIView):
     queryset = Cargo.objects.all()
 
 
-class CargoDetailView(generics.RetrieveAPIView):
+class CargoDetailView(generics.ListAPIView):
     serializer_class = CargoSerializer
     queryset = Cargo.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
+
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user
+        return user.items.all()
+
 
 
 class CarCreateView(generics.CreateAPIView):
