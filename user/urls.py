@@ -9,7 +9,7 @@ urlpatterns = [
     path('list', UsersView.as_view()),
     path('detail/<int:pk>', UserDetailView.as_view()),
     path('cargo', CargoCreateView.as_view()),
-    path('user-cargo', CargoDetailView.as_view()),
+    path('cargo/<int:pk>', CargoDetailView.as_view()),
     path('cargo/list', CargoListView.as_view()),
     path('car', CarCreateView.as_view()),
 

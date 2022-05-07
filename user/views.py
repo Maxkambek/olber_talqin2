@@ -123,7 +123,7 @@ class CargoDetailView(generics.ListAPIView):
     filterset_fields = ['status']
 
     def get_queryset(self, *args, **kwargs):
-        user = self.request.user
+        user = User.objects.get(id=self.kwargs['pk'])
         return user.items.all()
 
 
