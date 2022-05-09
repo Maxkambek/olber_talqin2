@@ -101,9 +101,19 @@ class UsersView(generics.ListAPIView):
     queryset = User.objects.all()
 
 
-class UserDetailView(generics.RetrieveAPIView):
-    serializer_class = UserDetailSerializer
-    queryset = User.objects.all()
+class UserDetailView(generics.ListAPIView):
+    serializer_class = CargoSerializer
+    queryset = Cargo.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
+
+    def get_queryset(self, *args, **kwargs):
+        try:
+            user = User.objects.get(id=self.kwargs['pk'])
+            print(user)
+            return user.items.all()
+        except:
+            return Response("User not found")
 
 
 class CargoCreateView(generics.CreateAPIView):
@@ -116,16 +126,9 @@ class CargoListView(generics.ListAPIView):
     queryset = Cargo.objects.all()
 
 
-class CargoDetailView(generics.ListAPIView):
+class CargoDetailView(generics.RetrieveAPIView):
     serializer_class = CargoSerializer
     queryset = Cargo.objects.all()
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status']
-
-    def get_queryset(self, *args, **kwargs):
-        user = User.objects.get(id=self.kwargs['pk'])
-        return user.items.all()
-
 
 
 class CarCreateView(generics.CreateAPIView):
