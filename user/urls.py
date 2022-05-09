@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import LoginView, UsersView, CargoCreateView, CargoListView, CarCreateView, RegisterView, VerifyView, \
-    CargoDetailView, UserDetailView
+    CargoDetailView, UserDetailView, CargoUDView
 
 urlpatterns = [
     path('register/', RegisterView.as_view()),
@@ -10,6 +10,7 @@ urlpatterns = [
     path('detail/<int:pk>', UserDetailView.as_view()),
     path('cargo', CargoCreateView.as_view()),
     path('cargo/<int:pk>', CargoDetailView.as_view()),
+    path('cargo/action/<int:pk>', CargoUDView.as_view()),
     path('cargo/list', CargoListView.as_view()),
     path('car', CarCreateView.as_view()),
 

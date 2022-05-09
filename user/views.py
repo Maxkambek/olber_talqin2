@@ -134,3 +134,8 @@ class CargoDetailView(generics.RetrieveAPIView):
 class CarCreateView(generics.CreateAPIView):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
+
+
+class CargoUDView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = CargoSerializer
+    queryset = Cargo.objects.all()
