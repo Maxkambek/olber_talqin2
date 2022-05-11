@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
 from .models import User, Cargo, Car, VerifyEmail
-from .serializers import LoginSerializer, UserSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
-    RegisterSerializer, VerifySerializer, UserDetailSerializer, UserListSerializer, UserProfileSerializer
+from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
+    RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer
 
 
 class RegisterView(generics.GenericAPIView):
