@@ -1,17 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from user.calculation import calc_distance
 
 
 class User(AbstractUser):
-
+    GENDER_CHOICES = (
+        ("null", "Tanlanmagan"),
+        ("men", "Erkak"),
+        ("women", "Ayol")
+    )
     class Meta:
         verbose_name="Foydalanuvchi"
         verbose_name_plural="Foydalanuvchilar"
 
     is_verified = models.BooleanField(default=False)
     phone = models.CharField(max_length=20, null=True, blank=True)
+    telegram = models.CharField(max_length=255, null=True, blank=True)
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=25, default="null")
+    rating = models.FloatField(verbose_name="Reyting", validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=None, null=True, blank=True)
 
 
 class Cargo(models.Model):

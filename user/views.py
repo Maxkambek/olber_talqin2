@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import User, Cargo, Car, VerifyEmail
 from .serializers import LoginSerializer, UserSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
-    RegisterSerializer, VerifySerializer, UserDetailSerializer, UserListSerializer
+    RegisterSerializer, VerifySerializer, UserDetailSerializer, UserListSerializer, UserProfileSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -101,7 +101,7 @@ class UsersView(generics.ListAPIView):
     queryset = User.objects.all()
 
 
-class UserDetailView(generics.ListAPIView):
+class UserItemsView(generics.ListAPIView):
     serializer_class = CargoSerializer
     queryset = Cargo.objects.all()
     filter_backends = [DjangoFilterBackend]
@@ -114,6 +114,11 @@ class UserDetailView(generics.ListAPIView):
             return user.items.all()
         except:
             return Response("User not found")
+
+
+class UserDetailView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
 
 
 class CargoCreateView(generics.CreateAPIView):
