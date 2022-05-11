@@ -6,7 +6,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class CargoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price', 'status', 'description', 'distance')
+    list_display = ('title', 'price', 'status', 'cargo_type', 'description', 'distance')
 
 
 class VerifEmailAdmin(admin.ModelAdmin):

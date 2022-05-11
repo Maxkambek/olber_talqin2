@@ -29,7 +29,7 @@ class CargoSerializer(serializers.ModelSerializer):
 class CargoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cargo
-        fields = ('id', 'user', 'title', 'weight', 'price', 'status', 'when', 'image1', 'distance')
+        fields = ('id', 'user', 'title', 'weight', 'price', 'cargo_type', 'status', 'when', 'image1', 'distance')
 
 
 class CarSerializer(serializers.ModelSerializer):

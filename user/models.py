@@ -60,7 +60,7 @@ class Cargo(models.Model):
     image3 = models.ImageField(null=True, blank=True)
     image4 = models.ImageField(null=True, blank=True)
     status = models.CharField(max_length=25, choices=STATUS_CHOISES, default="new")
-    cargo_type = models.CharField(max_length=100, choices=TYPE_CHOISES, default='null')
+    cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOISES, default="null")
     distance = models.FloatField(null=True, blank=True)
 
 

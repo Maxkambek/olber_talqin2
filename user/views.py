@@ -8,7 +8,6 @@ from rest_framework import generics, status, authentication, permissions
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.views import APIView
 
 from .models import User, Cargo, Car, VerifyEmail
 from .serializers import LoginSerializer, UserSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
@@ -97,7 +96,7 @@ class LoginView(generics.GenericAPIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class LogoutView(APIView):
+class LogoutView(generics.GenericAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -105,13 +104,15 @@ class LogoutView(APIView):
         try:
             # print(request.user.email)
             token = Token.objects.get(user=request.user)
-            token.delete()
-            return Response("Logout Success", status=status.HTTP_200_OK)
+            # token.delete()
+            return Response({
+                "msg": "Logout Success"
+                }, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-class DeleteAccountView(APIView):
+class DeleteAccountView(generics.GenericAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -121,8 +122,10 @@ class DeleteAccountView(APIView):
         password = request.data.get('password')
         check = user.check_password(password)
         if check:
-            user.delete()
-            return Response("Account deleted", status=status.HTTP_200_OK)
+            # user.delete()
+            return Response({
+                "msg": "Account deleted"
+            }, status=status.HTTP_200_OK)
         else:
             return Response("Invalid password", status=status.HTTP_400_BAD_REQUEST)
 
@@ -160,7 +163,8 @@ class CargoCreateView(generics.CreateAPIView):
 class CargoListView(generics.ListAPIView):
     serializer_class = CargoListSerializer
     queryset = Cargo.objects.all()
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status', 'cargo_type']
 
 class CargoDetailView(generics.RetrieveAPIView):
     serializer_class = CargoSerializer
