@@ -97,6 +97,36 @@ class LoginView(generics.GenericAPIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+class LogoutView(APIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def delete(self, request, format=None):
+        try:
+            # print(request.user.email)
+            token = Token.objects.get(user=request.user)
+            token.delete()
+            return Response("Logout Success", status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class DeleteAccountView(APIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        id = request.user.id
+        user = User.objects.get(id=id)
+        password = request.data.get('password')
+        check = user.check_password(password)
+        if check:
+            user.delete()
+            return Response("Account deleted", status=status.HTTP_200_OK)
+        else:
+            return Response("Invalid password", status=status.HTTP_400_BAD_REQUEST)
+
+
 class UsersView(generics.ListAPIView):
     serializer_class = UserListSerializer
     queryset = User.objects.all()
@@ -120,20 +150,6 @@ class UserItemsView(generics.ListAPIView):
 class UserDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
-
-
-class LogoutView(APIView):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def delete(self, request, format=None):
-        try:
-            # print(request.user.email)
-            token = Token.objects.get(user=request.user)
-            token.delete()
-            return Response("Logout Success", status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class CargoCreateView(generics.CreateAPIView):

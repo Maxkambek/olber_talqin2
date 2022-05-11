@@ -1,12 +1,13 @@
 from django.urls import path
 from .views import LoginView, UsersView, CargoCreateView, CargoListView, CarCreateView, RegisterView, VerifyView, \
-    CargoDetailView, UserDetailView, CargoUDView, UserItemsView, LogoutView
+    CargoDetailView, UserDetailView, CargoUDView, UserItemsView, LogoutView, DeleteAccountView
 
 urlpatterns = [
     path('register/', RegisterView.as_view()),
     path('verify', VerifyView.as_view()),
     path('login', LoginView.as_view()),
     path('logout', LogoutView.as_view()),
+    path('delete', DeleteAccountView.as_view()),
     path('list', UsersView.as_view()),
     path('items/<int:pk>', UserItemsView.as_view()),
     path('detail/<int:pk>', UserDetailView.as_view()),

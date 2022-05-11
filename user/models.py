@@ -34,6 +34,13 @@ class Cargo(models.Model):
         ('sent', "Yo'lda"),
         ('finished', "Yopilgan"),
     )
+    TYPE_CHOISES = (
+        ('null', "Tanlanmagan"),
+        ('small', "Kichik"),
+        ('big', "Katta"),
+        ('ice_car', "Sovutgich"),
+        ('worker', "Ishchi"),
+    )
     user = models.ForeignKey(User, verbose_name="Foydalanuvchi", on_delete=models.CASCADE, related_name="items")
     title = models.CharField(max_length=150)
     price = models.CharField(max_length=150)
@@ -53,6 +60,7 @@ class Cargo(models.Model):
     image3 = models.ImageField(null=True, blank=True)
     image4 = models.ImageField(null=True, blank=True)
     status = models.CharField(max_length=25, choices=STATUS_CHOISES, default="new")
+    cargo_type = models.CharField(max_length=100, choices=TYPE_CHOISES, default='null')
     distance = models.FloatField(null=True, blank=True)
 
 
