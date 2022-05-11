@@ -16,6 +16,7 @@ class User(AbstractUser):
         verbose_name_plural="Foydalanuvchilar"
 
     is_verified = models.BooleanField(default=False)
+    image = models.ImageField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     telegram = models.CharField(max_length=255, null=True, blank=True)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=25, default="null")
