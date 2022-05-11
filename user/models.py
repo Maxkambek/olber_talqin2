@@ -35,7 +35,7 @@ class Cargo(models.Model):
         ('finished', "Yopilgan"),
     )
     TYPE_CHOISES = (
-        ('n', "Tanlanmagan"),
+        ('disabled', "Tanlanmagan"),
         ('small', "Kichik"),
         ('big', "Katta"),
         ('ice_car', "Sovutgich"),
