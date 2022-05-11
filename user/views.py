@@ -4,10 +4,11 @@ from django.conf import settings
 from django.contrib import auth
 from django.core.mail import send_mail
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, status
+from rest_framework import generics, status, authentication, permissions
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 
 from .models import User, Cargo, Car, VerifyEmail
 from .serializers import LoginSerializer, UserSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
@@ -119,6 +120,20 @@ class UserItemsView(generics.ListAPIView):
 class UserDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
+
+
+class LogoutView(APIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def delete(self, request, format=None):
+        try:
+            # print(request.user.email)
+            token = Token.objects.get(user=request.user)
+            token.delete()
+            return Response("Logout Success", status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class CargoCreateView(generics.CreateAPIView):

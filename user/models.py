@@ -82,3 +82,5 @@ class VerifyEmail(models.Model):
 
     email = models.CharField(max_length=100, verbose_name="Email")
     code = models.CharField(max_length=10, verbose_name="Kod")
+
+
