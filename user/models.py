@@ -40,7 +40,6 @@ class Cargo(models.Model):
         ('small', "Kichik"),
         ('big', "Katta"),
         ('ice_car', "Sovutgich"),
-        ('worker', "Ishchi"),
     )
     user = models.ForeignKey(User, verbose_name="Foydalanuvchi", on_delete=models.CASCADE, related_name="items")
     title = models.CharField(max_length=150)
