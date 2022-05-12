@@ -63,7 +63,7 @@ class Cargo(models.Model):
     status = models.CharField(max_length=25, choices=STATUS_CHOISES, default="new")
     cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOISES, default="n")
     distance = models.FloatField(null=True, blank=True)
-    offers = models.ManyToManyField(User, verbose_name="Takliflar")
+    offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.distance = calc_distance(self.from_adrress, self.to_adrress)
