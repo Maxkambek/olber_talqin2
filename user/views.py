@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import User, Cargo, Car, VerifyEmail
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
-    RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer
+    RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -156,7 +156,7 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
 
 
 class CargoCreateView(generics.CreateAPIView):
-    serializer_class = CargoSerializer
+    serializer_class = CargoCreateSerializer
     queryset = Cargo.objects.all()
 
 

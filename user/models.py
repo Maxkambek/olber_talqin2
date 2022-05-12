@@ -11,6 +11,7 @@ class User(AbstractUser):
         ("men", "Erkak"),
         ("women", "Ayol")
     )
+
     class Meta:
         verbose_name="Foydalanuvchi"
         verbose_name_plural="Foydalanuvchilar"
@@ -45,11 +46,11 @@ class Cargo(models.Model):
     title = models.CharField(max_length=150)
     price = models.CharField(max_length=150)
     weight = models.CharField(max_length=10)
-    from_adrress = models.CharField(max_length=255)
+    from_address = models.CharField(max_length=255)
     from_floor = models.PositiveIntegerField()
     from_kv = models.PositiveIntegerField()
     from_persons = models.PositiveIntegerField()
-    to_adrress = models.CharField(max_length=255)
+    to_address = models.CharField(max_length=255)
     to_floor = models.PositiveIntegerField()
     to_kv = models.PositiveIntegerField()
     to_persons = models.PositiveIntegerField()
@@ -62,7 +63,7 @@ class Cargo(models.Model):
     status = models.CharField(max_length=25, choices=STATUS_CHOISES, default="new")
     cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOISES, default="n")
     distance = models.FloatField(null=True, blank=True)
-
+    offers = models.ManyToManyField(User, verbose_name="Takliflar")
 
     def save(self, *args, **kwargs):
         self.distance = calc_distance(self.from_adrress, self.to_adrress)
