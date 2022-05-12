@@ -60,7 +60,7 @@ class Cargo(models.Model):
     image3 = models.ImageField(null=True, blank=True)
     image4 = models.ImageField(null=True, blank=True)
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default="new")
-    cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOICES, default="n")
+    cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOICES, default="disabled")
     distance = models.FloatField(null=True, blank=True)
     offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
 
