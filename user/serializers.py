@@ -44,6 +44,7 @@ class CargoCreateSerializer(serializers.ModelSerializer):
             'to_persons',
             'when',
             'description',
+            'cargo_type',
             'image1',
             'image2',
             'image3',
