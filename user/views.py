@@ -1,5 +1,4 @@
 import random
-
 from django.conf import settings
 from django.contrib import auth
 from django.core.mail import send_mail
@@ -9,9 +8,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from .models import User, Cargo, Car, VerifyEmail
+from .models import User, Cargo, Car, VerifyEmail, TestModel
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
-    RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer
+    RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
+    TestSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -38,8 +38,9 @@ class RegisterView(generics.GenericAPIView):
                 User.objects.create_user(email=email, username=username, password=password)
                 print(code)
             else:
-                return Response({"msg" : "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
+                    status=status.HTTP_400_BAD_REQUEST)
             return Response({
                 "email": email,
                 "username": username,
@@ -62,9 +63,9 @@ class VerifyView(generics.GenericAPIView):
                 user.save()
                 verify.delete()
                 return Response({
-                        'msg': "Email is verified",
-                        'email': email
-                    }, status=status.HTTP_200_OK)
+                    'msg': "Email is verified",
+                    'email': email
+                }, status=status.HTTP_200_OK)
             else:
                 return Response("Email or code invalid", status=status.HTTP_400_BAD_REQUEST)
         except:
@@ -91,7 +92,7 @@ class LoginView(generics.GenericAPIView):
                     'id': user.id
                 })
             else:
-                    return Response("Неверное имя пользователя или пароль", status=status.HTTP_400_BAD_REQUEST)
+                return Response("Неверное имя пользователя или пароль", status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -100,14 +101,13 @@ class LogoutView(generics.GenericAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
-    def delete(self, request, format=None):
+    def delete(self, request):
         try:
-            # print(request.user.email)
             token = Token.objects.get(user=request.user)
             # token.delete()
             return Response({
                 "msg": "Logout Success"
-                }, status=status.HTTP_200_OK)
+            }, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -166,6 +166,7 @@ class CargoListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status', 'cargo_type']
 
+
 class CargoDetailView(generics.RetrieveAPIView):
     serializer_class = CargoSerializer
     queryset = Cargo.objects.all()
@@ -179,3 +180,13 @@ class CarCreateView(generics.CreateAPIView):
 class CargoUDView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CargoSerializer
     queryset = Cargo.objects.all()
+
+
+class TestCreateListView(generics.ListCreateAPIView):
+    serializer_class = TestSerializer
+    queryset = TestModel.objects.all()
+
+
+class TestDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TestSerializer
+    queryset = TestModel.objects.all()
