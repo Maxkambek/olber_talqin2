@@ -17,7 +17,6 @@ urlpatterns = [
     path('cargo/action/<int:pk>', CargoUDView.as_view()),
     path('cargo/list', CargoListView.as_view()),
     path('car', CarCreateView.as_view()),
-
     path('testing', TestCreateListView.as_view()),
     path('testing/<int:pk>', TestDetailView.as_view()),
 
