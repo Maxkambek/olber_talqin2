@@ -22,31 +22,36 @@ class RegisterView(generics.GenericAPIView):
         email = request.data.get('email')
         password = request.data.get('password')
         username = request.data.get('username')
-        if serializer.is_valid():
-            subject = "Emailni tasdiqlash"
-            code = str(random.randint(100000, 1000000))
-            msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
-            to = request.data.get('email')
-            result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
-            if VerifyEmail.objects.filter(email=email).first():
-                verify = VerifyEmail.objects.get(email=email)
-                verify.delete()
-            if (result == 1):
-                msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi "
-                VerifyEmail.objects.create(email=email, code=code)
-                User.objects.create_user(email=email, username=username, password=password)
-                print(code)
-            else:
-                return Response(
-                    {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
-                    status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.filter(email=email).first()
+        if user is None:
+            if serializer.is_valid():
+                subject = "Emailni tasdiqlash"
+                code = str(random.randint(100000, 1000000))
+                msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
+                to = request.data.get('email')
+                result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
+                if VerifyEmail.objects.filter(email=email).first():
+                    verify = VerifyEmail.objects.get(email=email)
+                    verify.delete()
+                if (result == 1):
+                    msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi "
+                    VerifyEmail.objects.create(email=email, code=code)
+                    User.objects.create_user(email=email, username=username, password=password)
+                    print(code)
+                else:
+                    return Response(
+                        {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
+                        status=status.HTTP_400_BAD_REQUEST)
+                return Response({
+                    "email": email,
+                    "username": username,
+                    "msg": msg1
+                }, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
             return Response({
-                "email": email,
-                "username": username,
-                "msg": msg1
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+                    "msg": "Ushbu email registratsiya qilingan"
+                }, status=status.HTTP_409_CONFLICT)
 
 class VerifyView(generics.GenericAPIView):
     serializer_class = VerifySerializer
@@ -121,7 +126,7 @@ class DeleteAccountView(generics.GenericAPIView):
         password = request.data.get('password')
         check = user.check_password(password)
         if check:
-            # user.delete()
+            user.delete()
             return Response({
                 "msg": "Account deleted"
             }, status=status.HTTP_200_OK)
