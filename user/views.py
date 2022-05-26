@@ -104,7 +104,7 @@ class LogoutView(generics.GenericAPIView):
     def delete(self, request):
         try:
             token = Token.objects.get(user=request.user)
-            # token.delete()
+            token.delete()
             return Response({
                 "msg": "Logout Success"
             }, status=status.HTTP_200_OK)
