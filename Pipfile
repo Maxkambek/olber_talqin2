@@ -12,6 +12,7 @@ django-cors-headers = "*"
 gunicorn = "*"
 pillow = "*"
 django-filter = "*"
+environs = "*"
 
 [dev-packages]
 
