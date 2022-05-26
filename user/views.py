@@ -140,7 +140,7 @@ class UsersView(generics.ListAPIView):
 
 
 class UserItemsView(generics.ListAPIView):
-    serializer_class = CargoSerializer
+    serializer_class = CargoListSerializer
     queryset = Cargo.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status']
