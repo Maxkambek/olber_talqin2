@@ -13,6 +13,7 @@ gunicorn = "*"
 pillow = "*"
 django-filter = "*"
 environs = "*"
+dj-database-url = "*"
 
 [dev-packages]
 
