@@ -12,12 +12,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import datetime
 import os
 from environs import Env
-from pathlib import Path
 env = Env()
 env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 
 # Quick-start development settings - unsuitable for production
@@ -155,8 +153,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 
-
-SITE_ID=1
+SITE_ID = 1
 AUTH_USER_MODEL = "user.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

@@ -7,7 +7,6 @@ from rest_framework import generics, status, authentication, permissions
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-
 from .models import User, Cargo, Car, VerifyEmail, TestModel
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
     RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
