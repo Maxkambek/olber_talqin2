@@ -21,9 +21,31 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class CargoSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(read_only=True, source="user.username")
     class Meta:
         model = Cargo
-        fields = '__all__'
+        fields = (
+            'user',
+            'title',
+            'price',
+            'weight',
+            'from_address',
+            'from_floor',
+            'from_kv',
+            'from_persons',
+            'to_address',
+            'to_floor',
+            'to_kv',
+            'to_persons',
+            'when',
+            'description',
+            'cargo_type',
+            'image1',
+            'image2',
+            'image3',
+            'image4',
+            'user_name'
+                  )
 
 
 class CargoCreateSerializer(serializers.ModelSerializer):
