@@ -15,6 +15,7 @@ django-filter = "*"
 environs = "*"
 dj-database-url = "*"
 psycopg2 = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
