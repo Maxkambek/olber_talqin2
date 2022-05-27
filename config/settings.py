@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     #third party packages
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_yasg',
     'corsheaders',
     'django_filters',
     #internal apps
@@ -123,7 +124,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
 # Internationalization
@@ -145,7 +147,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # 'media' is my media folder
 MEDIA_URL = '/media/'
 
 STATIC_URL = '/static/'
-STATICFILES_DIR = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

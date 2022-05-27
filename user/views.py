@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token
 from .models import User, Cargo, Car, VerifyEmail, TestModel
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
     RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
-    TestSerializer
+    TestSerializer, UserSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -119,6 +119,7 @@ class LogoutView(generics.GenericAPIView):
 class DeleteAccountView(generics.GenericAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserSerializer
 
     def post(self, request):
         id = request.user.id
@@ -145,13 +146,12 @@ class UserItemsView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status']
 
-    def get_queryset(self, *args, **kwargs):
-        try:
-            user = User.objects.get(id=self.kwargs['pk'])
+    def get_queryset(self):
+        user = User.objects.get(id=self.kwargs['pk'])
+        if user:
             print(user)
             return user.items.all()
-        except:
-            return Response("User not found")
+
 
 
 class UserDetailView(generics.RetrieveUpdateAPIView):
