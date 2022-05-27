@@ -3,10 +3,6 @@ from .views import LoginView, UsersView, CargoCreateView, CargoListView, CarCrea
     CargoDetailView, UserDetailView, CargoUDView, UserItemsView, LogoutView, DeleteAccountView, TestCreateListView, \
     TestDetailView
 
-from rest_framework_swagger.views import get_swagger_view
-
-schema_view = get_swagger_view(title='OlBer API')
-
 urlpatterns = [
     path('register/', RegisterView.as_view()),
     path('verify', VerifyView.as_view()),
@@ -23,5 +19,4 @@ urlpatterns = [
     path('car', CarCreateView.as_view()),
     path('testing', TestCreateListView.as_view()),
     path('testing/<int:pk>', TestDetailView.as_view()),
-    re_path('docs', schema_view)
 ]
