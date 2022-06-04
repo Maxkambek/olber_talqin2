@@ -191,8 +191,9 @@ class OfferView(generics.GenericAPIView):
     authentication_classes = [authentication.TokenAuthentication,]
     permission_classes = [permissions.IsAuthenticated,]
 
-    def post(self, request):
-        return Response(request.user.username)
+    def post(self, request, pk=None):
+
+        return Response(pk)
 
 
 class TestCreateListView(generics.ListCreateAPIView):
