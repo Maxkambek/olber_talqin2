@@ -192,7 +192,7 @@ class OfferView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated,]
 
     def post(self, request):
-        print(request.user.username)
+        return Response(request.user.username)
 
 
 class TestCreateListView(generics.ListCreateAPIView):
