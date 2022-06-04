@@ -27,6 +27,7 @@ class CargoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cargo
         fields = (
+            'id',
             'user',
             'title',
             'price',
@@ -43,6 +44,7 @@ class CargoSerializer(serializers.ModelSerializer):
             'description',
             'cargo_type',
             'distance',
+            'offers',
             'image1',
             'image2',
             'image3',
