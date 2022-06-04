@@ -188,7 +188,8 @@ class CargoUDView(generics.RetrieveUpdateDestroyAPIView):
 
 class OfferView(generics.GenericAPIView):
     serializer_class = CargoSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication,]
+    permission_classes = [permissions.IsAuthenticated,]
 
     def post(self, request):
         print(request.user.username)
