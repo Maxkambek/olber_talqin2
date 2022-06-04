@@ -98,5 +98,5 @@ class TestModel(models.Model):
         verbose_name_plural = "Test uchun"
         db_table = "test"
 
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, unique=False)
     image = models.ImageField()

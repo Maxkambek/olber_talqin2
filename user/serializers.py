@@ -42,6 +42,7 @@ class CargoSerializer(serializers.ModelSerializer):
             'when',
             'description',
             'cargo_type',
+            'distance',
             'image1',
             'image2',
             'image3',
