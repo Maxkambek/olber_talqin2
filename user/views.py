@@ -186,6 +186,14 @@ class CargoUDView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cargo.objects.all()
 
 
+class OfferView(generics.GenericAPIView):
+    serializer_class = CargoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        print(request.user.username)
+
+
 class TestCreateListView(generics.ListCreateAPIView):
     serializer_class = TestSerializer
     queryset = TestModel.objects.all()
