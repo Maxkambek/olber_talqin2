@@ -192,8 +192,11 @@ class OfferView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated,]
 
     def post(self, request, pk=None):
-
-        return Response(pk)
+        cargo = Cargo.objects.get(id=pk)
+        user = request.user
+        cargo.offers.add(*[user.id,])
+        cargo.save()
+        return Response(f"Offer belgilandi {cargo.title} uchun")
 
 
 class TestCreateListView(generics.ListCreateAPIView):
