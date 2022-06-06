@@ -21,7 +21,7 @@ class User(AbstractUser):
     phone = models.CharField(max_length=20, null=True, blank=True)
     telegram = models.CharField(max_length=255, null=True, blank=True)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=25, default="null")
-    rating = models.FloatField(verbose_name="Reyting", validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=0, null=True, blank=True)
+    rating = models.FloatField(verbose_name="Reyting", validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=0)
     works = ArrayField(models.CharField(max_length=50), null=True, blank=True)
 
 
