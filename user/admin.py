@@ -3,7 +3,7 @@ from .models import User, Cargo, VerifyEmail
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email')
-
+    readonly_fields = ('rating',)
 
 class CargoAdmin(admin.ModelAdmin):
     list_display = ('title', 'price', 'status', 'cargo_type', 'description', 'distance')

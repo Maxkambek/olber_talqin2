@@ -159,6 +159,11 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
 
 
+class AddPointView(generics.GenericAPIView):
+    serializer_class = UserProfileSerializer
+
+
+
 class CargoCreateView(generics.CreateAPIView):
     serializer_class = CargoCreateSerializer
     queryset = Cargo.objects.all()
