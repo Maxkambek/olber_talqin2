@@ -153,7 +153,6 @@ class UserItemsView(generics.ListAPIView):
             return user.items.all()
 
 
-
 class UserDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
@@ -161,7 +160,15 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
 
 class AddPointView(generics.GenericAPIView):
     serializer_class = UserProfileSerializer
-
+    def post(self, request):
+        rating = request.data.get('rating')
+        user_id = request.data.get('user_id')
+        user = User.objects.get(id=user_id)
+        user.point += rating
+        user.count += 1
+        user.rating = user.point/user.count
+        user.save()
+        return Response(f"{rating} ball qo'yildi")
 
 
 class CargoCreateView(generics.CreateAPIView):

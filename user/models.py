@@ -60,7 +60,7 @@ class Cargo(models.Model):
     to_floor = models.PositiveIntegerField()
     to_kv = models.PositiveIntegerField()
     to_persons = models.PositiveIntegerField()
-    when = models.DateField()
+    time_when = models.DateField()
     description = models.TextField(verbose_name="Tafsilot")
     image1 = models.ImageField()
     image2 = models.ImageField(null=True, blank=True)
