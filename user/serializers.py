@@ -40,7 +40,7 @@ class CargoSerializer(serializers.ModelSerializer):
             'to_floor',
             'to_kv',
             'to_persons',
-            'when',
+            'time_when',
             'description',
             'cargo_type',
             'distance',
@@ -71,7 +71,7 @@ class CargoCreateSerializer(serializers.ModelSerializer):
             'to_floor',
             'to_kv',
             'to_persons',
-            'when',
+            'time_when',
             'description',
             'cargo_type',
             'image1',
@@ -85,7 +85,7 @@ class CargoCreateSerializer(serializers.ModelSerializer):
 class CargoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cargo
-        fields = ('id', 'user', 'title', 'weight', 'price', 'cargo_type', 'status', 'when', 'image1', 'distance')
+        fields = ('id', 'user', 'title', 'weight', 'price', 'cargo_type', 'status', 'time_when', 'image1', 'distance')
 
 
 class CarSerializer(serializers.ModelSerializer):
