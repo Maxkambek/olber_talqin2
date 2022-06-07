@@ -23,7 +23,7 @@ class User(AbstractUser):
     gender = models.CharField(choices=GENDER_CHOICES, max_length=25, default="null")
     rating = models.FloatField(verbose_name="Reyting", validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=0)
     point = models.FloatField(verbose_name="Umumiy ball", default=0)
-    count = models.IntegerField(verbose_name="Ishlar soni", default=0)
+    count = models.IntegerField(verbose_name="Ishlar soni", default=1)
     works = ArrayField(models.CharField(max_length=50), null=True, blank=True)
 
     def save(self, *args, **kwargs):
