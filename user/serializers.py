@@ -88,10 +88,23 @@ class CargoListSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'title', 'weight', 'price', 'cargo_type', 'status', 'time_when', 'image1', 'distance')
 
 
+class CargoAcceptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cargo
+        fields = ('id', 'doer')
+
+
 class CarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
         fields = '__all__'
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+
+    model = User
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
 
 
 class UserSerializer(serializers.ModelSerializer):

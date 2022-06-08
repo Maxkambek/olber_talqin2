@@ -6,10 +6,10 @@ from user.calculation import calc_distance
 
 
 class User(AbstractUser):
-    GENDER_CHOICES = (
-        ("null", "Tanlanmagan"),
-        ("men", "Erkak"),
-        ("women", "Ayol")
+    USER_CHOICES = (
+        ("client", "Mijoz"),
+        ("worker", "Ishchi"),
+        ("driver", "Haydovchi")
     )
 
     class Meta:
@@ -20,7 +20,7 @@ class User(AbstractUser):
     image = models.ImageField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     telegram = models.CharField(max_length=255, null=True, blank=True)
-    gender = models.CharField(choices=GENDER_CHOICES, max_length=25, default="null")
+    user_type = models.CharField(choices=USER_CHOICES, max_length=25, default="client")
     rating = models.FloatField(verbose_name="Reyting", validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=0)
     point = models.FloatField(verbose_name="Umumiy ball", default=0)
     count = models.IntegerField(verbose_name="Ishlar soni", default=1)
@@ -50,8 +50,8 @@ class Cargo(models.Model):
     )
     user = models.ForeignKey(User, verbose_name="Foydalanuvchi", on_delete=models.CASCADE, related_name="items")
     title = models.CharField(max_length=150)
-    price = models.CharField(max_length=150)
-    weight = models.CharField(max_length=10)
+    price = models.PositiveIntegerField()
+    weight = models.PositiveIntegerField()
     from_address = models.CharField(max_length=255)
     from_floor = models.PositiveIntegerField()
     from_kv = models.PositiveIntegerField()
@@ -70,6 +70,7 @@ class Cargo(models.Model):
     cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOICES, default="disabled")
     distance = models.FloatField(null=True, blank=True)
     offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
+    doer = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         self.distance = calc_distance(self.from_address, self.to_address)

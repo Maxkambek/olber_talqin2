@@ -3,14 +3,15 @@ from django.conf import settings
 from django.contrib import auth
 from django.core.mail import send_mail
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, status, authentication, permissions
+from rest_framework import generics, status, authentication, permissions, filters
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .models import User, Cargo, Car, VerifyEmail, TestModel
+from django.db.models import Max
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
     RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
-    TestSerializer, UserSerializer
+    TestSerializer, UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -135,6 +136,78 @@ class DeleteAccountView(generics.GenericAPIView):
             return Response("Invalid password", status=status.HTTP_400_BAD_REQUEST)
 
 
+class ChangePasswordView(generics.UpdateAPIView):
+    """
+    Change user password
+    """
+    serializer_class = ChangePasswordSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+    def post(self, request):
+        user = request.user
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            if not user.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            user.set_password(serializer.data.get("new_password"))
+            user.save()
+            response = {
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Password updated successfully',
+                'data': {
+                    'username': user.username,
+                }
+            }
+
+            return Response(response)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResetPasswordView(generics.GenericAPIView):
+    serializer_class = VerifySerializer
+
+    def post(self, request):
+        email = self.request.data.get('email')
+        if email:
+            code = str(random.randint(100000, 1000000))
+            send_mail("Kod:", code, settings.EMAIL_HOST_USER, [email])
+            VerifyEmail.objects.create(email=email, code=code)
+            return Response("SMS jo'natildi")
+        else:
+            return Response("Email is required", status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConfirmResetPasswordView(generics.GenericAPIView):
+    serializer_class = VerifySerializer
+
+    def post(self, request):
+        try:
+            email = request.data.get('email')
+            code = request.data.get('code')
+            password = request.data.get('password')
+            verify = VerifyEmail.objects.filter(email=email, code=code).first()
+            if verify:
+                user = User.objects.get(email=email)
+                user.set_password(password)
+                user.save()
+                verify.delete()
+                return Response({
+                    'msg': "Password changed",
+                    'email': email
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response("Code invalid", status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response("Code invalid", status=status.HTTP_400_BAD_REQUEST)
+
+
 class UsersView(generics.ListAPIView):
     serializer_class = UserListSerializer
     queryset = User.objects.all()
@@ -179,9 +252,34 @@ class CargoCreateView(generics.CreateAPIView):
 class CargoListView(generics.ListAPIView):
     serializer_class = CargoListSerializer
     queryset = Cargo.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'cargo_type']
+    ordering_fields = ['price', 'distance', 'weight']
+    def get_queryset(self):
+        p_min = self.request.GET.get('p_min')
+        p_max = self.request.GET.get('p_max')
+        d_min = self.request.GET.get('d_min')
+        d_max = self.request.GET.get('d_max')
+        w_min = self.request.GET.get('w_min')
+        w_max = self.request.GET.get('w_max')
+        if not p_min or p_min == '':
+            p_min = 0
+        if not p_max or p_max == '':
+            p_max = Cargo.objects.all().order_by('-price').first().price
+        if not d_min or d_min == '':
+            d_min = 0
+        if not d_max or d_max == '':
+            d_max = Cargo.objects.all().order_by('-distance').first().distance
+        if not w_min or w_min == '':
+            w_min = 0
+        if not w_max or w_max == '':
+            w_max = Cargo.objects.all().order_by('-weight').first().weight
 
+        if p_min or p_max or d_min or d_max or w_min or w_max:
+            items = Cargo.objects.filter(price__range=(p_min, p_max), distance__range=(d_min, d_max), weight__range=(w_min, w_max),).order_by('-id')
+        else:
+            items = Cargo.objects.all().order_by('-id')
+        return items
 
 class CargoDetailView(generics.RetrieveAPIView):
     serializer_class = CargoSerializer
@@ -209,6 +307,32 @@ class OfferView(generics.GenericAPIView):
         cargo.offers.add(*[user.id,])
         cargo.save()
         return Response(f"Offer belgilandi {cargo.title} uchun")
+
+
+class CargoAcceptView(generics.GenericAPIView):
+    authentication_classes = [authentication.TokenAuthentication, ]
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def post(self, request):
+        serializer = CargoAcceptSerializer(data = request.data)
+        user_id = request.user.id
+        if serializer.is_valid():
+            item_id = request.data.get("id")
+            doer_id = request.data.get("doer")
+            cargo = Cargo.objects.get(id=item_id)
+            if cargo.user_id == user_id:
+                user = User.objects.get(id=doer_id)
+                if item_id not in user.works:
+                    user.works.append(item_id)
+                    user.save()
+                cargo.doer = doer_id
+                cargo.offers.clear()
+                cargo.save()
+                return Response("Success", status=status.HTTP_200_OK)
+            else:
+                return Response("User not owner", status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TestCreateListView(generics.ListCreateAPIView):
