@@ -24,31 +24,37 @@ class RegisterView(generics.GenericAPIView):
         password = request.data.get('password')
         username = request.data.get('username')
         user = User.objects.filter(email=email).first()
-        if user is None:
-            if serializer.is_valid():
-                subject = "Emailni tasdiqlash"
-                code = str(random.randint(100000, 1000000))
-                msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
-                to = request.data.get('email')
-                result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
-                if VerifyEmail.objects.filter(email=email).first():
-                    verify = VerifyEmail.objects.get(email=email)
-                    verify.delete()
-                if (result == 1):
-                    msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi "
-                    VerifyEmail.objects.create(email=email, code=code)
-                    User.objects.create_user(email=email, username=username, password=password)
-                    print(code)
-                else:
-                    return Response(
-                        {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
-                        status=status.HTTP_400_BAD_REQUEST)
-                return Response({
-                    "email": email,
-                    "username": username,
-                    "msg": msg1
-                }, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        registered = 1
+        if user and user.is_verified == False:
+            user.delete()
+            registered = 0
+        elif user is None:
+            registered = 0
+
+        if registered == 0 and serializer.is_valid():
+            subject = "Emailni tasdiqlash"
+            code = str(random.randint(100000, 1000000))
+            msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
+            to = request.data.get('email')
+            # result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
+            # if VerifyEmail.objects.filter(email=email).first():
+            #     verify = VerifyEmail.objects.get(email=email)
+            #     verify.delete()
+            # if (result == 1):
+            #     msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi."
+            #     VerifyEmail.objects.create(email=email, code=code)
+            User.objects.create_user(email=email, username=username, password=password)
+            print(code)
+            # else:
+            #     return Response(
+            #         {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
+            #         status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "email": email,
+                "username": username,
+                # "msg": msg1
+            }, status=status.HTTP_201_CREATED)
+            # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
                     "msg": "Ushbu email registratsiya qilingan"

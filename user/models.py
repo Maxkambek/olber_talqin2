@@ -38,8 +38,7 @@ class Cargo(models.Model):
         verbose_name_plural = "Jo'natmalar"
 
     STATUS_CHOICES = (
-        ('new', "Ko'rib chiqilmoqda"),
-        ('sent', "Yo'lda"),
+        ('new', "Yangi"),
         ('finished', "Yopilgan"),
     )
     TYPE_CHOICES = (
@@ -60,7 +59,7 @@ class Cargo(models.Model):
     to_floor = models.PositiveIntegerField()
     to_kv = models.PositiveIntegerField()
     to_persons = models.PositiveIntegerField()
-    time_when = models.CharField(max_length=55)#DateField()
+    time_when = models.DateField()
     description = models.TextField(verbose_name="Tafsilot")
     image1 = models.ImageField()
     image2 = models.ImageField(null=True, blank=True)
