@@ -326,7 +326,7 @@ class CargoAcceptView(generics.GenericAPIView):
                     user.works.append(item_id)
                     user.save()
                 cargo.doer = doer_id
-                cargo.offers.clear()
+                # cargo.offers.clear()
                 cargo.save()
                 return Response("Success", status=status.HTTP_200_OK)
             else:

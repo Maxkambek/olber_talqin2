@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path
 from .views import LoginView, UsersView, CargoCreateView, CargoListView, CarCreateView, RegisterView, VerifyView, \
     CargoDetailView, UserDetailView, CargoUDView, UserItemsView, LogoutView, DeleteAccountView,\
     OfferView, ChangePasswordView, ResetPasswordView, ConfirmResetPasswordView, CargoAcceptView
@@ -14,7 +14,7 @@ urlpatterns = [
     path('changepassword', ChangePasswordView.as_view()),
     path('reset', ResetPasswordView.as_view()),
     path('confirm', ConfirmResetPasswordView.as_view()),
-    path('accept', CargoAcceptView.as_view()),
+
 
     path('detail/<int:pk>', UserDetailView.as_view()),
     path('cargo', CargoCreateView.as_view()),
@@ -23,4 +23,6 @@ urlpatterns = [
     path('cargo/list', CargoListView.as_view()),
     path('car', CarCreateView.as_view()),
     path('offer/<int:pk>', OfferView.as_view()),
+    path('accept', CargoAcceptView.as_view()),
+
 ]
