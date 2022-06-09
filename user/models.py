@@ -98,13 +98,3 @@ class VerifyEmail(models.Model):
 
     email = models.CharField(max_length=100, verbose_name="Email")
     code = models.CharField(max_length=10, verbose_name="Kod")
-
-
-class TestModel(models.Model):
-    class Meta:
-        verbose_name = "Test uchun"
-        verbose_name_plural = "Test uchun"
-        db_table = "test"
-
-    title = models.CharField(max_length=100, unique=False)
-    image = models.ImageField()

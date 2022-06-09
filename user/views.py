@@ -7,11 +7,11 @@ from rest_framework import generics, status, authentication, permissions, filter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import User, Cargo, Car, VerifyEmail, TestModel
+from .models import User, Cargo, Car, VerifyEmail
 from django.db.models import Max
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
     RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
-    TestSerializer, UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer
+    UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -333,13 +333,3 @@ class CargoAcceptView(generics.GenericAPIView):
                 return Response("User not owner", status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class TestCreateListView(generics.ListCreateAPIView):
-    serializer_class = TestSerializer
-    queryset = TestModel.objects.all()
-
-
-class TestDetailView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = TestSerializer
-    queryset = TestModel.objects.all()
