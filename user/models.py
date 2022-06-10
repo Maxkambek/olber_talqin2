@@ -25,6 +25,7 @@ class User(AbstractUser):
     point = models.FloatField(verbose_name="Umumiy ball", default=0)
     count = models.IntegerField(verbose_name="Ishlar soni", default=1)
     works = ArrayField(models.CharField(max_length=50), null=True, blank=True)
+    status = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.rating = (self.point)/(self.count)

@@ -24,6 +24,7 @@ class CargoSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(read_only=True, source="user.username")
     user_rating = serializers.CharField(read_only=True, source="user.rating")
     user_image = serializers.CharField(read_only=True, source="user.image")
+
     class Meta:
         model = Cargo
         fields = (
@@ -52,7 +53,7 @@ class CargoSerializer(serializers.ModelSerializer):
             'user_name',
             'user_rating',
             'user_image'
-                  )
+        )
 
 
 class CargoCreateSerializer(serializers.ModelSerializer):
@@ -79,7 +80,6 @@ class CargoCreateSerializer(serializers.ModelSerializer):
             'image3',
             'image4'
         )
-
 
 
 class CargoListSerializer(serializers.ModelSerializer):
