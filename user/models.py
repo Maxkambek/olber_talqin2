@@ -86,8 +86,8 @@ class Car(models.Model):
     )
     user = models.ForeignKey(User, verbose_name="Haydovchi", on_delete=models.CASCADE)
     car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES)
-    drive_doc = models.CharField(max_length=50, verbose_name="Guvohnoma")
-    tech_inspect = models.CharField(max_length=50, verbose_name="Texnik passport")
+    drive_doc = models.ImageField(verbose_name="Guvohnoma")
+    tech_inspect = models.ImageField(verbose_name="Texnik passport")
 
 
 class VerifyEmail(models.Model):
