@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import User, Cargo, VerifyEmail
+from .models import User, Cargo, VerifyEmail, Car
+
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email')
@@ -14,6 +15,12 @@ class VerifEmailAdmin(admin.ModelAdmin):
     list_display = ('email', 'code')
 
 
+class CarAdmin(admin.ModelAdmin):
+    list_display = ('user', 'car_type', 'drive_doc', 'tech_inspect')
+
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Cargo, CargoAdmin)
+admin.site.register(Car, CarAdmin)
 admin.site.register(VerifyEmail, VerifEmailAdmin)
