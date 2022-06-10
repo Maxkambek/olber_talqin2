@@ -85,6 +85,7 @@ class VerifyView(generics.GenericAPIView):
 
 
 class LoginView(generics.GenericAPIView):
+
     serializer_class = LoginSerializer
     permission_classes = (AllowAny,)
 
@@ -110,6 +111,7 @@ class LoginView(generics.GenericAPIView):
 
 
 class LogoutView(generics.GenericAPIView):
+
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -125,6 +127,7 @@ class LogoutView(generics.GenericAPIView):
 
 
 class DeleteAccountView(generics.GenericAPIView):
+
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserSerializer
@@ -144,9 +147,7 @@ class DeleteAccountView(generics.GenericAPIView):
 
 
 class ChangePasswordView(generics.UpdateAPIView):
-    """
-    Change user password
-    """
+
     serializer_class = ChangePasswordSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
