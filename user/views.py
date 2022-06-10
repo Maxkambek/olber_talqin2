@@ -60,6 +60,7 @@ class RegisterView(generics.GenericAPIView):
                     "msg": "Ushbu email registratsiya qilingan"
                 }, status=status.HTTP_409_CONFLICT)
 
+
 class VerifyView(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
@@ -149,7 +150,6 @@ class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
-
 
     def post(self, request):
         user = request.user
@@ -310,9 +310,13 @@ class OfferView(generics.GenericAPIView):
     def post(self, request, pk=None):
         cargo = Cargo.objects.get(id=pk)
         user = request.user
-        cargo.offers.add(*[user.id,])
-        cargo.save()
-        return Response(f"Offer belgilandi {cargo.title} uchun")
+
+        if not cargo.offers.filter(id=user.id).exists():
+            cargo.offers.add(*[user.id, ])
+            cargo.save()
+            return Response(f"Offer belgilandi {cargo.title} uchun", status=status.HTTP_200_OK)
+        else:
+            return Response("Offer yozilib bo'lingan", status=status.HTTP_400_BAD_REQUEST)
 
 
 class CargoAcceptView(generics.GenericAPIView):
