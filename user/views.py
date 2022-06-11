@@ -21,52 +21,44 @@ class RegisterView(generics.GenericAPIView):
     @staticmethod
     def post(request):
         serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            email = request.data.get('email')
-            password = request.data.get('password')
-            username = request.data.get('username')
-            user = User.objects.filter(email=email).first()
-            registered = ''
-            if user is None:
-                registered = 1
+        email = request.data.get('email')
+        password = request.data.get('password')
+        username = request.data.get('username')
+        user = User.objects.filter(email=email).first()
+        registered = 1
+        if user and user.is_verified == True:
+            return Response({
+                "msg": "Ushbu email registratsiya qilingan"
+            }, status=status.HTTP_409_CONFLICT)
+        elif user is None:
+            registered = 0
+        else:
+            user.delete()
+            registered = 0
 
-            elif user and user.is_verified == True:
-                return Response({
-                    "msg": "Ushbu email registratsiya qilingan"
-                }, status=status.HTTP_409_CONFLICT)
-
-            else:
-                user.delete()
-                registered = 1
-
-            if registered == 1:
-                subject = "Emailni tasdiqlash"
-                code = str(random.randint(100000, 1000000))
-                msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
-                to = request.data.get('email')
-                # result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
-                # if VerifyEmail.objects.filter(email=email).first():
-                #     verify = VerifyEmail.objects.get(email=email)
-                #     verify.delete()
-                # if (result == 1):
-                #     msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi."
-                VerifyEmail.objects.create(email=email, code=code)
-                User.objects.create_user(email=email, username=username, password=password)
-                print(code)
-                # else:
-                #     return Response(
-                #         {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
-                #         status=status.HTTP_400_BAD_REQUEST)
-                return Response({
-                    "email": email,
-                    "username": username,
-                    # "msg": msg1
-                }, status=status.HTTP_201_CREATED)
-
-            else:
-                return Response({
-                    "msg": "Xatolik sodir bo'ldi",
-                }, status=status.HTTP_400_BAD_REQUEST)
+        if registered == 0 and serializer.is_valid():
+            subject = "Emailni tasdiqlash"
+            code = str(random.randint(100000, 1000000))
+            msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
+            to = request.data.get('email')
+            # result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
+            # if VerifyEmail.objects.filter(email=email).first():
+            #     verify = VerifyEmail.objects.get(email=email)
+            #     verify.delete()
+            # if (result == 1):
+            #     msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi."
+            VerifyEmail.objects.create(email=email, code=code)
+            User.objects.create_user(email=email, username=username, password=password)
+            print(code)
+            # else:
+            #     return Response(
+            #         {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
+            #         status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "email": email,
+                "username": username,
+                # "msg": msg1
+            }, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
