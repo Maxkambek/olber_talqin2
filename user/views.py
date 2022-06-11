@@ -29,7 +29,7 @@ class RegisterView(generics.GenericAPIView):
         if user and user.is_verified == False:
             user.delete()
             registered = 0
-        elif user is None:
+        if user is None:
             registered = 0
 
         if registered == 0 and serializer.is_valid():
