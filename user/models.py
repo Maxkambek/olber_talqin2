@@ -11,6 +11,11 @@ class User(AbstractUser):
         ("worker", "Ishchi"),
         ("driver", "Haydovchi")
     )
+    CAR_TYPES = (
+        ('1', "Kichik"),
+        ('2', "O'rta"),
+        ('3', "Katta"),
+    )
 
     class Meta:
         verbose_name = "Foydalanuvchi"
@@ -26,6 +31,10 @@ class User(AbstractUser):
     count = models.IntegerField(verbose_name="Ishlar soni", default=1)
     works = ArrayField(models.CharField(max_length=50), null=True, blank=True)
     status = models.BooleanField(default=False)
+    car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES, default="1")
+    drive_doc = models.ImageField(verbose_name="Guvohnoma", null=True, blank=True)
+    car_image_1 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
+    car_image_2 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.rating = (self.point)/(self.count)
@@ -76,18 +85,6 @@ class Cargo(models.Model):
         self.distance = calc_distance(self.from_address, self.to_address)
         self.distance = round(self.distance, 2)
         super(Cargo, self).save(*args, **kwargs)
-
-
-class Car(models.Model):
-    CAR_TYPES = (
-        ('1', "Kichik"),
-        ('2', "O'rta"),
-        ('3', "Katta"),
-    )
-    user = models.ForeignKey(User, verbose_name="Haydovchi", on_delete=models.CASCADE)
-    car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES)
-    drive_doc = models.ImageField(verbose_name="Guvohnoma")
-    tech_inspect = models.ImageField(verbose_name="Texnik passport")
 
 
 class VerifyEmail(models.Model):

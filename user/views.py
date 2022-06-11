@@ -7,10 +7,10 @@ from rest_framework import generics, status, authentication, permissions, filter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import User, Cargo, Car, VerifyEmail
+from .models import User, Cargo, VerifyEmail
 from django.db.models import Max
-from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, CarSerializer, \
-    RegisterSerializer, VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
+from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, RegisterSerializer,\
+    VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
     UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer
 
 
@@ -291,11 +291,6 @@ class CargoListView(generics.ListAPIView):
 class CargoDetailView(generics.RetrieveAPIView):
     serializer_class = CargoSerializer
     queryset = Cargo.objects.all()
-
-
-class CarCreateView(generics.CreateAPIView):
-    serializer_class = CarSerializer
-    queryset = Car.objects.all()
 
 
 class CargoUDView(generics.RetrieveUpdateDestroyAPIView):
