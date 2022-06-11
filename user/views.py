@@ -4,6 +4,7 @@ from django.contrib import auth
 from django.core.mail import send_mail
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, authentication, permissions, filters
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -225,6 +226,7 @@ class UserItemsView(generics.ListAPIView):
     queryset = Cargo.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status']
+    pagination_class = None
 
     def get_queryset(self):
         user = User.objects.get(id=self.kwargs['pk'])
@@ -262,6 +264,7 @@ class CargoListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'cargo_type']
     ordering_fields = ['price', 'distance', 'weight']
+    pagination_class = PageNumberPagination
     def get_queryset(self):
         p_min = self.request.GET.get('p_min')
         p_max = self.request.GET.get('p_max')
