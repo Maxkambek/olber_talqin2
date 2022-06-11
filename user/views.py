@@ -240,20 +240,23 @@ class UserTypeView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = UserTypeSerializer(data=request.data)
+        try:
+            if serializer.is_valid():
+                email = serializer.data.get('email')
+                user_type = serializer.data.get('user_type')
+                user = User.objects.get(email=email)
+                user.user_type = user_type
+                user.save()
 
-        if serializer.is_valid():
-            email = serializer.data.get('email')
-            user_type = serializer.data.get('user_type')
-            user = User.objects.get(email=email)
-            user.user_type = user_type
-            user.save()
-
+                return Response({
+                        'msg': "User type changed",
+                    }, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except:
             return Response({
-                    'msg': "User type changed",
-                }, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+                        'msg': "User not found",
+                    }, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
