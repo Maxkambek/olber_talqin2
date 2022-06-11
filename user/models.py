@@ -12,9 +12,11 @@ class User(AbstractUser):
         ("driver", "Haydovchi")
     )
     CAR_TYPES = (
-        ('1', "Kichik"),
-        ('2', "O'rta"),
-        ('3', "Katta"),
+        ('S', "S"),
+        ('M', "M"),
+        ('L', "L"),
+        ('XL', "XL"),
+        ('XXL', "XXL"),
     )
 
     class Meta:
@@ -31,7 +33,7 @@ class User(AbstractUser):
     count = models.IntegerField(verbose_name="Ishlar soni", default=1)
     works = ArrayField(models.CharField(max_length=50), null=True, blank=True)
     status = models.BooleanField(default=False)
-    car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES, default="1")
+    car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES, default="S")
     drive_doc = models.ImageField(verbose_name="Guvohnoma", null=True, blank=True)
     car_image_1 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
     car_image_2 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
