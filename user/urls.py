@@ -1,11 +1,12 @@
 from django.urls import path
-from .views import LoginView, UsersView, CargoCreateView, CargoListView, RegisterView, VerifyView,\
-    CargoDetailView, UserDetailView, CargoUDView, UserItemsView, LogoutView, DeleteAccountView,\
-    OfferView, ChangePasswordView, ResetPasswordView, ConfirmResetPasswordView, CargoAcceptView
+from .views import LoginView, UsersView, CargoCreateView, CargoListView, RegisterView, VerifyView, \
+    CargoDetailView, UserDetailView, CargoUDView, UserItemsView, LogoutView, DeleteAccountView, \
+    OfferView, ChangePasswordView, ResetPasswordView, ConfirmResetPasswordView, CargoAcceptView, UserTypeView
 
 urlpatterns = [
     path('register/', RegisterView.as_view()),
     path('verify', VerifyView.as_view()),
+    path('type', UserTypeView.as_view()),
     path('login', LoginView.as_view()),
     path('logout', LogoutView.as_view()),
     path('delete', DeleteAccountView.as_view()),

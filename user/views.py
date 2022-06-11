@@ -10,9 +10,9 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .models import User, Cargo, VerifyEmail
 from django.db.models import Max
-from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, RegisterSerializer,\
+from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, RegisterSerializer, \
     VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
-    UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer
+    UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer, UserTypeSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -233,6 +233,26 @@ class UserItemsView(generics.ListAPIView):
         if user:
             print(user)
             return user.items.all()
+
+
+class UserTypeView(generics.GenericAPIView):
+    serializer_class = UserTypeSerializer
+
+    def post(self, request):
+        serializer = UserTypeSerializer(data=request.data)
+
+        if serializer.is_valid():
+            email = serializer.data.get('email')
+            user_type = serializer.data.get('user_type')
+            user = User.objects.get(email=email)
+            user.user_type = user_type
+            user.save()
+
+            return Response({
+                    'msg': "User type changed",
+                }, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserDetailView(generics.RetrieveUpdateAPIView):
