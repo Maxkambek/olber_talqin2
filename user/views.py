@@ -43,7 +43,7 @@ class RegisterView(generics.GenericAPIView):
             #     verify.delete()
             # if (result == 1):
             #     msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi."
-            #     VerifyEmail.objects.create(email=email, code=code)
+            VerifyEmail.objects.create(email=email, code=code)
             User.objects.create_user(email=email, username=username, password=password)
             print(code)
             # else:
