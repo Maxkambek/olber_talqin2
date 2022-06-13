@@ -85,7 +85,7 @@ class CargoCreateSerializer(serializers.ModelSerializer):
 class CargoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cargo
-        fields = ('id', 'user', 'title', 'weight', 'price', 'cargo_type', 'status', 'time_when', 'image1', 'distance')
+        fields = ('id', 'user', 'title', 'weight', 'price', 'cargo_type', 'status', 'time_when', 'image1', 'distance', 'created')
 
 
 class CargoAcceptSerializer(serializers.ModelSerializer):

@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .models import User, Cargo, VerifyEmail
-from django.db.models import Max
+from .pagination import CustomPagination
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, RegisterSerializer, \
     VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
     UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer, UserTypeSerializer
@@ -49,7 +49,7 @@ class RegisterView(generics.GenericAPIView):
             #     msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi."
             VerifyEmail.objects.create(email=email, code=code)
             User.objects.create_user(email=email, username=username, password=password)
-            print(code)
+            # print(code)
             # else:
             #     return Response(
             #         {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
@@ -287,8 +287,8 @@ class CargoListView(generics.ListAPIView):
     queryset = Cargo.objects.all()
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'cargo_type']
-    ordering_fields = ['price', 'distance', 'weight']
-    pagination_class = PageNumberPagination
+    ordering = '-created'
+    pagination_class = CustomPagination
     def get_queryset(self):
         p_min = self.request.GET.get('p_min')
         p_max = self.request.GET.get('p_max')
