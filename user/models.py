@@ -37,6 +37,8 @@ class User(AbstractUser):
     drive_doc = models.ImageField(verbose_name="Guvohnoma", null=True, blank=True)
     car_image_1 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
     car_image_2 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
+    account = models.CharField(max_length=50, null=True, blank=True)
+    money = models.PositiveIntegerField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.rating = (self.point)/(self.count)

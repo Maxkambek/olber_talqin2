@@ -12,7 +12,7 @@ from .models import User, Cargo, VerifyEmail
 from .pagination import CustomPagination
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, RegisterSerializer, \
     VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
-    UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer, UserTypeSerializer
+    UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer, UserTypeSerializer, UserAccountSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -41,19 +41,19 @@ class RegisterView(generics.GenericAPIView):
             code = str(random.randint(100000, 1000000))
             msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
             to = request.data.get('email')
-            # result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
-            # if VerifyEmail.objects.filter(email=email).first():
-            #     verify = VerifyEmail.objects.get(email=email)
-            #     verify.delete()
-            # if (result == 1):
-            #     msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi."
-            VerifyEmail.objects.create(email=email, code=code)
-            User.objects.create_user(email=email, username=username, password=password)
-            # print(code)
-            # else:
-            #     return Response(
-            #         {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
-            #         status=status.HTTP_400_BAD_REQUEST)
+            result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
+            if VerifyEmail.objects.filter(email=email).first():
+                verify = VerifyEmail.objects.get(email=email)
+                verify.delete()
+            if (result == 1):
+                msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi."
+                VerifyEmail.objects.create(email=email, code=code)
+                User.objects.create_user(email=email, username=username, password=password)
+                print(code)
+            else:
+                return Response(
+                    {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
+                    status=status.HTTP_400_BAD_REQUEST)
             return Response({
                 "email": email,
                 "username": username,
@@ -287,7 +287,7 @@ class CargoListView(generics.ListAPIView):
     queryset = Cargo.objects.all()
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'cargo_type']
-    ordering = '-created'
+    ordering = '-created '
     pagination_class = CustomPagination
     def get_queryset(self):
         p_min = self.request.GET.get('p_min')
@@ -366,3 +366,20 @@ class CargoAcceptView(generics.GenericAPIView):
                 return Response("User not owner", status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserAccountView(generics.GenericAPIView):
+    serializer_class = UserAccountSerializer
+    authentication_classes = [authentication.TokenAuthentication, ]
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            'status': 'Success',
+            'username': user.username,
+            'image': user.image.url,
+            'account': user.account,
+            'money': user.money
+
+        }, status=status.HTTP_200_OK)

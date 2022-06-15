@@ -163,3 +163,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'car_image_1',
             'car_image_2'
             )
+
+
+class UserAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+
+        fields = ('username', 'image', 'account', 'money')
