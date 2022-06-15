@@ -23,7 +23,7 @@ class LoginSerializer(serializers.ModelSerializer):
 class CargoSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(read_only=True, source="user.username")
     user_rating = serializers.CharField(read_only=True, source="user.rating")
-    user_image = serializers.CharField(read_only=True, source="user.image.url")
+    user_image = serializers.ImageField(read_only=True, source="user.image")
 
     class Meta:
         model = Cargo
