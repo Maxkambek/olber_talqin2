@@ -287,7 +287,7 @@ class CargoListView(generics.ListAPIView):
     queryset = Cargo.objects.all()
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'cargo_type']
-    ordering = '-created '
+    ordering = '-created'
     pagination_class = CustomPagination
     def get_queryset(self):
         p_min = self.request.GET.get('p_min')
