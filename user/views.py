@@ -289,6 +289,7 @@ class CargoListView(generics.ListAPIView):
     filterset_fields = ['status', 'cargo_type']
     ordering = '-id'
     pagination_class = CustomPagination
+
     def get_queryset(self):
         p_min = self.request.GET.get('p_min')
         p_max = self.request.GET.get('p_max')
@@ -314,6 +315,7 @@ class CargoListView(generics.ListAPIView):
         else:
             items = Cargo.objects.all().order_by('-id')
         return items
+
 
 class CargoDetailView(generics.RetrieveAPIView):
     serializer_class = CargoSerializer
