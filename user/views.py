@@ -12,7 +12,8 @@ from .models import User, Cargo, VerifyEmail
 from .pagination import CustomPagination
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, RegisterSerializer, \
     VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
-    UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer, UserTypeSerializer, UserAccountSerializer
+    UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer, UserTypeSerializer, UserAccountSerializer, \
+    UserPointSerializer
 
 
 class RegisterView(generics.GenericAPIView):
@@ -265,16 +266,16 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
 
 
 class AddPointView(generics.GenericAPIView):
-    serializer_class = UserProfileSerializer
+    serializer_class = UserPointSerializer
     def post(self, request):
-        rating = request.data.get('rating')
+        point = request.data.get('point')
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
-        user.point += rating
+        user.point += int(point)
         user.count += 1
         user.rating = user.point/user.count
         user.save()
-        return Response(f"{rating} ball qo'yildi")
+        return Response(f"{point} ball qo'yildi")
 
 
 class CargoCreateView(generics.CreateAPIView):

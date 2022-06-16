@@ -168,5 +168,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-
         fields = ('username', 'image', 'account', 'money')
+
+
+class UserPointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('rating',)
