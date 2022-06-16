@@ -158,6 +158,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'telegram',
             'image',
             'rating',
+            'user_type',
             'car_type',
             'drive_doc',
             'car_image_1',
