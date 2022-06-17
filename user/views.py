@@ -340,9 +340,13 @@ class OfferView(generics.GenericAPIView):
         if not cargo.offers.filter(id=user.id).exists():
             cargo.offers.add(*[user.id, ])
             cargo.save()
-            return Response(f"Offer belgilandi {cargo.title} uchun", status=status.HTTP_200_OK)
+            return Response({
+                'msg': f"Offer belgilandi {cargo.title} uchun"
+            }, status=status.HTTP_200_OK)
         else:
-            return Response("Offer yozilib bo'lingan", status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                'msg': "Offer yozilib bo'lingan"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CargoAcceptView(generics.GenericAPIView):
