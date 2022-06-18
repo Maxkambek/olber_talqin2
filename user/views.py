@@ -218,11 +218,6 @@ class ConfirmResetPasswordView(generics.GenericAPIView):
             return Response("Code invalid", status=status.HTTP_400_BAD_REQUEST)
 
 
-class UsersView(generics.ListAPIView):
-    serializer_class = UserListSerializer
-    queryset = User.objects.all()
-
-
 class UserItemsView(generics.ListAPIView):
     serializer_class = CargoListSerializer
     queryset = Cargo.objects.all()

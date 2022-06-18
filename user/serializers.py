@@ -93,7 +93,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'image')
+        fields = ('id', 'username', 'image', 'date_joined')
 
 
 class CargoSerializer(serializers.ModelSerializer):

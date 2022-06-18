@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, UsersView, CargoCreateView, CargoListView, RegisterView, VerifyView, \
+from .views import LoginView, CargoCreateView, CargoListView, RegisterView, VerifyView, \
     CargoDetailView, UserDetailView, CargoUDView, UserItemsView, LogoutView, DeleteAccountView, \
     OfferView, ChangePasswordView, ResetPasswordView, ConfirmResetPasswordView, CargoAcceptView, UserTypeView, \
     UserAccountView, AddPointView
@@ -11,7 +11,6 @@ urlpatterns = [
     path('login', LoginView.as_view()),
     path('logout', LogoutView.as_view()),
     path('delete', DeleteAccountView.as_view()),
-    path('list', UsersView.as_view()),
     path('items/<int:pk>', UserItemsView.as_view()),
     path('changepassword', ChangePasswordView.as_view()),
     path('reset', ResetPasswordView.as_view()),
