@@ -2,10 +2,10 @@ import math
 
 
 def calc_distance(address1, address2):
-    lat1 = float(address1.split()[0])
-    lon1 = float(address1.split()[1])
-    lat2 = float(address2.split()[0])
-    lon2 = float(address2.split()[1])
+    lat1 = float(address1.split(",")[0])
+    lon1 = float(address1.split(",")[1])
+    lat2 = float(address2.split(",")[0])
+    lon2 = float(address2.split(",")[1])
     R = 6371000
     phi_1 = math.radians(lat1)
     phi_2 = math.radians(lat2)
