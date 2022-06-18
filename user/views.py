@@ -338,7 +338,7 @@ class OfferView(generics.GenericAPIView):
         user = request.user
 
         if not cargo.offers.filter(id=user.id).exists():
-            cargo.offers.add(*[user.id, ])
+            cargo.offers.add(*[user, ])
             cargo.save()
             return Response({
                 'msg': f"Offer belgilandi {cargo.title} uchun"

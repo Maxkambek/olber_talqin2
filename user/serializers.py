@@ -20,42 +20,6 @@ class LoginSerializer(serializers.ModelSerializer):
         fields = ('email', 'password')
 
 
-class CargoSerializer(serializers.ModelSerializer):
-    user_name = serializers.CharField(read_only=True, source="user.username")
-    user_rating = serializers.CharField(read_only=True, source="user.rating")
-    user_image = serializers.ImageField(read_only=True, source="user.image")
-
-    class Meta:
-        model = Cargo
-        fields = (
-            'id',
-            'user',
-            'title',
-            'price',
-            'weight',
-            'from_address',
-            'from_floor',
-            'from_kv',
-            'from_persons',
-            'to_address',
-            'to_floor',
-            'to_kv',
-            'to_persons',
-            'time_when',
-            'description',
-            'cargo_type',
-            'distance',
-            'offers',
-            'image1',
-            'image2',
-            'image3',
-            'image4',
-            'user_name',
-            'user_rating',
-            'user_image'
-        )
-
-
 class CargoCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cargo
@@ -129,7 +93,43 @@ class UserSerializer(serializers.ModelSerializer):
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'username', 'date_joined', 'phone')
+        fields = ('id', 'username', 'image')
+
+
+class CargoSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(read_only=True, source="user.username")
+    user_rating = serializers.CharField(read_only=True, source="user.rating")
+    user_image = serializers.ImageField(read_only=True, source="user.image")
+    offers = UserListSerializer(read_only=True, many=True)
+    class Meta:
+        model = Cargo
+        fields = (
+            'id',
+            'user',
+            'title',
+            'price',
+            'weight',
+            'from_address',
+            'from_floor',
+            'from_kv',
+            'from_persons',
+            'to_address',
+            'to_floor',
+            'to_kv',
+            'to_persons',
+            'time_when',
+            'description',
+            'cargo_type',
+            'distance',
+            'offers',
+            'image1',
+            'image2',
+            'image3',
+            'image4',
+            'user_name',
+            'user_rating',
+            'user_image'
+        )
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
