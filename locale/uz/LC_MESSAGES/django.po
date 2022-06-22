@@ -1,0 +1,67 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-20 16:05+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\config\settings.py:141
+msgid "Uzbek"
+msgstr "O'zbek"
+
+#: .\config\settings.py:142
+msgid "English"
+msgstr "Ingliz"
+
+#: .\config\settings.py:143
+msgid "Russian"
+msgstr "Rus"
+
+#: .\config\urls.py:28
+msgid "OlBer Administration"
+msgstr "Olber adminstratsiyasi"
+
+#: .\user\apps.py:8
+msgid "User"
+msgstr ""
+
+#: .\user\models.py:24
+msgid "Foydalanuvchi"
+msgstr "Foydalanuvchi"
+
+#: .\user\models.py:25
+msgid "Foydalanuvchilar"
+msgstr "Foydalanuvchilar"
+
+#: .\user\models.py:52
+msgid "Jo'natma"
+msgstr "Jo'natma"
+
+#: .\user\models.py:53
+msgid "Jo'natmalar"
+msgstr "Jo'natmalar"
+
+#: .\user\models.py:66
+msgid "Title"
+msgstr "Sarlavha"
+
+#: .\user\models.py:67
+msgid "Price"
+msgstr "Narx"
+
+#: .\user\models.py:98 .\user\models.py:99
+msgid "Email tasdiqlash"
+msgstr "Email tasdiqlash"

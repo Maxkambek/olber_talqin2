@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.postgres.fields import ArrayField
 from user.calculation import calc_distance
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
@@ -20,8 +21,8 @@ class User(AbstractUser):
     )
 
     class Meta:
-        verbose_name = "Foydalanuvchi"
-        verbose_name_plural = "Foydalanuvchilar"
+        verbose_name = _("Foydalanuvchi")
+        verbose_name_plural = _("Foydalanuvchilar")
 
     is_verified = models.BooleanField(default=False)
     image = models.ImageField(null=True, blank=True)
@@ -48,8 +49,8 @@ class User(AbstractUser):
 
 class Cargo(models.Model):
     class Meta:
-        verbose_name = "Jo'natma"
-        verbose_name_plural = "Jo'natmalar"
+        verbose_name = _("Jo'natma")
+        verbose_name_plural = _("Jo'natmalar")
 
     STATUS_CHOICES = (
         ('new', "Yangi"),
@@ -62,8 +63,8 @@ class Cargo(models.Model):
         ('ice_car', "Sovutgich"),
     )
     user = models.ForeignKey(User, verbose_name="Foydalanuvchi", on_delete=models.CASCADE, related_name="items")
-    title = models.CharField(max_length=150)
-    price = models.PositiveIntegerField()
+    title = models.CharField(max_length=150, verbose_name=_('Title'))
+    price = models.PositiveIntegerField(verbose_name=_('Price'))
     weight = models.PositiveIntegerField()
     from_address = models.CharField(max_length=255)
     from_floor = models.PositiveIntegerField()
@@ -94,8 +95,8 @@ class Cargo(models.Model):
 
 class VerifyEmail(models.Model):
     class Meta:
-        verbose_name = "Email tasdiqlash"
-        verbose_name_plural = "Email tasdiqlash"
+        verbose_name = _("Email tasdiqlash")
+        verbose_name_plural = _("Email tasdiqlash")
 
     email = models.CharField(max_length=100, verbose_name="Email")
     code = models.CharField(max_length=10, verbose_name="Kod")

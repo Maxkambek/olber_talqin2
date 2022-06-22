@@ -1,18 +1,20 @@
+import os
 import random
 from django.conf import settings
 from django.contrib import auth
 from django.core.mail import send_mail
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, authentication, permissions, filters
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+
+from config.settings import BASE_DIR
 from .models import User, Cargo, VerifyEmail
 from .pagination import CustomPagination
 from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, RegisterSerializer, \
-    VerifySerializer, UserListSerializer, UserProfileSerializer, CargoCreateSerializer, \
-    UserSerializer, ChangePasswordSerializer, CargoAcceptSerializer, UserTypeSerializer, UserAccountSerializer, \
+    VerifySerializer, UserProfileSerializer, CargoCreateSerializer, UserSerializer, ChangePasswordSerializer,\
+    CargoAcceptSerializer, UserTypeSerializer, UserAccountSerializer,\
     UserPointSerializer
 
 
@@ -255,6 +257,7 @@ class UserTypeView(generics.GenericAPIView):
                         'msg': "User not found",
                     }, status=status.HTTP_400_BAD_REQUEST)
 
+
 class UserDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
@@ -262,6 +265,7 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
 
 class AddPointView(generics.GenericAPIView):
     serializer_class = UserPointSerializer
+
     def post(self, request):
         point = request.data.get('point')
         user_id = request.data.get('user_id')
@@ -281,10 +285,13 @@ class CargoCreateView(generics.CreateAPIView):
 class CargoListView(generics.ListAPIView):
     serializer_class = CargoListSerializer
     queryset = Cargo.objects.all()
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['status', 'cargo_type']
+    search_fields = ['title', 'description']
     ordering = '-id'
     pagination_class = CustomPagination
+    # authentication_classes = (authentication.TokenAuthentication,)
+    # permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         p_min = self.request.GET.get('p_min')
@@ -310,7 +317,7 @@ class CargoListView(generics.ListAPIView):
             items = Cargo.objects.filter(price__range=(p_min, p_max), distance__range=(d_min, d_max), weight__range=(w_min, w_max),).order_by('-id')
         else:
             items = Cargo.objects.all().order_by('-id')
-        return items
+        return items#.exclude(user=self.request.user)
 
 
 class CargoDetailView(generics.RetrieveAPIView):
@@ -380,7 +387,7 @@ class UserAccountView(generics.GenericAPIView):
         return Response({
             'status': 'Success',
             'username': user.username,
-            'image': user.image.url,
+            'image': os.path.join(BASE_DIR, user.image.url),
             'account': user.account,
             'money': user.money
 
