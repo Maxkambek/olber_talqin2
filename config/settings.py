@@ -151,8 +151,6 @@ MULTILINGUAL_LANGUAGES = (
     "uz-Uz",
 )
 
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
-
 LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
 TIME_ZONE = 'Asia/Tashkent'
