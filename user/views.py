@@ -320,7 +320,7 @@ class CargoListView(generics.ListAPIView):
         return items#.exclude(user=self.request.user)
 
 
-class CargoDetailView(generics.RetrieveAPIView):
+class CargoDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = CargoSerializer
     queryset = Cargo.objects.all()
 
