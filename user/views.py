@@ -387,7 +387,7 @@ class UserAccountView(generics.GenericAPIView):
         return Response({
             'status': 'Success',
             'username': user.username,
-            'image': os.path.join(BASE_DIR, user.image.url),
+            'image': user.image.url,
             'account': user.account,
             'money': user.money
 
