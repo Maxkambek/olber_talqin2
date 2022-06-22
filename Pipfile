@@ -9,7 +9,6 @@ django-allauth = "*"
 django-rest-email-auth = "*"
 whitenoise = "*"
 django-cors-headers = "*"
-django-modeltranslation = '*'
 gunicorn = "*"
 pillow = "*"
 django-filter = "*"
@@ -17,6 +16,7 @@ environs = "*"
 dj-database-url = "*"
 psycopg2 = "*"
 drf-yasg = "*"
+django-modeltranslation = "*"
 
 [dev-packages]
 
