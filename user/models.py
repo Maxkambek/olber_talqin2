@@ -86,7 +86,7 @@ class Cargo(models.Model):
     offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
     doer = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
-
+    parent_id = models.PositiveIntegerField(1)
     def save(self, *args, **kwargs):
         self.distance = calc_distance(self.from_address, self.to_address)
         self.distance = round(self.distance, 2)
