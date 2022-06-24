@@ -361,7 +361,7 @@ class CargoAcceptView(generics.GenericAPIView):
         if serializer.is_valid():
             item_id = request.data.get("id")
             doer_id = request.data.get("doer")
-            cargo = Cargo.objects.get(id=item_id)
+            cargo = Cargo.objects.filter(id=item_id).first()
             if cargo.user_id == user_id:
                 user = User.objects.get(id=doer_id)
                 if item_id not in user.works:
@@ -372,9 +372,12 @@ class CargoAcceptView(generics.GenericAPIView):
                 cargo.save()
                 return Response({
                     'msg': "Success"
+
                 }, status=status.HTTP_200_OK)
             else:
-                return Response("User not owner", status=status.HTTP_400_BAD_REQUEST)
+                return Response({
+                    'msg': "User not owner"
+                }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
