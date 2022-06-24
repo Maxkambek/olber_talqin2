@@ -122,6 +122,7 @@ class CargoSerializer(serializers.ModelSerializer):
             'cargo_type',
             'distance',
             'offers',
+            'doer',
             'image1',
             'image2',
             'image3',

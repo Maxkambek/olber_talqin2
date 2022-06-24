@@ -367,12 +367,15 @@ class CargoAcceptView(generics.GenericAPIView):
                 if item_id not in user.works:
                     user.works.append(item_id)
                     user.save()
+                if doer_id not in cargo.offers:
+                    return Response({
+                        'msg': ''
+                    })
                 cargo.doer = doer_id
                 cargo.status = 'finished'
                 cargo.save()
                 return Response({
                     'msg': "Success"
-
                 }, status=status.HTTP_200_OK)
             else:
                 return Response({
