@@ -54,6 +54,7 @@ class Cargo(models.Model):
 
     STATUS_CHOICES = (
         ('new', "Yangi"),
+        ('selected', "Tanlangan"),
         ('finished', "Yopilgan"),
     )
     TYPE_CHOICES = (
@@ -91,6 +92,15 @@ class Cargo(models.Model):
         self.distance = calc_distance(self.from_address, self.to_address)
         self.distance = round(self.distance, 2)
         super(Cargo, self).save(*args, **kwargs)
+
+
+# class Work(models.Model):
+#     STATUS_CHOICES = (
+#         ('new', "Yangi"),
+#         ('selected', "Tanlangan"),
+#         ('finished', "Yopilgan"),
+#     )
+#     user = models.ForeignKey(User, verbose_name="Ish beruvchi", on_delete=models.CASCADE)
 
 
 class VerifyEmail(models.Model):
