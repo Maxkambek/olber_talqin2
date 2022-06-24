@@ -369,8 +369,8 @@ class CargoAcceptView(generics.GenericAPIView):
                     user.save()
                 if doer_id not in cargo.offers:
                     return Response({
-                        'msg': ''
-                    })
+                        'msg': "Taklif bermagan odamlarni tanlab bo'lmaydi"
+                    }, status=status.HTTP_400_BAD_REQUEST)
                 cargo.doer = doer_id
                 cargo.status = 'finished'
                 cargo.save()
