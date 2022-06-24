@@ -370,7 +370,9 @@ class CargoAcceptView(generics.GenericAPIView):
                 cargo.doer = doer_id
                 cargo.status = 'finished'
                 cargo.save()
-                return Response("Success", status=status.HTTP_200_OK)
+                return Response({
+                    'msg': "Success"
+                }, status=status.HTTP_200_OK)
             else:
                 return Response("User not owner", status=status.HTTP_400_BAD_REQUEST)
         else:
