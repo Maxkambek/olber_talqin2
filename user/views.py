@@ -1,4 +1,3 @@
-import os
 import random
 from django.conf import settings
 from django.contrib import auth
@@ -9,7 +8,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from config.settings import BASE_DIR
 from .models import *
 from .pagination import CustomPagination
 from .serializers import *
@@ -422,6 +420,19 @@ class UserAccountView(generics.GenericAPIView):
             'money': user.money
 
         }, status=status.HTTP_200_OK)
+
+
+class UserWorksView(generics.ListAPIView):
+    serializer_class = CargoListSerializer
+    authentication_classes = [authentication.TokenAuthentication, ]
+    permission_classes = [permissions.IsAuthenticated, ]
+    pagination_class = None
+
+    def get_queryset(self):
+        user = self.request.user
+        works = Cargo.objects.filter(doer=user.id).order_by('-id')
+        print(works[0])
+        return works#Response({"works"}, status=status.HTTP_200_OK)
 
 
 class WorkView(generics.ListCreateAPIView):
