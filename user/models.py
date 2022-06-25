@@ -87,7 +87,7 @@ class Cargo(models.Model):
     cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOICES, default="disabled")
     distance = models.FloatField(null=True, blank=True)
     offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
-    doer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workes')
+    doer = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name='workes')
     created = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
