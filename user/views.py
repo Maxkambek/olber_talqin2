@@ -392,10 +392,9 @@ class CloseItemView(generics.GenericAPIView):
     authentication_classes = [authentication.TokenAuthentication, ]
     permission_classes = [permissions.IsAuthenticated, ]
 
-    def post(self, request):
-        item_id = request.data.get("id")
+    def post(self, request, pk=None):
+        cargo = Cargo.objects.get(id=pk)
         user = request.user
-        cargo = Cargo.objects.filter(id=item_id).first()
         if cargo.user_id == user.id:
             cargo.status = 'finished'
             cargo.save()
