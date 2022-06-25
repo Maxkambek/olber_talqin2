@@ -94,13 +94,20 @@ class Cargo(models.Model):
         super(Cargo, self).save(*args, **kwargs)
 
 
-# class Work(models.Model):
-#     STATUS_CHOICES = (
-#         ('new', "Yangi"),
-#         ('selected', "Tanlangan"),
-#         ('finished', "Yopilgan"),
-#     )
-#     user = models.ForeignKey(User, verbose_name="Ish beruvchi", on_delete=models.CASCADE)
+class Work(models.Model):
+    STATUS_CHOICES = (
+        ('new', "Yangi"),
+        ('selected', "Tanlangan"),
+        ('finished', "Yopilgan"),
+    )
+    user = models.ForeignKey(User, verbose_name="Ish beruvchi", on_delete=models.CASCADE)
+    title = models.CharField(max_length=150, verbose_name='Nomi')
+    price = models.PositiveIntegerField(verbose_name='Narxi')
+    image = models.ImageField()
+    address = models.CharField(max_length=150)
+    work_time = models.CharField(max_length=55)
+    description = models.TextField(verbose_name="Tafsilot")
+    status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='new')
 
 
 class VerifyEmail(models.Model):

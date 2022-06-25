@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Cargo, VerifyEmail
+from .models import User, Cargo, VerifyEmail, Work
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -177,3 +177,9 @@ class UserPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('rating',)
+
+
+class WorkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Work
+        fields = "__all__"

@@ -10,12 +10,9 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
 from config.settings import BASE_DIR
-from .models import User, Cargo, VerifyEmail
+from .models import *
 from .pagination import CustomPagination
-from .serializers import LoginSerializer, CargoSerializer, CargoListSerializer, RegisterSerializer, \
-    VerifySerializer, UserProfileSerializer, CargoCreateSerializer, UserSerializer, ChangePasswordSerializer,\
-    CargoAcceptSerializer, UserTypeSerializer, UserAccountSerializer,\
-    UserPointSerializer
+from .serializers import *
 
 
 class RegisterView(generics.GenericAPIView):
@@ -364,25 +361,51 @@ class CargoAcceptView(generics.GenericAPIView):
             cargo = Cargo.objects.filter(id=item_id).first()
             if cargo.user_id == user_id:
                 user = User.objects.get(id=doer_id)
-                if item_id not in user.works:
-                    user.works.append(item_id)
-                    user.save()
-                if doer_id not in cargo.offers:
+                check = cargo.offers.filter(id=doer_id).first()
+                if cargo.status == 'selected':
+                    return Response({
+                        'msg': "Bu zakaz band qilingan"
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                if not check:
                     return Response({
                         'msg': "Taklif bermagan odamlarni tanlab bo'lmaydi"
                     }, status=status.HTTP_400_BAD_REQUEST)
-                cargo.doer = doer_id
-                cargo.status = 'finished'
-                cargo.save()
-                return Response({
-                    'msg': "Success"
-                }, status=status.HTTP_200_OK)
+                else:
+                    cargo.doer = doer_id
+                    cargo.status = 'selected'
+                    user.works.append(item_id)
+                    user.save()
+                    cargo.save()
+                    return Response({
+                        'msg': "Success"
+                    }, status=status.HTTP_200_OK)
             else:
                 return Response({
                     'msg': "User not owner"
                 }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CloseItemView(generics.GenericAPIView):
+    serializer_class = CargoSerializer
+    authentication_classes = [authentication.TokenAuthentication, ]
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def post(self, request):
+        item_id = request.data.get("id")
+        user = request.user
+        cargo = Cargo.objects.filter(id=item_id).first()
+        if cargo.user_id == user.id:
+            cargo.status = 'finished'
+            cargo.save()
+            return Response({
+                'msg': "Cargo closed"
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                'msg': "User not owner"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserAccountView(generics.GenericAPIView):
@@ -400,3 +423,9 @@ class UserAccountView(generics.GenericAPIView):
             'money': user.money
 
         }, status=status.HTTP_200_OK)
+
+
+class WorkView(generics.ListCreateAPIView):
+    serializer_class = WorkSerializer
+    pagination_class = None
+    queryset = Work.objects.all()
