@@ -160,6 +160,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'last_name',
             'phone',
             'works',
+            'workes',
             'telegram',
             'image',
             'rating',
