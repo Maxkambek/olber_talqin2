@@ -31,7 +31,7 @@ class User(AbstractUser):
     user_type = models.CharField(choices=USER_CHOICES, max_length=25, default="client")
     rating = models.FloatField(verbose_name="Reyting", validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=0)
     point = models.FloatField(verbose_name="Umumiy ball", default=0)
-    count = models.IntegerField(verbose_name="Ishlar soni", default=1)
+    count = models.IntegerField(verbose_name="Ishlar soni", default=0)
     works = ArrayField(models.CharField(max_length=50), null=True, blank=True)
     status = models.BooleanField(default=False)
     car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES, default="S")
@@ -40,11 +40,6 @@ class User(AbstractUser):
     car_image_2 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
     account = models.CharField(max_length=50, null=True, blank=True)
     money = models.PositiveIntegerField(null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        self.rating = (self.point)/(self.count)
-        self.rating = round(self.rating, 1)
-        super(User, self).save(*args, **kwargs)
 
 
 class Cargo(models.Model):

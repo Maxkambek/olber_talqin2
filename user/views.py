@@ -432,7 +432,7 @@ class UserWorksView(generics.ListAPIView):
         user = self.request.user
         works = Cargo.objects.filter(doer=user.id).order_by('-id')
         print(works[0])
-        return works#Response({"works"}, status=status.HTTP_200_OK)
+        return works #Response({"works"}, status=status.HTTP_200_OK)
 
 
 class WorkView(generics.ListCreateAPIView):
