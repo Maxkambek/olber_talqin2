@@ -42,8 +42,8 @@ class User(AbstractUser):
     money = models.PositiveIntegerField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.count>0:
-            self.rating = (self.point)/(self.count)
+        if self.count > 0:
+            self.rating = (self.point)/int(self.count)
             self.rating = round(self.rating, 1)
             super(User, self).save(*args, **kwargs)
         else:
