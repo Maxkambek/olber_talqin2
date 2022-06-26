@@ -46,6 +46,10 @@ class User(AbstractUser):
             self.rating = (self.point)/(self.count)
             self.rating = round(self.rating, 1)
             super(User, self).save(*args, **kwargs)
+        else:
+            self.rating = 0
+            self.point = 0
+            super(User, self).save(*args, **kwargs)
 
 
 class Cargo(models.Model):
