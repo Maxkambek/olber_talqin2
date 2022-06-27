@@ -100,11 +100,6 @@ class Cargo(models.Model):
         self.distance = round(self.distance, 2)
         super(Cargo, self).save(*args, **kwargs)
 
-    # @property
-    # def amount(self):
-    #     if self.title is None:
-    #         return 'None'
-
 
 class Work(models.Model):
     STATUS_CHOICES = (

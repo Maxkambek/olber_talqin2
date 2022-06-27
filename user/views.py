@@ -376,7 +376,7 @@ class CargoAcceptView(generics.GenericAPIView):
             if cargo.user_id == user_id:
                 user = User.objects.get(id=doer_id)
                 check = cargo.offers.filter(id=doer_id).first()
-                if cargo.status == 'selected':
+                if cargo.status != 'new':
                     return Response({
                         'msg': "Bu zakaz band qilingan"
                     }, status=status.HTTP_400_BAD_REQUEST)
@@ -387,7 +387,11 @@ class CargoAcceptView(generics.GenericAPIView):
                 else:
                     cargo.doer = user
                     cargo.status = 'selected'
-                    user.works.append(item_id)
+                    if user.works is not None:
+                        user.works.append(item_id)
+                    else:
+                        print('Yo')
+                        user.works = item_id
                     user.save()
                     cargo.save()
                     return Response({
