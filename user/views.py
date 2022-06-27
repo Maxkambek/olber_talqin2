@@ -385,7 +385,7 @@ class CargoAcceptView(generics.GenericAPIView):
                         'msg': "Taklif bermagan odamlarni tanlab bo'lmaydi"
                     }, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    cargo.doer = doer_id
+                    cargo.doer = user
                     cargo.status = 'selected'
                     user.works.append(item_id)
                     user.save()
