@@ -230,6 +230,22 @@ class UserItemsView(generics.ListAPIView):
             return user.items.all()
 
 
+class UserWorkesView(generics.ListAPIView):
+    serializer_class = WorkListSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Work.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
+    pagination_class = None
+
+    def get_queryset(self):
+        user = self.request.user
+        if user:
+            print(user)
+            return user.workes.all()
+
+
 class UserTypeView(generics.GenericAPIView):
     serializer_class = UserTypeSerializer
 

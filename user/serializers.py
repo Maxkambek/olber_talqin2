@@ -139,11 +139,24 @@ class CargoSerializer(serializers.ModelSerializer):
         )
 
 
+class WorkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Work
+        fields = "__all__"
+
+
+class WorkListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Work
+        fields = ('id', 'title', 'price', 'image', 'status')
+
+
 class UserDetailSerializer(serializers.ModelSerializer):
+    workes = WorkListSerializer(required=False, many=True)
     items = CargoListSerializer(required=False, many=True)
     class Meta:
         model = User
-        fields = ("username", "email", 'items')
+        fields = ("username", "email", 'items', 'workes')
 
 
 class UserTypeSerializer(serializers.ModelSerializer):
@@ -183,9 +196,3 @@ class UserPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('rating',)
-
-
-class WorkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Work
-        fields = "__all__"

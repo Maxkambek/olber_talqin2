@@ -107,7 +107,7 @@ class Work(models.Model):
         ('selected', "Tanlangan"),
         ('finished', "Yopilgan"),
     )
-    user = models.ForeignKey(User, verbose_name="Ish beruvchi", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name="Ish beruvchi", on_delete=models.CASCADE, related_name='workss')
     title = models.CharField(max_length=150, verbose_name='Nomi')
     price = models.PositiveIntegerField(verbose_name='Narxi')
     image = models.ImageField()

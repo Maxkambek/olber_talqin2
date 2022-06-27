@@ -25,6 +25,7 @@ urlpatterns = [
     path('cargo/close/<int:pk>', CloseItemView.as_view()),
 
     path('work', WorkView.as_view()),
+    path('workes', UserWorkesView.as_view()),
     path('work/<int:pk>', WorkDetailView.as_view())
 
 ]
