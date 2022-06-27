@@ -459,3 +459,8 @@ class WorkView(generics.ListCreateAPIView):
     serializer_class = WorkSerializer
     pagination_class = None
     queryset = Work.objects.all()
+
+
+class WorkDetailView(generics.RetrieveUpdateAPIView):
+    serializer_class = WorkSerializer
+    queryset = Work.objects.all()
