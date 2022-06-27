@@ -391,7 +391,7 @@ class CargoAcceptView(generics.GenericAPIView):
                         user.works.append(item_id)
                     else:
                         print('Yo')
-                        user.works = item_id
+                        user.works = list(item_id)
                     user.save()
                     cargo.save()
                     return Response({
