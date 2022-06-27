@@ -102,6 +102,7 @@ class LoginView(generics.GenericAPIView):
                 return Response({
                     'token': token.key,
                     'email': email,
+                    'user_type': user.user_type,
                     'id': user.id
                 })
             else:
