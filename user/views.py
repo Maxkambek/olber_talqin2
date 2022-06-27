@@ -288,31 +288,47 @@ class CargoListView(generics.ListAPIView):
     # authentication_classes = (authentication.TokenAuthentication,)
     # permission_classes = (permissions.IsAuthenticated,)
 
-    def get_queryset(self):
-        p_min = self.request.GET.get('p_min')
-        p_max = self.request.GET.get('p_max')
-        d_min = self.request.GET.get('d_min')
-        d_max = self.request.GET.get('d_max')
-        w_min = self.request.GET.get('w_min')
-        w_max = self.request.GET.get('w_max')
-        if not p_min or p_min == '':
-            p_min = 0
-        if not p_max or p_max == '':
-            p_max = Cargo.objects.all().order_by('-price').first().price
-        if not d_min or d_min == '':
-            d_min = 0
-        if not d_max or d_max == '':
-            d_max = Cargo.objects.all().order_by('-distance').first().distance
-        if not w_min or w_min == '':
-            w_min = 0
-        if not w_max or w_max == '':
-            w_max = Cargo.objects.all().order_by('-weight').first().weight
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        count = Cargo.objects.count()
+        if count > 0:
 
-        if p_min or p_max or d_min or d_max or w_min or w_max:
-            items = Cargo.objects.filter(price__range=(p_min, p_max), distance__range=(d_min, d_max), weight__range=(w_min, w_max),).order_by('-id')
+            p_min = self.request.GET.get('p_min')
+            p_max = self.request.GET.get('p_max')
+            d_min = self.request.GET.get('d_min')
+            d_max = self.request.GET.get('d_max')
+            w_min = self.request.GET.get('w_min')
+            w_max = self.request.GET.get('w_max')
+            if not p_min or p_min == '':
+                p_min = 0
+            if not p_max or p_max == '':
+                p_max = Cargo.objects.all().order_by('-price').first().price
+            if not d_min or d_min == '':
+                d_min = 0
+            if not d_max or d_max == '':
+                d_max = Cargo.objects.all().order_by('-distance').first().distance
+            if not w_min or w_min == '':
+                w_min = 0
+            if not w_max or w_max == '':
+                w_max = Cargo.objects.all().order_by('-weight').first().weight
+
+            if p_min or p_max or d_min or d_max or w_min or w_max:
+                items = Cargo.objects.filter(price__range=(p_min, p_max), distance__range=(d_min, d_max), weight__range=(w_min, w_max),).order_by('-id')
+            else:
+                items = Cargo.objects.all().order_by('-id')
+
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            return Response({
+                'results': serializer.data,
+            }, status=status.HTTP_200_OK)#.exclude(user=self.request.user)
         else:
-            items = Cargo.objects.all().order_by('-id')
-        return items#.exclude(user=self.request.user)
+            items = "Hozircha e'lonlar yo'q"
+            print("Bo'sh")
+            return Response({items}, status=status.HTTP_204_NO_CONTENT)
 
 
 class CargoDetailView(generics.RetrieveUpdateAPIView):
