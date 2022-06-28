@@ -13,7 +13,7 @@ class CargoAdmin(TranslationAdmin):
     readonly_fields = ('from_address', 'to_address', 'distance', 'doer')
 
 
-class WorkAdmin(TranslationAdmin):
+class WorkAdmin(admin.ModelAdmin):
     list_display = ('title', 'price', 'status', 'description', 'image')
 
 
