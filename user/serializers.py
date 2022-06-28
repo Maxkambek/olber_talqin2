@@ -152,11 +152,11 @@ class WorkListSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    workes = WorkListSerializer(required=False, many=True)
+    workss = WorkListSerializer(required=False, many=True)
     items = CargoListSerializer(required=False, many=True)
     class Meta:
         model = User
-        fields = ("username", "email", 'items', 'workes')
+        fields = ("username", "email", 'items', 'workss')
 
 
 class UserTypeSerializer(serializers.ModelSerializer):

@@ -243,7 +243,7 @@ class UserWorkesView(generics.ListAPIView):
         user = self.request.user
         if user:
             print(user)
-            return user.workes.all()
+            return user.workss.all()
 
 
 class UserTypeView(generics.GenericAPIView):
