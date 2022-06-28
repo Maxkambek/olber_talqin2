@@ -485,7 +485,7 @@ class WorkView(generics.CreateAPIView):
 
 
 class WorkDetailView(generics.RetrieveUpdateAPIView):
-    serializer_class = WorkSerializer
+    serializer_class = WorkDetailSerializer
     queryset = Work.objects.all()
 
 
