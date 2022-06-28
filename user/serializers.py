@@ -86,7 +86,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create(
             email=validated_data['email'],
-
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -144,7 +143,7 @@ class WorkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Work
-        fields = ('title', 'price', 'image', 'status', 'offers')
+        fields = ('title', 'price', 'image', 'status', 'offers', 'description')
 
 
 class WorkListSerializer(serializers.ModelSerializer):

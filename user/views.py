@@ -481,3 +481,24 @@ class WorkView(generics.ListCreateAPIView):
 class WorkDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = WorkSerializer
     queryset = Work.objects.all()
+
+
+class WorkOfferView(generics.GenericAPIView):
+    serializer_class = WorkSerializer
+    authentication_classes = [authentication.TokenAuthentication,]
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def post(self, request, pk=None):
+        work = Work.objects.get(id=pk)
+        user = request.user
+
+        if not work.offers.filter(id=user.id).exists():
+            work.offers.add(*[user, ])
+            work.save()
+            return Response({
+                'msg': f"Offer belgilandi {work.title} uchun"
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                'msg': "Offer yozilib bo'lingan"
+            }, status=status.HTTP_400_BAD_REQUEST)
