@@ -537,7 +537,7 @@ class WorkAcceptView(generics.GenericAPIView):
                     work.doer = user
                     work.status = 'selected'
                     # if user.works is not None:
-                    user.works.append(item_id)
+                    # user.works.append(item_id)
                     # else:
                     #     print('Yo')
                     #     user.works = list(item_id)
