@@ -117,6 +117,7 @@ class Work(models.Model):
     description = models.TextField(verbose_name="Tafsilot")
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='new')
     offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
+    doer = models.ForeignKey(User, verbose_name="Bajaruvchi", on_delete=models.CASCADE, related_name="jobs")
 
 
 class VerifyEmail(models.Model):

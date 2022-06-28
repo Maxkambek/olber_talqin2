@@ -472,7 +472,13 @@ class UserWorksView(generics.ListAPIView):
         return works #Response({"works"}, status=status.HTTP_200_OK)
 
 
-class WorkView(generics.ListCreateAPIView):
+class WorkListView(generics.ListAPIView):
+    serializer_class = WorkListSerializer
+    pagination_class = None
+    queryset = Work.objects.all()
+
+
+class WorkView(generics.CreateAPIView):
     serializer_class = WorkSerializer
     pagination_class = None
     queryset = Work.objects.all()
