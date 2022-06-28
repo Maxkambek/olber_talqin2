@@ -116,6 +116,7 @@ class Work(models.Model):
     work_time = models.CharField(max_length=55)
     description = models.TextField(verbose_name="Tafsilot")
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='new')
+    offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
 
 
 class VerifyEmail(models.Model):

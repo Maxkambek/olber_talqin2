@@ -140,9 +140,11 @@ class CargoSerializer(serializers.ModelSerializer):
 
 
 class WorkSerializer(serializers.ModelSerializer):
+    offers = UserListSerializer(read_only=True, many=True)
+
     class Meta:
         model = Work
-        fields = "__all__"
+        fields = ('title', 'price', 'image', 'status', 'offers')
 
 
 class WorkListSerializer(serializers.ModelSerializer):
