@@ -29,6 +29,7 @@ urlpatterns = [
     path('workes', UserWorkesView.as_view()),
     path('work/<int:pk>', WorkDetailView.as_view()),
     path('workoffer/<int:pk>', WorkOfferView.as_view()),
+    path('workaccept', WorkAcceptView.as_view()),
 
 ]
 

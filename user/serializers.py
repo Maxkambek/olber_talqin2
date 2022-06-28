@@ -153,6 +153,12 @@ class WorkListSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'price', 'image', 'status')
 
 
+class WorkAcceptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Work
+        fields = ('id', 'doer')
+
+
 class UserDetailSerializer(serializers.ModelSerializer):
     workss = WorkListSerializer(required=False, many=True)
     items = CargoListSerializer(required=False, many=True)

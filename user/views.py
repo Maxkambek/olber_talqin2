@@ -508,3 +508,51 @@ class WorkOfferView(generics.GenericAPIView):
             return Response({
                 'msg': "Offer yozilib bo'lingan"
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WorkAcceptView(generics.GenericAPIView):
+    authentication_classes = [authentication.TokenAuthentication, ]
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def post(self, request):
+        # try:
+        serializer = WorkAcceptSerializer(data = request.data)
+        user_id = request.user.id
+        if serializer.is_valid():
+            item_id = request.data.get("id")
+            doer_id = request.data.get("doer")
+            work = Work.objects.filter(id=item_id).first()
+            if work.user_id == user_id:
+                user = User.objects.get(id=doer_id)
+                check = work.offers.filter(id=doer_id).first()
+                if work.status != 'new':
+                    return Response({
+                        'msg': "Bu zakaz band qilingan"
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                if not check:
+                    return Response({
+                        'msg': "Taklif bermagan odamlarni tanlab bo'lmaydi"
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    work.doer = user
+                    work.status = 'selected'
+                    # if user.works is not None:
+                    user.works.append(item_id)
+                    # else:
+                    #     print('Yo')
+                    #     user.works = list(item_id)
+                    user.save()
+                    work.save()
+                    return Response({
+                        'msg': "Success"
+                    }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    'msg': "User not owner"
+                }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # except:
+        #     return Response({
+        #         'msg': "Bad request"
+        #     }, status=status.HTTP_502_BAD_GATEWAY)
