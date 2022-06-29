@@ -472,6 +472,18 @@ class UserWorksView(generics.ListAPIView):
         return works #Response({"works"}, status=status.HTTP_200_OK)
 
 
+class UserJobsView(generics.ListAPIView):
+    serializer_class = WorkListSerializer
+    authentication_classes = [authentication.TokenAuthentication, ]
+    permission_classes = [permissions.IsAuthenticated, ]
+    pagination_class = None
+
+    def get_queryset(self):
+        user = self.request.user
+        works = Work.objects.filter(doer=user.id).order_by('-id')
+        return works #Response({"works"}, status=status.HTTP_200_OK)
+
+
 class WorkListView(generics.ListAPIView):
     serializer_class = WorkListSerializer
     pagination_class = None
@@ -542,6 +554,7 @@ class WorkAcceptView(generics.GenericAPIView):
                     #     print('Yo')
                     #     user.works = list(item_id)
                     user.save()
+                    work.offers.clear()
                     work.save()
                     return Response({
                         'msg': "Success"
