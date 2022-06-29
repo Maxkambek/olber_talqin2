@@ -144,7 +144,7 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     doer = UserListSerializer(required=False, many=False)
     class Meta:
         model = Work
-        fields = ('user', 'title', 'price', 'image', 'status', 'address', 'lat_lon', 'work_time', 'offers', 'description', 'doer')
+        fields = ('id', 'title', 'user', 'price', 'image', 'status', 'address', 'lat_lon', 'work_time', 'offers', 'description', 'doer')
 
 
 class WorkSerializer(serializers.ModelSerializer):
