@@ -468,8 +468,8 @@ class UserWorksView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         works = Cargo.objects.filter(doer=user.id).order_by('-id')
-        print(works[0])
-        return works #Response({"works"}, status=status.HTTP_200_OK)
+        result = works.exclude(status='finished')
+        return result #Response({"works"}, status=status.HTTP_200_OK)
 
 
 class UserJobsView(generics.ListAPIView):
@@ -481,11 +481,14 @@ class UserJobsView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         works = Work.objects.filter(doer=user.id).order_by('-id')
-        return works #Response({"works"}, status=status.HTTP_200_OK)
+        result = works.exclude(status='finished')
+        return result #Response({"works"}, status=status.HTTP_200_OK)
 
 
 class WorkListView(generics.ListAPIView):
     serializer_class = WorkListSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['status']
     pagination_class = None
     queryset = Work.objects.all()
 
