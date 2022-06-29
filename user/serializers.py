@@ -95,7 +95,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'image')
+        fields = ('id', 'username', 'image', 'rating')
 
 
 class CargoSerializer(serializers.ModelSerializer):
