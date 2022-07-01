@@ -283,7 +283,7 @@ class AddPointView(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        point = request.data.get('point')
+        point = float(request.data.get('point'))
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
         user.point += point
