@@ -290,7 +290,9 @@ class AddPointView(generics.GenericAPIView):
         user.count += 1
         user.rating = user.point/user.count
         user.save()
-        return Response(f"{point} ball qo'yildi")
+        return Response({
+            'msg': f"{point} ball qo'yildi"
+        }, status=status.HTTP_200_OK)
 
 
 class CargoCreateView(generics.CreateAPIView):
