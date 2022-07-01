@@ -271,12 +271,16 @@ class UserTypeView(generics.GenericAPIView):
 
 
 class UserDetailView(generics.RetrieveUpdateAPIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
 
 
 class AddPointView(generics.GenericAPIView):
     serializer_class = UserPointSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         point = request.data.get('point')

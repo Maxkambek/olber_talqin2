@@ -209,4 +209,4 @@ class UserAccountSerializer(serializers.ModelSerializer):
 class UserPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('rating',)
+        fields = ('id', 'rating')
