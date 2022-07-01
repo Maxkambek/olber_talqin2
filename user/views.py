@@ -286,7 +286,7 @@ class AddPointView(generics.GenericAPIView):
         point = request.data.get('point')
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
-        user.point += float(point)
+        user.point += point
         user.count += 1
         user.rating = user.point/user.count
         user.save()
