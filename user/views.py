@@ -582,3 +582,23 @@ class WorkAcceptView(generics.GenericAPIView):
         #     return Response({
         #         'msg': "Bad request"
         #     }, status=status.HTTP_502_BAD_GATEWAY)
+
+
+class CloseWorkView(generics.GenericAPIView):
+    serializer_class = WorkSerializer
+    authentication_classes = [authentication.TokenAuthentication, ]
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def post(self, request, pk=None):
+        work = Work.objects.get(id=pk)
+        user = request.user
+        if work.user_id == user.id:
+            work.status = 'finished'
+            work.save()
+            return Response({
+                'msg': "Work closed"
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                'msg': "User not owner"
+            }, status=status.HTTP_400_BAD_REQUEST)

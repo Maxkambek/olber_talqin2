@@ -31,5 +31,5 @@ urlpatterns = [
     path('workes' , UserWorkesView.as_view()),
     path('workoffer/<int:pk>', WorkOfferView.as_view()),
     path('workaccept', WorkAcceptView.as_view()),
-
+    path('work/close/<int:pk>', CloseWorkView.as_view()),
 ]
