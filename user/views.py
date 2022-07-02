@@ -412,9 +412,11 @@ class CargoAcceptView(generics.GenericAPIView):
                     cargo.status = 'selected'
                     # if user.works is not None:
                     user.works.append(item_id)
+                    cargo.offers.clear()
                     # else:
                     #     print('Yo')
                     #     user.works = list(item_id)
+
                     user.save()
                     cargo.save()
                     return Response({
