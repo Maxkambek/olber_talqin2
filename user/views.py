@@ -227,7 +227,9 @@ class UserItemsView(generics.ListAPIView):
         user = User.objects.get(id=self.kwargs['pk'])
         if user:
             print(user)
-            return user.items.all()
+            itemss = user.items.all()
+            return itemss.exclude(status='finished')
+
 
 
 class UserWorkesView(generics.ListAPIView):
