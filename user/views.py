@@ -478,8 +478,7 @@ class UserWorksView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         works = Cargo.objects.filter(doer=user.id).order_by('-id')
-        result = works.exclude(status='finished')
-        return result #Response({"works"}, status=status.HTTP_200_OK)
+        return works #Response({"works"}, status=status.HTTP_200_OK)
 
 
 class UserJobsView(generics.ListAPIView):
