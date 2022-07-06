@@ -274,8 +274,7 @@ class UserTypeView(generics.GenericAPIView):
 
 
 class UserDetailView(generics.RetrieveUpdateAPIView):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
 
