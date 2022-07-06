@@ -423,7 +423,6 @@ class CargoAcceptView(generics.GenericAPIView):
                     cargo.save()
                     return Response({
                         'msg': "Success",
-                        'data': user.works,
                     }, status=status.HTTP_200_OK)
             else:
                 return Response({
