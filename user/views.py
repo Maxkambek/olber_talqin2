@@ -460,10 +460,14 @@ class UserAccountView(generics.GenericAPIView):
 
     def get(self, request):
         user = request.user
+        if user.image:
+            image = user.image.url
+        else:
+            image = None
         return Response({
             'status': 'Success',
             'username': user.username,
-            'image': user.image.url,
+            'image': image,
             'account': user.account,
             'money': user.money
 
