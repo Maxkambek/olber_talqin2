@@ -9,7 +9,7 @@ urlpatterns = [
     path('delete', DeleteAccountView.as_view()),
     path('items/<int:pk>', UserItemsView.as_view()),
     path('changepassword', ChangePasswordView.as_view()),
-    path('reset', ResetPasswordView.as_view()),
+    path('resetpassword', ResetPasswordView.as_view()),
     path('confirm', ConfirmResetPasswordView.as_view()),
     path('account', UserAccountView.as_view()),
     path('rating', AddPointView.as_view()),
