@@ -15,6 +15,7 @@ from .serializers import *
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
     @staticmethod
     def post(request):
