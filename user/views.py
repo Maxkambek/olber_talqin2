@@ -412,17 +412,18 @@ class CargoAcceptView(generics.GenericAPIView):
                 else:
                     cargo.doer = user
                     cargo.status = 'selected'
-                    # if user.works is not None:
-                    user.works.append(item_id)
+                    if user.works:
+                        user.works.append(item_id)
+                    else:
+                        user.works.insert(0, item_id)
+                        print('none')
                     cargo.offers.clear()
-                    # else:
-                    #     print('Yo')
-                    #     user.works = list(item_id)
 
                     user.save()
                     cargo.save()
                     return Response({
-                        'msg': "Success"
+                        'msg': "Success",
+                        'data': user.works,
                     }, status=status.HTTP_200_OK)
             else:
                 return Response({
