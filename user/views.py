@@ -415,7 +415,7 @@ class CargoAcceptView(generics.GenericAPIView):
                     if user.works:
                         user.works.append(item_id)
                     else:
-                        user.works.list(item_id)
+                        user.works = item_id
                         print('none')
                     cargo.offers.clear()
 
