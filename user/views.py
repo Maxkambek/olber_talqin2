@@ -415,7 +415,7 @@ class CargoAcceptView(generics.GenericAPIView):
                     if user.works:
                         user.works.append(item_id)
                     else:
-                        user.works = item_id
+                        user.works.insert(0, item_id)
                         print('none')
                     cargo.offers.clear()
 
@@ -442,9 +442,10 @@ class CloseItemView(generics.GenericAPIView):
         cargo = Cargo.objects.get(id=pk)
         user = request.user
         if cargo.user_id == user.id:
-            cargo.status = 'finished'
+            # cargo.status = 'finished'
             cargo.save()
             doer = cargo.doer
+            print(doer.works)
             doer.works.remove(str(pk))
             doer.save()
             return Response({
@@ -602,8 +603,6 @@ class CloseWorkView(generics.GenericAPIView):
         if work.user_id == user.id:
             work.status = 'finished'
             work.save()
-            doer = work.doer
-
             return Response({
                 'msg': "Work closed"
             }, status=status.HTTP_200_OK)
