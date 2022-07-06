@@ -88,7 +88,7 @@ class VerifyView(generics.GenericAPIView):
 class LoginView(generics.GenericAPIView):
 
     serializer_class = LoginSerializer
-
+    permission_classes = (AllowAny,)
 
     @staticmethod
     def post(request):
