@@ -102,6 +102,7 @@ class CargoSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(read_only=True, source="user.username")
     user_rating = serializers.CharField(read_only=True, source="user.rating")
     user_image = serializers.ImageField(read_only=True, source="user.image")
+    user_phone = serializers.ImageField(read_only=True, source="user.phone")
     offers = UserListSerializer(read_only=True, many=True)
     doer = UserListSerializer(read_only=True, many=False)
     class Meta:
@@ -134,7 +135,8 @@ class CargoSerializer(serializers.ModelSerializer):
             'image4',
             'user_name',
             'user_rating',
-            'user_image'
+            'user_image',
+            'user_phone'
         )
 
 
