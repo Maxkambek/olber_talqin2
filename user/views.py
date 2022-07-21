@@ -339,9 +339,9 @@ class CargoListView(generics.ListAPIView):
                 w_max = Cargo.objects.all().order_by('-weight').first().weight
 
             if p_min or p_max or d_min or d_max or w_min or w_max:
-                items = Cargo.objects.filter(price__range=(p_min, p_max), distance__range=(d_min, d_max), weight__range=(w_min, w_max),).order_by('-id')
+                queryset = Cargo.objects.filter(price__range=(p_min, p_max), distance__range=(d_min, d_max), weight__range=(w_min, w_max),).order_by('-id')
             else:
-                items = Cargo.objects.all().order_by('-id')
+                queryset = Cargo.objects.all().order_by('-id')
 
             page = self.paginate_queryset(queryset)
             if page is not None:
@@ -351,9 +351,9 @@ class CargoListView(generics.ListAPIView):
                 'results': serializer.data,
             }, status=status.HTTP_200_OK)#.exclude(user=self.request.user)
         else:
-            items = "Hozircha e'lonlar yo'q"
+            queryset = "Hozircha e'lonlar yo'q"
             print("Bo'sh")
-            return Response({items}, status=status.HTTP_204_NO_CONTENT)
+            return Response({queryset}, status=status.HTTP_204_NO_CONTENT)
 
 
 class CargoDetailView(generics.RetrieveUpdateAPIView):
