@@ -506,8 +506,8 @@ class WorkListView(generics.ListAPIView):
     serializer_class = WorkListSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['status']
-    pagination_class = None
-    queryset = Work.objects.all()
+    pagination_class = CustomPagination
+    queryset = Work.objects.all().order_by('-id')
 
 
 class WorkView(generics.CreateAPIView):
