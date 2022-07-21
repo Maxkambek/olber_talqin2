@@ -309,7 +309,7 @@ class CargoListView(generics.ListAPIView):
     filterset_fields = ['status', 'cargo_type']
     search_fields = ['title', 'description']
     ordering = '-id'
-    pagination_class = PageNumberPagination
+    pagination_class = CustomPagination
     # authentication_classes = (authentication.TokenAuthentication,)
     # permission_classes = (permissions.IsAuthenticated,)
 
