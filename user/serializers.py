@@ -14,6 +14,13 @@ class VerifySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ResetSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=100)
+    code = serializers.CharField(max_length=50)
+    password = serializers.CharField(max_length=100)
+
+
+
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

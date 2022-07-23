@@ -188,13 +188,13 @@ class ResetPasswordView(generics.GenericAPIView):
             code = str(random.randint(100000, 1000000))
             send_mail("Kod:", code, settings.EMAIL_HOST_USER, [email])
             VerifyEmail.objects.create(email=email, code=code)
-            return Response("SMS jo'natildi")
+            return Response({"message": "SMS jo'natildi"}, status=status.HTTP_200_OK)
         else:
-            return Response("Email is required", status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ConfirmResetPasswordView(generics.GenericAPIView):
-    serializer_class = VerifySerializer
+    serializer_class = ResetSerializer
 
     def post(self, request):
         try:
@@ -212,9 +212,9 @@ class ConfirmResetPasswordView(generics.GenericAPIView):
                     'email': email
                 }, status=status.HTTP_200_OK)
             else:
-                return Response("Code invalid", status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "Code invalid"}, status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response("Code invalid", status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Code invalid"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserItemsView(generics.ListAPIView):
