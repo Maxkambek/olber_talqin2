@@ -63,10 +63,11 @@ class Cargo(models.Model):
         ('finished', "Yopilgan"),
     )
     TYPE_CHOICES = (
-        ('disabled', "Tanlanmagan"),
-        ('small', "Kichik"),
-        ('big', "Katta"),
-        ('ice_car', "Sovutgich"),
+        ('S', "S"),
+        ('M', "M"),
+        ('L', "L"),
+        ('XL', "XL"),
+        ('XXL', "XXL"),
     )
     user = models.ForeignKey(User, verbose_name="Foydalanuvchi", on_delete=models.CASCADE, related_name="items")
     title = models.CharField(max_length=150, verbose_name=_('Title'))
@@ -89,7 +90,7 @@ class Cargo(models.Model):
     image3 = models.ImageField(null=True, blank=True)
     image4 = models.ImageField(null=True, blank=True)
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default="new")
-    cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOICES, default="disabled")
+    cargo_type = models.CharField(max_length=100, null=True, choices=TYPE_CHOICES, default="S")
     distance = models.FloatField(null=True, blank=True)
     offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
     doer = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name='workes')
