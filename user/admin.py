@@ -11,6 +11,7 @@ class UserAdmin(admin.ModelAdmin):
 class CargoAdmin(TranslationAdmin):
     list_display = ('title', 'price', 'status', 'cargo_type', 'description', 'distance')
     readonly_fields = ('from_address', 'to_address', 'distance', 'doer')
+    list_editable = ('cargo_type',)
 
 
 class WorkAdmin(admin.ModelAdmin):
