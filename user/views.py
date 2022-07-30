@@ -447,12 +447,12 @@ class CloseItemView(generics.GenericAPIView):
         cargo = Cargo.objects.get(id=pk)
         user = request.user
         if cargo.user_id == user.id:
-            # cargo.status = 'finished'
+            cargo.status = 'finished'
             cargo.save()
-            doer = cargo.doer
-            print(doer.works)
-            doer.works.remove(str(pk))
-            doer.save()
+            if cargo.doer:
+                doer = cargo.doer
+                doer.works.remove(str(pk))
+                doer.save()
             return Response({
                 'msg': "Cargo closed"
             }, status=status.HTTP_200_OK)
