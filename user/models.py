@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.postgres.fields import ArrayField
 from user.calculation import calc_distance
 from django.utils.translation import gettext_lazy as _
+import random
 
 
 class User(AbstractUser):
@@ -38,7 +39,7 @@ class User(AbstractUser):
     drive_doc = models.ImageField(verbose_name="Guvohnoma", null=True, blank=True)
     car_image_1 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
     car_image_2 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
-    account = models.CharField(max_length=50, null=True, blank=True)
+    account = models.CharField(max_length=50, unique=True)
     money = models.PositiveIntegerField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -49,6 +50,9 @@ class User(AbstractUser):
         else:
             self.rating = 0
             self.point = 0
+            super(User, self).save(*args, **kwargs)
+        if not self.account:
+            self.account = str(random.randint(100000, 1000000))
             super(User, self).save(*args, **kwargs)
 
 
