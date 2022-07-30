@@ -376,15 +376,21 @@ class OfferView(generics.GenericAPIView):
         user = request.user
 
         if not cargo.offers.filter(id=user.id).exists():
-            cargo.offers.add(*[user, ])
-            cargo.save()
-            return Response({
-                'msg': f"Offer belgilandi {cargo.title} uchun"
-            }, status=status.HTTP_200_OK)
+            if len(user.works) < 3:
+
+                cargo.offers.add(*[user,])
+                cargo.save()
+                return Response({
+                    'msg': f"{cargo.title} uchun offer belgilandi."
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    'msg': f"Siz maksimal 3 ta ish olishingiz mumkin"
+                }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
                 'msg': "Offer yozilib bo'lingan"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_423_LOCKED)
 
 
 class CargoAcceptView(generics.GenericAPIView):
