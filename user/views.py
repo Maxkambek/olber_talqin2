@@ -307,14 +307,14 @@ class CargoListView(generics.ListAPIView):
     queryset = Cargo.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['status', 'cargo_type']
-    search_fields = ['title', 'description']
-    ordering = '-id'
     pagination_class = CustomPagination
     # authentication_classes = (authentication.TokenAuthentication,)
     # permission_classes = (permissions.IsAuthenticated,)
 
-    def list(self, request, *args, **kwargs):
+    def list(self, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+        statusfilter = self.request.query_params.get('status', None)
+        typefilter = self.request.query_params.get('cargo_type', None)
         serializer = self.get_serializer(queryset, many=True)
         count = Cargo.objects.count()
         if count > 0:
@@ -325,6 +325,7 @@ class CargoListView(generics.ListAPIView):
             d_max = self.request.GET.get('d_max')
             w_min = self.request.GET.get('w_min')
             w_max = self.request.GET.get('w_max')
+
             if not p_min or p_min == '':
                 p_min = 0
             if not p_max or p_max == '':
@@ -343,6 +344,9 @@ class CargoListView(generics.ListAPIView):
             else:
                 queryset = Cargo.objects.all().order_by('-id')
 
+            if statusfilter is not None:
+                queryset = Cargo.objects.filter(status=statusfilter)
+
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = self.get_serializer(page, many=True)
@@ -352,7 +356,6 @@ class CargoListView(generics.ListAPIView):
             }, status=status.HTTP_200_OK)#.exclude(user=self.request.user)
         else:
             queryset = "Hozircha e'lonlar yo'q"
-            print("Bo'sh")
             return Response({queryset}, status=status.HTTP_204_NO_CONTENT)
 
 
