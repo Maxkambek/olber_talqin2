@@ -5,9 +5,10 @@ from .models import User, Cargo, VerifyEmail, Work
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'money')
+    list_display = ('username', 'email', 'phone', 'money')
     readonly_fields = ('rating',)
     list_editable = ('money',)
+
 
 class CargoAdmin(TranslationAdmin):
     list_display = ('title', 'price', 'status', 'cargo_type', 'description', 'distance')
@@ -19,7 +20,7 @@ class WorkAdmin(admin.ModelAdmin):
 
 
 class VerifEmailAdmin(admin.ModelAdmin):
-    list_display = ('email', 'code')
+    list_display = ('phone', 'code')
 
 
 admin.site.register(User, UserAdmin)

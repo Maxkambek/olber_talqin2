@@ -128,5 +128,5 @@ class VerifyEmail(models.Model):
         verbose_name = _("Email tasdiqlash")
         verbose_name_plural = _("Email tasdiqlash")
 
-    email = models.CharField(max_length=100, verbose_name="Email")
+    phone = models.CharField(max_length=15, verbose_name="Telefon raqam")
     code = models.CharField(max_length=10, verbose_name="Kod")

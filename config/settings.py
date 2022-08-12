@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'django_filters',
+    # 'paycomuz',
 
     #internal apps
     'user'
@@ -173,6 +174,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+
+
+#Payment Settings
+# PAYCOM_SETTINGS = {
+#     "TOKEN": "62e28cbc39c675be34e4bbd2",
+#     "KASSA_ID": "62e28cbc39c675be34e4bbd2",  # token 62e1189b39c675be34e46715 62e28cbc39c675be34e4bbd2
+#     "SECRET_KEY": "FrGWGMFoI?6cSyzdkovezesOA?TbKCQ8TDQU",  # password FrGWGMFoI?6cSyzdkovezesOA?TbKCQ8TDQU
+#     "ACCOUNTS": {
+#         "KEY": "order_id",
+#
+#     }
+# }
+
 
 
 SITE_ID = 1

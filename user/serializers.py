@@ -5,7 +5,7 @@ from .models import User, Cargo, VerifyEmail, Work
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'username', 'password')
+        fields = ('username', 'phone',  'password')
 
 
 class VerifySerializer(serializers.ModelSerializer):

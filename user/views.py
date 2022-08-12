@@ -1,4 +1,3 @@
-import random
 from django.conf import settings
 from django.contrib import auth
 from django.core.mail import send_mail
@@ -7,27 +6,29 @@ from rest_framework import generics, status, authentication, permissions, filter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-
 from .models import *
 from .pagination import CustomPagination
 from .serializers import *
+from .send_message import verify
+
+# from paycomuz.views import MerchantAPIView
+# from paycomuz import Paycom
 
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
-    
 
     @staticmethod
     def post(request):
         serializer = RegisterSerializer(data=request.data)
-        email = request.data.get('email')
+        phone = request.data.get('phone')
         password = request.data.get('password')
         username = request.data.get('username')
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(username=username, phone=phone).first()
         registered = 1
         if user and user.is_verified == True:
             return Response({
-                "msg": "Ushbu email registratsiya qilingan"
+                "msg": "Ushbu user registratsiya qilingan"
             }, status=status.HTTP_409_CONFLICT)
         elif user is None:
             registered = 0
@@ -36,28 +37,32 @@ class RegisterView(generics.GenericAPIView):
             registered = 0
 
         if registered == 0 and serializer.is_valid():
-            subject = "Emailni tasdiqlash"
             code = str(random.randint(100000, 1000000))
-            msg = f"Emailni tasdiqlash uchun bir martalik kod: {code}"
-            to = request.data.get('email')
-            result = send_mail(subject, str(msg), settings.EMAIL_HOST_USER, [to])
-            if VerifyEmail.objects.filter(email=email).first():
-                verify = VerifyEmail.objects.get(email=email)
-                verify.delete()
-            if (result == 1):
-                msg1 = f"Emailni tasdiqlash uchun bir martalik kod {to} ga jo'natildi."
-                VerifyEmail.objects.create(email=email, code=code)
-                User.objects.create_user(email=email, username=username, password=password)
-                print(code)
+            if VerifyEmail.objects.filter(phone=phone).first():
+                ver = VerifyEmail.objects.get(phone=phone)
+                ver.delete()
+            ph = str(phone)[1:13]
+            print(ph)
+            if len(phone) == 13:
+                verify(ph, code)
+                msg_s = "Telefon nomerni tasdiqlash uchun bir martalik kod jo'natildi."
+                VerifyEmail.objects.create(phone=phone, code=code)
+                User.objects.create_user(username=username, password=password, phone=phone)
             else:
                 return Response(
-                    {"msg": "Ma'lumotlarda xatolik bor yoki verifikatsiya uchun kod emailingizga jo'natilgan!"},
+                    {"msg": "Telefon raqami noto'g'ri kiritilgan"},
                     status=status.HTTP_400_BAD_REQUEST)
-            return Response({
-                "email": email,
-                "username": username,
-                # "msg": msg1
-            }, status=status.HTTP_201_CREATED)
+            if verify:
+                return Response({
+                    "phone": phone,
+                    "username": username,
+                    "msg": msg_s
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    "username": username,
+                    "msg": "Sms yuborishda xatolik"
+                }, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -67,22 +72,22 @@ class VerifyView(generics.GenericAPIView):
 
     def post(self, request):
         try:
-            email = request.data.get('email')
+            phone = request.data.get('phone')
             code = request.data.get('code')
-            verify = VerifyEmail.objects.filter(email=email, code=code).first()
+            verify = VerifyEmail.objects.filter(phone=phone, code=code).first()
             if verify:
-                user = User.objects.filter(email=email).first()
+                user = User.objects.filter(phone=phone).first()
                 user.is_verified = True
                 user.save()
                 verify.delete()
                 return Response({
-                    'msg': "Email is verified",
-                    'email': email
+                    'msg': "Phone number is verified",
+                    'phone': phone
                 }, status=status.HTTP_200_OK)
             else:
-                return Response("Email or code invalid", status=status.HTTP_400_BAD_REQUEST)
+                return Response("Phone number or code invalid", status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response("Email or code invalid", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Phone number or code invalid", status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(generics.GenericAPIView):
@@ -618,3 +623,20 @@ class CloseWorkView(generics.GenericAPIView):
             return Response({
                 'msg': "User not owner"
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class CheckOrder(Paycom):
+#     def check_order(self, amount, account, *args, **kwargs):
+#         return self.ORDER_FOUND
+#
+#
+# def successfully_payment(self, account, transaction, *args, **kwargs):
+#     print(account)
+#
+#
+# def cancel_payment(self, account, transaction, *args, **kwargs):
+#     print(account)
+#
+#
+# class TestView(MerchantAPIView):
+#     VALIDATE_CLASS = CheckOrder
