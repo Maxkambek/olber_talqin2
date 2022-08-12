@@ -33,5 +33,5 @@ urlpatterns = [
     path('workaccept', WorkAcceptView.as_view()),
     path('work/close/<int:pk>', CloseWorkView.as_view()),
 
-    # path('paycom/', TestView.as_view())
+    path('paycom/', TestView.as_view())
 ]

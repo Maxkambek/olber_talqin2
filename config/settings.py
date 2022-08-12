@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'django_filters',
-    # 'paycomuz',
+    'paycomuz',
 
     #internal apps
     'user'
@@ -177,15 +177,15 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 #Payment Settings
-# PAYCOM_SETTINGS = {
-#     "TOKEN": "62e28cbc39c675be34e4bbd2",
-#     "KASSA_ID": "62e28cbc39c675be34e4bbd2",  # token 62e1189b39c675be34e46715 62e28cbc39c675be34e4bbd2
-#     "SECRET_KEY": "FrGWGMFoI?6cSyzdkovezesOA?TbKCQ8TDQU",  # password FrGWGMFoI?6cSyzdkovezesOA?TbKCQ8TDQU
-#     "ACCOUNTS": {
-#         "KEY": "order_id",
-#
-#     }
-# }
+PAYCOM_SETTINGS = {
+    "TOKEN": "62e28cbc39c675be34e4bbd2",
+    "KASSA_ID": "62e28cbc39c675be34e4bbd2",  # token 62e1189b39c675be34e46715 62e28cbc39c675be34e4bbd2
+    "SECRET_KEY": "FrGWGMFoI?6cSyzdkovezesOA?TbKCQ8TDQU",  # password FrGWGMFoI?6cSyzdkovezesOA?TbKCQ8TDQU
+    "ACCOUNTS": {
+        "KEY": "order_id",
+
+    }
+}
 
 
 

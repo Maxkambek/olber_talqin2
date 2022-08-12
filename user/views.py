@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib import auth
 from django.core.mail import send_mail
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, authentication, permissions, filters
@@ -11,8 +10,8 @@ from .pagination import CustomPagination
 from .serializers import *
 from .send_message import verify
 
-# from paycomuz.views import MerchantAPIView
-# from paycomuz import Paycom
+from paycomuz.views import MerchantAPIView
+from paycomuz import Paycom
 
 
 class RegisterView(generics.GenericAPIView):
@@ -625,18 +624,18 @@ class CloseWorkView(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class CheckOrder(Paycom):
-#     def check_order(self, amount, account, *args, **kwargs):
-#         return self.ORDER_FOUND
-#
-#
-# def successfully_payment(self, account, transaction, *args, **kwargs):
-#     print(account)
-#
-#
-# def cancel_payment(self, account, transaction, *args, **kwargs):
-#     print(account)
-#
-#
-# class TestView(MerchantAPIView):
-#     VALIDATE_CLASS = CheckOrder
+class CheckOrder(Paycom):
+    def check_order(self, amount, account, *args, **kwargs):
+        return self.ORDER_FOUND
+
+
+def successfully_payment(self, account, transaction, *args, **kwargs):
+    print(account)
+
+
+def cancel_payment(self, account, transaction, *args, **kwargs):
+    print(account)
+
+
+class TestView(MerchantAPIView):
+    VALIDATE_CLASS = CheckOrder
