@@ -40,10 +40,8 @@ class RegisterView(generics.GenericAPIView):
             if VerifyEmail.objects.filter(phone=phone).first():
                 ver = VerifyEmail.objects.get(phone=phone)
                 ver.delete()
-            ph = str(phone)[1:13]
-            print(ph)
             if len(phone) == 13:
-                verify(ph, code)
+                verify(phone, code)
                 msg_s = "Telefon nomerni tasdiqlash uchun bir martalik kod jo'natildi."
                 VerifyEmail.objects.create(phone=phone, code=code)
                 User.objects.create_user(username=username, password=password, phone=phone)
@@ -97,16 +95,16 @@ class LoginView(generics.GenericAPIView):
     @staticmethod
     def post(request):
         try:
-            email = request.data.get('email')
+            phone = request.data.get('phone')
             password = request.data.get('password')
-            user = User.objects.get(email=email)
+            user = User.objects.get(phone=phone)
             check = user.check_password(password)
             verify = user.is_verified
             if check and verify:
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({
                     'token': token.key,
-                    'email': email,
+                    'phone': phone,
                     'user_type': user.user_type,
                     'id': user.id
                 })
@@ -187,14 +185,17 @@ class ResetPasswordView(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
     def post(self, request):
-        email = self.request.data.get('email')
-        if email:
+        phone = self.request.data.get('phone')
+        if phone:
             code = str(random.randint(100000, 1000000))
-            send_mail("Kod:", code, settings.EMAIL_HOST_USER, [email])
-            VerifyEmail.objects.create(email=email, code=code)
-            return Response({"message": "SMS jo'natildi"}, status=status.HTTP_200_OK)
+            ver = verify(phone, code)
+            if ver:
+                VerifyEmail.objects.create(phone=phone, code=code)
+                return Response({"message": "SMS jo'natildi"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "Phone number is not valid"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"message": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Phone number is required"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ConfirmResetPasswordView(generics.GenericAPIView):
@@ -202,18 +203,17 @@ class ConfirmResetPasswordView(generics.GenericAPIView):
 
     def post(self, request):
         try:
-            email = request.data.get('email')
+            phone = request.data.get('phone')
             code = request.data.get('code')
             password = request.data.get('password')
-            verify = VerifyEmail.objects.filter(email=email, code=code).first()
-            if verify:
-                user = User.objects.get(email=email)
+            ver = VerifyEmail.objects.filter(phone=phone, code=code).first()
+            if ver:
+                user = User.objects.get(phone=phone)
                 user.set_password(password)
                 user.save()
-                verify.delete()
+                ver.delete()
                 return Response({
                     'msg': "Password changed",
-                    'email': email
                 }, status=status.HTTP_200_OK)
             else:
                 return Response({"message": "Code invalid"}, status=status.HTTP_400_BAD_REQUEST)
@@ -234,7 +234,6 @@ class UserItemsView(generics.ListAPIView):
             print(user)
             itemss = user.items.all()
             return itemss.exclude(status='finished')
-
 
 
 class UserWorkesView(generics.ListAPIView):

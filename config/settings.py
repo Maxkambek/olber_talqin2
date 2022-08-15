@@ -140,6 +140,7 @@ REST_FRAMEWORK = {
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
+
 LANGUAGES = (
     ('uz', _('Uzbek')),
     ('en', _('English')),
