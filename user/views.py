@@ -23,7 +23,7 @@ class RegisterView(generics.GenericAPIView):
         phone = request.data.get('phone')
         password = request.data.get('password')
         username = request.data.get('username')
-        user = User.objects.filter(username=username, phone=phone).first()
+        user = User.objects.filter(phone=phone).first()
         registered = 1
         if user and user.is_verified == True:
             return Response({
