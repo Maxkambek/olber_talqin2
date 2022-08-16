@@ -175,13 +175,13 @@ class UserDetailSerializer(serializers.ModelSerializer):
     items = CargoListSerializer(required=False, many=True)
     class Meta:
         model = User
-        fields = ("username", "email", 'items', 'workss')
+        fields = ("username", "phone", 'items', 'workss')
 
 
 class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "user_type")
+        fields = ("phone", "user_type")
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
