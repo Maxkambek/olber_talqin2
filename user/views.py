@@ -185,7 +185,7 @@ class ResetPasswordView(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
     def post(self, request):
-        phone = self.request.data.get('phone')
+        phone = self.request.data.get('phone') 
         if phone:
             code = str(random.randint(100000, 1000000))
             ver = verify(phone, code)
@@ -259,9 +259,9 @@ class UserTypeView(generics.GenericAPIView):
         serializer = UserTypeSerializer(data=request.data)
         try:
             if serializer.is_valid():
-                email = serializer.data.get('email')
+                phone = serializer.data.get('phone')
                 user_type = serializer.data.get('user_type')
-                user = User.objects.get(email=email)
+                user = User.objects.get(phone=phone)
                 user.user_type = user_type
                 user.save()
 
