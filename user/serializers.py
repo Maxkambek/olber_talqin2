@@ -15,7 +15,7 @@ class VerifySerializer(serializers.ModelSerializer):
 
 
 class ResetSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=100)
+    phone = serializers.CharField(max_length=100)
     code = serializers.CharField(max_length=50)
     password = serializers.CharField(max_length=100)
 
@@ -79,18 +79,18 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, attrs):
-        email = attrs.get('email')
+        phone = attrs.get('phone')
 
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(phone=phone).exists():
             raise serializers.ValidationError({
-                'error': 'Email is already registered',
+                'error': 'Phone number is already registered',
             })
 
         return super().validate(attrs)
 
     def create(self, validated_data):
         user = User.objects.create(
-            email=validated_data['email'],
+            phone=validated_data['phone'],
         )
         user.set_password(validated_data['password'])
         user.save()
