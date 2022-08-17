@@ -24,7 +24,7 @@ class ResetSerializer(serializers.Serializer):
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'password')
+        fields = ('phone', 'password')
 
 
 class CargoCreateSerializer(serializers.ModelSerializer):

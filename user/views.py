@@ -27,7 +27,7 @@ class RegisterView(generics.GenericAPIView):
         registered = 1
         if user and user.is_verified == True:
             return Response({
-                "msg": "Ushbu user registratsiya qilingan"
+                "msg": "Ushbu raqam registratsiya qilingan"
             }, status=status.HTTP_409_CONFLICT)
         elif user is None:
             registered = 0
