@@ -15,7 +15,6 @@ from .send_message import verify
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
-    @staticmethod
     def post(request):
         serializer = RegisterSerializer(data=request.data)
         phone = request.data.get('phone')
@@ -65,7 +64,6 @@ class RegisterView(generics.GenericAPIView):
 class VerifyView(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
-    @staticmethod
     def post(self, request):
         try:
             phone = request.data.get('phone')
@@ -91,7 +89,6 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
     permission_classes = (AllowAny,)
 
-    @staticmethod
     def post(request):
         try:
             phone = request.data.get('phone')
@@ -118,7 +115,6 @@ class LogoutView(generics.GenericAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
-    @staticmethod
     def delete(self, request):
         try:
             token = Token.objects.get(user=request.user)
@@ -136,7 +132,6 @@ class DeleteAccountView(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserSerializer
 
-    @staticmethod
     def post(self, request):
         id = request.user.id
         user = User.objects.get(id=id)
@@ -157,7 +152,6 @@ class ChangePasswordView(generics.UpdateAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
-    @staticmethod
     def post(self, request):
         user = request.user
         serializer = ChangePasswordSerializer(data=request.data)
@@ -186,9 +180,8 @@ class ChangePasswordView(generics.UpdateAPIView):
 class ResetPasswordView(generics.GenericAPIView):
     serializer_class = PhoneSerializer
 
-    @staticmethod
     def post(self, request):
-        phone = self.request.data.get('phone')
+        phone = request.data.get('phone')
         if phone:
             code = str(random.randint(100000, 1000000))
             ver = verify(phone, code)
@@ -204,7 +197,6 @@ class ResetPasswordView(generics.GenericAPIView):
 class ConfirmResetPasswordView(generics.GenericAPIView):
     serializer_class = ResetSerializer
 
-    @staticmethod
     def post(self, request):
         try:
             phone = request.data.get('phone')
