@@ -188,7 +188,7 @@ class ResetPasswordView(generics.GenericAPIView):
 
     @staticmethod
     def post(self, request):
-        phone = self.request.data.get('phone') 
+        phone = request.data.get('phone')
         if phone:
             code = str(random.randint(100000, 1000000))
             ver = verify(phone, code)
