@@ -17,7 +17,6 @@ dj-database-url = "*"
 psycopg2 = "*"
 drf-yasg = "*"
 django-modeltranslation = "*"
-paycomuz = "*"
 
 [dev-packages]
 
