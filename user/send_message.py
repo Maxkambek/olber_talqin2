@@ -12,7 +12,6 @@ def verify(phone_number, code):
         'callback_url': 'http://0000.uz/test.php'
     }
 
-
     response = requests.request("POST", URL, data=data, headers=PARAMS)
     print(response.json())
     return response

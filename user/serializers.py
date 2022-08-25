@@ -110,6 +110,7 @@ class CargoSerializer(serializers.ModelSerializer):
     user_phone = serializers.ImageField(read_only=True, source="user.phone")
     offers = UserListSerializer(read_only=True, many=True)
     doer = UserListSerializer(read_only=True, many=False)
+
     class Meta:
         model = Cargo
         fields = (
@@ -147,6 +148,7 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     offers = UserListSerializer(read_only=True, many=True)
     user = UserListSerializer(required=False, many=False)
     doer = UserListSerializer(required=False, many=False)
+
     class Meta:
         model = Work
         fields = ('id', 'title', 'user', 'price', 'image', 'status', 'address', 'lat_lon', 'work_time', 'offers', 'description', 'doer')
@@ -173,6 +175,7 @@ class WorkAcceptSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     workss = WorkListSerializer(required=False, many=True)
     items = CargoListSerializer(required=False, many=True)
+
     class Meta:
         model = User
         fields = ("username", "phone", 'items', 'workss')

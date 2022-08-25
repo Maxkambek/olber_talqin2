@@ -1,17 +1,15 @@
-from django.conf import settings
-from django.core.mail import send_mail
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, authentication, permissions, filters
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
+
 from .models import *
 from .pagination import CustomPagination
+from user.payment import *
 from .serializers import *
 from .send_message import verify
-
-from paycomuz.views import MerchantAPIView
-from paycomuz import Paycom
 
 
 class RegisterView(generics.GenericAPIView):
@@ -67,6 +65,7 @@ class RegisterView(generics.GenericAPIView):
 class VerifyView(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
+    @staticmethod
     def post(self, request):
         try:
             phone = request.data.get('phone')
@@ -119,6 +118,7 @@ class LogoutView(generics.GenericAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
+    @staticmethod
     def delete(self, request):
         try:
             token = Token.objects.get(user=request.user)
@@ -136,6 +136,7 @@ class DeleteAccountView(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserSerializer
 
+    @staticmethod
     def post(self, request):
         id = request.user.id
         user = User.objects.get(id=id)
@@ -156,6 +157,7 @@ class ChangePasswordView(generics.UpdateAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
+    @staticmethod
     def post(self, request):
         user = request.user
         serializer = ChangePasswordSerializer(data=request.data)
@@ -184,6 +186,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 class ResetPasswordView(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
+    @staticmethod
     def post(self, request):
         phone = self.request.data.get('phone') 
         if phone:
@@ -201,6 +204,7 @@ class ResetPasswordView(generics.GenericAPIView):
 class ConfirmResetPasswordView(generics.GenericAPIView):
     serializer_class = ResetSerializer
 
+    @staticmethod
     def post(self, request):
         try:
             phone = request.data.get('phone')
@@ -535,8 +539,8 @@ class WorkDetailView(generics.RetrieveUpdateAPIView):
 
 class WorkOfferView(generics.GenericAPIView):
     serializer_class = WorkSerializer
-    authentication_classes = [authentication.TokenAuthentication,]
-    permission_classes = [permissions.IsAuthenticated,]
+    authentication_classes = [authentication.TokenAuthentication, ]
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def post(self, request, pk=None):
         work = Work.objects.get(id=pk)
@@ -600,7 +604,7 @@ class WorkAcceptView(generics.GenericAPIView):
         # except:
         #     return Response({
         #         'msg': "Bad request"
-        #     }, status=status.HTTP_502_BAD_GATEWAY)
+        #     }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CloseWorkView(generics.GenericAPIView):
@@ -623,18 +627,115 @@ class CloseWorkView(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CheckOrder(Paycom):
-    def check_order(self, amount, account, *args, **kwargs):
-        return self.ORDER_FOUND
+#Payment system
+class CartCreate(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        number = request.data.get('card')
+        expire = request.data.get('expire')
+        result = payme_subscribe_cards._cards_create(123, number, expire, True)
+        print(result)
+        return Response(result)
+
+class CartGetVerify(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        token = request.data.get('token')
+        result = payme_subscribe_cards._card_get_verify_code(123, token)
+        return Response(result)
+
+class CartVerify(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        code = request.data.get('code')
+        token = request.data.get('token')
+        result = payme_subscribe_cards._cards_verify(123, code, token)
+        return Response(result)
+
+class CartCheck(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        token = request.data.get('token')
+        result = payme_subscribe_cards._cards_check(123, token)
+        return Response(result)
+
+class CartCheck(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        token = request.data.get('token')
+        result = payme_subscribe_cards._cards_check(123, token)
+        return Response(result)
 
 
-def successfully_payment(self, account, transaction, *args, **kwargs):
-    print(account)
+class CartRemove(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    # authentication_classes = (authentication.TokenAuthentication,)
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        token = request.data.get('token')
+        result = payme_subscribe_cards._cards_remove(123, token)
+        return Response(result)
 
 
-def cancel_payment(self, account, transaction, *args, **kwargs):
-    print(account)
+class CreateInvoice(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        amount = float(request.data.get('amount'))
+        order_id = request.data.get('order_id')
+        result = payme_subscribe_receipts._receipts_create(123, amount, order_id)
+        print(result)
+        return Response(result)
 
 
-class TestView(MerchantAPIView):
-    VALIDATE_CLASS = CheckOrder
+class PayInvoice(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        invoice_id = request.data.get('invoice_id')
+        token = request.data.get('token')
+        phone = request.data.get('phone')
+        result = payme_subscribe_receipts._receipts_pay(123, invoice_id, token, phone)
+        print(result)
+        return Response(result)
+
+
+class CheckPayment(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        user = request.user
+        invoice_id = request.data.get('invoice_id')
+        account_id = request.data.get('account_id')
+        amount = request.data.get('amount')
+        result = payme_subscribe_receipts._receipts_check(123, invoice_id)
+        print(result)
+        state = result['result']['state']
+        if state == 4 and user.account == account_id:
+            user.money += int(amount)
+            user.save()
+            return Response("Payment success", status=status.HTTP_200_OK)
+        else:
+            return Response("To'lov bilan bog'liq xatolik bo'ldi")

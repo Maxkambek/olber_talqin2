@@ -33,5 +33,14 @@ urlpatterns = [
     path('workaccept', WorkAcceptView.as_view()),
     path('work/close/<int:pk>', CloseWorkView.as_view()),
 
-    path('paycom/', TestView.as_view())
+    path('cart-subs/', CartCreate.as_view()),
+    path('cart-get-verify/', CartGetVerify.as_view()),
+    path('cart-verify/', CartVerify.as_view()),
+    path('cart-check/', CartCheck.as_view()),
+    path('cart-remove/', CartRemove.as_view()),
+    path('create-invoice/', CreateInvoice.as_view()),
+    path('pay-invoice/', PayInvoice.as_view()),
+    path('check-invoice/', CheckPayment.as_view()),
+
+
 ]

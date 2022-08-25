@@ -14,6 +14,7 @@ class User(AbstractUser):
         ("driver", "Haydovchi")
     )
     CAR_TYPES = (
+        ('0', "0"),
         ('S', "S"),
         ('M', "M"),
         ('L', "L"),
@@ -35,7 +36,7 @@ class User(AbstractUser):
     count = models.IntegerField(verbose_name="Ishlar soni", default=0)
     works = ArrayField(models.CharField(max_length=50), blank=True, default=list)
     status = models.BooleanField(default=False)
-    car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES, default="S")
+    car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES, default="0")
     drive_doc = models.ImageField(verbose_name="Guvohnoma", null=True, blank=True)
     car_image_1 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
     car_image_2 = models.ImageField(verbose_name="Mashina rasmi", null=True, blank=True)
@@ -86,7 +87,7 @@ class Cargo(models.Model):
     to_floor = models.PositiveIntegerField(default=0)
     to_kv = models.PositiveIntegerField()
     time_when = models.CharField(max_length=35)
-    description = models.TextField(verbose_name="Tafsilot")
+    description = models.TextField(verbose_name="Tafsilot", blank=True)
     image1 = models.ImageField()
     image2 = models.ImageField(null=True, blank=True)
     image3 = models.ImageField(null=True, blank=True)
@@ -117,7 +118,7 @@ class Work(models.Model):
     address = models.CharField(max_length=150)
     lat_lon = models.CharField(max_length=50)
     work_time = models.CharField(max_length=55)
-    description = models.TextField(verbose_name="Tafsilot")
+    description = models.TextField(verbose_name="Tafsilot", blank=True)
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='new')
     offers = models.ManyToManyField(User, verbose_name="Takliflar", null=True, blank=True)
     doer = models.ForeignKey(User, blank=True, null=True, verbose_name="Bajaruvchi", on_delete=models.CASCADE, related_name="jobs")

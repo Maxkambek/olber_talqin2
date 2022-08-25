@@ -5,9 +5,9 @@ from .models import User, Cargo, VerifyEmail, Work
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone', 'money')
+    list_display = ('username', 'email', 'phone', 'money', 'car_type')
     readonly_fields = ('rating',)
-    list_editable = ('money',)
+    list_editable = ('car_type',)
 
 
 class CargoAdmin(TranslationAdmin):
