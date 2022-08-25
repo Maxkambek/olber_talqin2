@@ -14,6 +14,10 @@ class VerifySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PhoneSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=100)
+
+
 class ResetSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=100)
     code = serializers.CharField(max_length=50)

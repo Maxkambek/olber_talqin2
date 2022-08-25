@@ -184,7 +184,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 
 class ResetPasswordView(generics.GenericAPIView):
-    serializer_class = VerifySerializer
+    serializer_class = PhoneSerializer
 
     @staticmethod
     def post(self, request):
