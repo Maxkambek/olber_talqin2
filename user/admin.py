@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
 from modeltranslation.admin import TranslationAdmin
 
 from .models import User, Cargo, VerifyEmail, Work
@@ -29,3 +30,4 @@ admin.site.register(Cargo, CargoAdmin)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(VerifyEmail, VerifEmailAdmin)
 admin.site.unregister(Site)
+admin.site.unregister(Group)
