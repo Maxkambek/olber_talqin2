@@ -202,7 +202,7 @@ class ConfirmResetPasswordView(generics.GenericAPIView):
             phone = request.data.get('phone')
             code = request.data.get('code')
             password = request.data.get('password')
-            ver = VerifyEmail.objects.filter(phone=phone, code=code).first()
+            ver = VerifyEmail.objects.filter(phone=phone, code=code).last()
             if ver:
                 user = User.objects.get(phone=phone)
                 user.set_password(password)
