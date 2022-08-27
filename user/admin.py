@@ -2,6 +2,7 @@ from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 
 from .models import User, Cargo, VerifyEmail, Work
+from django.contrib.sites.models import Site
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -27,3 +28,4 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Cargo, CargoAdmin)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(VerifyEmail, VerifEmailAdmin)
+admin.site.unregister(Site)
