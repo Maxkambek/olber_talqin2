@@ -721,12 +721,12 @@ class CheckPayment(generics.GenericAPIView):
         user = request.user
         invoice_id = request.data.get('invoice_id')
         account_id = request.data.get('account_id')
-        amount = request.data.get('amount')
+        amount = int(request.data.get('amount'))
         result = payme_subscribe_receipts._receipts_check(123, invoice_id)
         print(result)
         state = result['result']['state']
         if state == 4 and user.account == account_id:
-            user.money += int(amount/100)
+            user.money += (amount/100)
             user.save()
             return Response("Payment success", status=status.HTTP_200_OK)
         else:
