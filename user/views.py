@@ -15,7 +15,7 @@ from .send_message import verify
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
-    def post(request):
+    def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         phone = request.data.get('phone')
         password = request.data.get('password')
