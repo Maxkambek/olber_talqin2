@@ -89,8 +89,7 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
     permission_classes = (AllowAny,)
 
-    @staticmethod
-    def post(request):
+    def post(self, request):
         try:
             phone = request.data.get('phone')
             password = request.data.get('password')
