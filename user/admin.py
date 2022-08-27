@@ -6,7 +6,7 @@ from .models import User, Cargo, VerifyEmail, Work
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone', 'money', 'car_type')
-    readonly_fields = ('rating',)
+    readonly_fields = ('money', 'rating',)
     list_editable = ('car_type',)
 
 
