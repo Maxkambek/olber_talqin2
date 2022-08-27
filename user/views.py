@@ -726,7 +726,7 @@ class CheckPayment(generics.GenericAPIView):
         print(result)
         state = result['result']['state']
         if state == 4 and user.account == account_id:
-            user.money += int(amount)
+            user.money += int(amount/100)
             user.save()
             return Response("Payment success", status=status.HTTP_200_OK)
         else:
