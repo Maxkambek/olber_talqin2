@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone', 'money', 'car_type')
+    list_display = ('username', 'phone', 'money', 'car_type')
     readonly_fields = ('money', 'rating',)
     list_editable = ('car_type',)
 
