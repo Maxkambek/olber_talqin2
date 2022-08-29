@@ -663,16 +663,6 @@ class CartCheck(generics.GenericAPIView):
         result = payme_subscribe_cards._cards_check(123, token)
         return Response(result)
 
-class CartCheck(generics.GenericAPIView):
-    serializer_class = UserSerializer
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def post(self, request):
-        token = request.data.get('token')
-        result = payme_subscribe_cards._cards_check(123, token)
-        return Response(result)
-
 
 class CartRemove(generics.GenericAPIView):
     serializer_class = UserSerializer
