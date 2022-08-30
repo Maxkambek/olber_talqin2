@@ -47,7 +47,6 @@ class VerifyView(generics.GenericAPIView):
     def post(self, request):
         try:
             phone = request.data.get('phone')
-
             code = request.data.get('code')
             verify = VerifyEmail.objects.filter(phone=phone, code=code).last()
             if verify:
@@ -67,7 +66,7 @@ class RegisterView(generics.GenericAPIView):
         username = request.data.get('username')
         password = request.data.get('password')
         phone = request.data.get('phone')
-        user_type = request.data.get('user_type')
+        user_type = request.data.get('user  _type')
         user = ''
         if user_type == 'driver':
             car_number = request.data.get('car_number')
@@ -707,7 +706,7 @@ class PayInvoice(generics.GenericAPIView):
         return Response(result)
 
 
-class CheckPayment(generics.GenericAPIView):
+class CheckPaymentView(generics.GenericAPIView):
     serializer_class = UserSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -726,3 +725,15 @@ class CheckPayment(generics.GenericAPIView):
             return Response("Payment success", status=status.HTTP_200_OK)
         else:
             return Response("To'lov bilan bog'liq xatolik bo'ldi")
+
+
+class CheckMerchantView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        account_id = request.data.get('id')
+        amount = int(request.data.get('amount'))
+        if account_id and amount:
+            return Response("Success", status=status.HTTP_200_OK)
+        else:
+            return Response("Invali data", status=status.HTTP_400_BAD_REQUEST)

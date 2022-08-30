@@ -41,7 +41,7 @@ urlpatterns = [
     path('cart-remove/', CartRemove.as_view()),
     path('create-invoice/', CreateInvoice.as_view()),
     path('pay-invoice/', PayInvoice.as_view()),
-    path('check-invoice/', CheckPayment.as_view()),
-
+    path('check-invoice/', CheckPaymentView.as_view()),
+    path('check-merchant/', CheckMerchantView.as_view()),
 
 ]
