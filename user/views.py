@@ -731,7 +731,7 @@ class CheckMerchantView(generics.GenericAPIView):
     serializer_class = UserSerializer
 
     def post(self, request):
-        account_id = request.data.get('id')
+        account_id = request.data.get('account_id')
         amount = int(request.data.get('amount'))
         if account_id and amount:
             return Response("Success", status=status.HTTP_200_OK)
