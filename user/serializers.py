@@ -219,6 +219,11 @@ class UserAccountSerializer(serializers.ModelSerializer):
         fields = ('username', 'image', 'account', 'money')
 
 
+class UserCashSerializer(serializers.Serializer):
+    account_id = serializers.CharField(max_length=7)
+    amount = serializers.CharField(max_length=15)
+
+
 class UserPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

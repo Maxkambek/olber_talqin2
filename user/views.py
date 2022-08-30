@@ -728,7 +728,7 @@ class CheckPaymentView(generics.GenericAPIView):
 
 
 class CheckMerchantView(generics.GenericAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserCashSerializer
 
     def post(self, request):
         account_id = request.data.get('account_id')
