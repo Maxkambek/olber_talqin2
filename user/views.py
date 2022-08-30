@@ -12,28 +12,14 @@ from .serializers import *
 from .send_message import verify
 
 
-class RegisterView(generics.GenericAPIView):
+class RegisterPhoneView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         phone = request.data.get('phone')
-        password = request.data.get('password')
-        username = request.data.get('username')
-        user = User.objects.filter(phone=phone).first()
 
-        registered = 1
-        if user and user.is_verified == True:
-            return Response({
-                "msg": "Ushbu raqam registratsiya qilingan"
-            }, status=status.HTTP_409_CONFLICT)
-        elif user is None:
-            registered = 0
-        else:
-            user.delete()
-            registered = 0
-
-        if registered == 0 and serializer.is_valid():
+        if serializer.is_valid():
             code = str(random.randint(100000, 1000000))
             if VerifyEmail.objects.filter(phone=phone).first():
                 ver = VerifyEmail.objects.get(phone=phone)
@@ -42,22 +28,14 @@ class RegisterView(generics.GenericAPIView):
                 verify(phone, code)
                 msg_s = "Telefon nomerni tasdiqlash uchun bir martalik kod jo'natildi."
                 VerifyEmail.objects.create(phone=phone, code=code)
-                User.objects.create_user(username=username, password=password, phone=phone)
-            else:
-                return Response(
-                    {"msg": "Telefon raqami noto'g'ri kiritilgan"},
-                    status=status.HTTP_400_BAD_REQUEST)
-            if verify:
                 return Response({
                     "phone": phone,
-                    "username": username,
                     "msg": msg_s
-                }, status=status.HTTP_201_CREATED)
+                }, status=status.HTTP_200_OK)
             else:
                 return Response({
-                    "username": username,
-                    "msg": "Sms yuborishda xatolik"
-                }, status=status.HTTP_201_CREATED)
+                    "msg": "Telefon raqami noto'g'ri kiritilgan"
+                }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -68,21 +46,45 @@ class VerifyView(generics.GenericAPIView):
     def post(self, request):
         try:
             phone = request.data.get('phone')
+
             code = request.data.get('code')
-            verify = VerifyEmail.objects.filter(phone=phone, code=code).first()
+            verify = VerifyEmail.objects.filter(phone=phone, code=code).last()
             if verify:
-                user = User.objects.filter(phone=phone).first()
-                user.is_verified = True
-                user.save()
-                verify.delete()
-                return Response({
-                    'msg': "Phone number is verified",
-                    'phone': phone
+                 return Response({
+                    'msg': "Пользователь проверен",
                 }, status=status.HTTP_200_OK)
             else:
-                return Response("Phone number or code invalid", status=status.HTTP_400_BAD_REQUEST)
+                return Response("Номер телефона или код неверно", status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response("Phone number or code invalid", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Номер телефона или код неверно", status=status.HTTP_400_BAD_REQUEST)
+
+
+class RegisterView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        phone = request.data.get('phone')
+        user_type = request.data.get('user_type')
+        user = ''
+        if user_type == 'driver':
+            car_number = request.data.get('car_number')
+            drive_doc = request.data.get('drive_doc')
+            car_image_1 = request.data.get('car_image_1')
+            car_image_2 = request.data.get('car_image_2')
+            car_type = request.data.get('car_type')
+            user = User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type,
+                                            car_number=car_number, drive_doc=drive_doc, car_image_1=car_image_1,
+                                            car_image_2=car_image_2, car_type=car_type)
+        else:
+            user = User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type)
+        user.is_verified = True
+        user.save()
+        verify.delete()
+        return Response({
+            'msg': "Вы успешно зарегистрировались"
+        }, status=status.HTTP_201_CREATED)
 
 
 class LoginView(generics.GenericAPIView):
@@ -191,7 +193,7 @@ class ResetPasswordView(generics.GenericAPIView):
                 VerifyEmail.objects.create(phone=phone, code=code)
                 return Response({"message": "SMS код отправлено"}, status=status.HTTP_200_OK)
             else:
-                return Response({"message": "Недействительный номер телефона"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                return Response({"message": "Неверный номер телефона"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             return Response({"message": "Пользователь не найден"}, status=status.HTTP_400_BAD_REQUEST)
 
