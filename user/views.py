@@ -21,6 +21,7 @@ class RegisterView(generics.GenericAPIView):
         password = request.data.get('password')
         username = request.data.get('username')
         user = User.objects.filter(phone=phone).first()
+
         registered = 1
         if user and user.is_verified == True:
             return Response({
@@ -182,16 +183,17 @@ class ResetPasswordView(generics.GenericAPIView):
 
     def post(self, request):
         phone = request.data.get('phone')
-        if phone:
+        user = User.objects.filter(phone=phone).first()
+        if phone and user:
             code = str(random.randint(100000, 1000000))
             ver = verify(phone, code)
             if ver:
                 VerifyEmail.objects.create(phone=phone, code=code)
-                return Response({"message": "SMS jo'natildi"}, status=status.HTTP_200_OK)
+                return Response({"message": "SMS код отправлено"}, status=status.HTTP_200_OK)
             else:
-                return Response({"message": "Phone number is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "Недействительный номер телефона"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"message": "Phone number is required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Пользователь не найден"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ConfirmResetPasswordView(generics.GenericAPIView):
