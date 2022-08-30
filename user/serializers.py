@@ -208,7 +208,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'car_type',
             'drive_doc',
             'car_image_1',
-            'car_image_2'
+            'car_image_2',
+            'car_number',
             )
 
 

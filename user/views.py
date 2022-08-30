@@ -191,7 +191,7 @@ class ResetPasswordView(generics.GenericAPIView):
                 VerifyEmail.objects.create(phone=phone, code=code)
                 return Response({"message": "SMS код отправлено"}, status=status.HTTP_200_OK)
             else:
-                return Response({"message": "Недействительный номер телефона"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "Недействительный номер телефона"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             return Response({"message": "Пользователь не найден"}, status=status.HTTP_400_BAD_REQUEST)
 

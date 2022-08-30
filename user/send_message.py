@@ -13,6 +13,5 @@ def verify(phone_number, code):
     }
 
     response = requests.request("POST", URL, data=data, headers=PARAMS)
-    print(response.json())
     return response
 
