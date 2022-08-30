@@ -22,11 +22,12 @@ class RegisterPhoneView(generics.GenericAPIView):
         if serializer.is_valid():
             code = str(random.randint(100000, 1000000))
             if VerifyEmail.objects.filter(phone=phone).first():
-                ver = VerifyEmail.objects.get(phone=phone)
-                ver.delete()
+                vers = VerifyEmail.objects.filter(phone=phone)
+                for ver in vers:
+                    ver.delete()
             if len(phone) == 13:
                 verify(phone, code)
-                msg_s = "Telefon nomerni tasdiqlash uchun bir martalik kod jo'natildi."
+                msg_s = "Отправлен одноразовый код для подтверждения номера телефона."
                 VerifyEmail.objects.create(phone=phone, code=code)
                 return Response({
                     "phone": phone,
@@ -34,7 +35,7 @@ class RegisterPhoneView(generics.GenericAPIView):
                 }, status=status.HTTP_200_OK)
             else:
                 return Response({
-                    "msg": "Telefon raqami noto'g'ri kiritilgan"
+                    "msg": "Номер телефона введен неправильно"
                 }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
