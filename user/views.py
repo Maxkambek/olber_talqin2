@@ -48,9 +48,10 @@ class VerifyView(generics.GenericAPIView):
         try:
             phone = request.data.get('phone')
             code = request.data.get('code')
-            verify = VerifyEmail.objects.filter(phone=phone, code=code).last()
+            verify = VerifyEmail.objects.get(phone=phone, code=code)
             if verify:
-                 return Response({
+                verify.delete()
+                return Response({
                     'msg': "Пользователь проверен",
                 }, status=status.HTTP_200_OK)
             else:
@@ -66,24 +67,21 @@ class RegisterView(generics.GenericAPIView):
         username = request.data.get('username')
         password = request.data.get('password')
         phone = request.data.get('phone')
-        user_type = request.data.get('user  _type')
-        user = ''
+        user_type = request.data.get('user_type')
+        print(user_type)
         if user_type == 'driver':
             car_number = request.data.get('car_number')
             drive_doc = request.data.get('drive_doc')
             car_image_1 = request.data.get('car_image_1')
             car_image_2 = request.data.get('car_image_2')
             car_type = request.data.get('car_type')
-            user = User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type,
+            User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type,
                                             car_number=car_number, drive_doc=drive_doc, car_image_1=car_image_1,
-                                            car_image_2=car_image_2, car_type=car_type)
+                                            car_image_2=car_image_2, car_type=car_type, is_verified = True)
         else:
-            user = User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type)
-        user.is_verified = True
-        user.save()
-        verify.delete()
+            User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type, is_verified = True)
         return Response({
-            'msg': "Вы успешно зарегистрировались"
+            'msg': "Регистрация прошла успешно"
         }, status=status.HTTP_201_CREATED)
 
 
@@ -110,7 +108,7 @@ class LoginView(generics.GenericAPIView):
             else:
                 return Response("Неверное имя пользователя или пароль", status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(generics.GenericAPIView):
