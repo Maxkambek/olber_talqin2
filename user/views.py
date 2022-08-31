@@ -685,7 +685,7 @@ class CartCheck(generics.GenericAPIView):
     def post(self, request):
         token = request.data.get('token')
         result = payme_subscribe_cards._cards_check(123, token)
-        return Response(result)
+        return Response(result['error'])
 
 
 class CartRemove(generics.GenericAPIView):
@@ -749,6 +749,8 @@ class CheckPaymentView(generics.GenericAPIView):
 
 class CheckMerchantView(generics.GenericAPIView):
     serializer_class = UserCashSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         account_id = request.data.get('account_id')
