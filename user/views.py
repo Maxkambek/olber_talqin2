@@ -70,7 +70,7 @@ class RegisterView(generics.GenericAPIView):
         phone = request.data.get('phone')
         user_type = request.data.get('user_type')
         verify = VerifyEmail.objects.filter(phone=phone).last()
-        if verify.is_verify == True:
+        if verify and verify.is_verify == True:
             if user_type == 'driver':
                 car_number = request.data.get('car_number')
                 drive_doc = request.data.get('drive_doc')
