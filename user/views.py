@@ -450,11 +450,11 @@ class CargoAcceptView(generics.GenericAPIView):
                     user.save()
                     cargo.save()
                     return Response({
-                        'msg': "Success",
+                        'msg': "Успешно",
                     }, status=status.HTTP_200_OK)
             else:
                 return Response({
-                    'msg': "User not owner"
+                    'msg': "Пользователь не владелец"
                 }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -476,11 +476,11 @@ class CloseItemView(generics.GenericAPIView):
                 doer.works.remove(str(pk))
                 doer.save()
             return Response({
-                'msg': "Cargo closed"
+                'msg': "Груз закрыта"
             }, status=status.HTTP_200_OK)
         else:
             return Response({
-                'msg': "User not owner"
+                'msg': "Пользователь не владелец"
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -496,7 +496,7 @@ class UserAccountView(generics.GenericAPIView):
         else:
             image = None
         return Response({
-            'status': 'Success',
+            'status': 'Успешно',
             'username': user.username,
             'image': image,
             'account': user.account,
@@ -605,11 +605,11 @@ class WorkAcceptView(generics.GenericAPIView):
                     work.offers.clear()
                     work.save()
                     return Response({
-                        'msg': "Success"
+                        'msg': "Успешно"
                     }, status=status.HTTP_200_OK)
             else:
                 return Response({
-                    'msg': "User not owner"
+                    'msg': "Пользователь не владелец"
                 }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -630,12 +630,16 @@ class CloseWorkView(generics.GenericAPIView):
         if work.user_id == user.id:
             work.status = 'finished'
             work.save()
+            if work.doer:
+                doer = work.doer
+                doer.jobs.remove(str(pk))
+                doer.save()
             return Response({
-                'msg': "Work closed"
+                'msg': "Работа закрыта"
             }, status=status.HTTP_200_OK)
         else:
             return Response({
-                'msg': "User not owner"
+                'msg': "Пользователь не владелец"
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
