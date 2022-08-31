@@ -50,7 +50,8 @@ class VerifyView(generics.GenericAPIView):
             code = request.data.get('code')
             verify = VerifyEmail.objects.get(phone=phone, code=code)
             if verify:
-                verify.delete()
+                verify.is_verify = True
+                verify.save()
                 return Response({
                     'msg': "Пользователь проверен",
                 }, status=status.HTTP_200_OK)
@@ -68,21 +69,28 @@ class RegisterView(generics.GenericAPIView):
         password = request.data.get('password')
         phone = request.data.get('phone')
         user_type = request.data.get('user_type')
-        print(user_type)
-        if user_type == 'driver':
-            car_number = request.data.get('car_number')
-            drive_doc = request.data.get('drive_doc')
-            car_image_1 = request.data.get('car_image_1')
-            car_image_2 = request.data.get('car_image_2')
-            car_type = request.data.get('car_type')
-            User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type,
-                                            car_number=car_number, drive_doc=drive_doc, car_image_1=car_image_1,
-                                            car_image_2=car_image_2, car_type=car_type, is_verified = True)
+        verify = VerifyEmail.objects.filter(phone=phone).last()
+        if verify.is_verify == True:
+            if user_type == 'driver':
+                car_number = request.data.get('car_number')
+                drive_doc = request.data.get('drive_doc')
+                car_image_1 = request.data.get('car_image_1')
+                car_image_2 = request.data.get('car_image_2')
+                car_type = request.data.get('car_type')
+                User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type,
+                                                car_number=car_number, drive_doc=drive_doc, car_image_1=car_image_1,
+                                                car_image_2=car_image_2, car_type=car_type, is_verified = True)
+                verify.delete()
+            else:
+                User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type, is_verified = True)
+                verify.delete()
+            return Response({
+                'msg': "Регистрация прошла успешно"
+            }, status=status.HTTP_201_CREATED)
         else:
-            User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type, is_verified = True)
-        return Response({
-            'msg': "Регистрация прошла успешно"
-        }, status=status.HTTP_201_CREATED)
+            return Response({
+                'msg': "Пользователь не проверен"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(generics.GenericAPIView):

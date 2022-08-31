@@ -132,3 +132,4 @@ class VerifyEmail(models.Model):
 
     phone = models.CharField(max_length=15, verbose_name="Telefon raqam")
     code = models.CharField(max_length=10, verbose_name="Kod")
+    is_verify = models.BooleanField(default=False)
