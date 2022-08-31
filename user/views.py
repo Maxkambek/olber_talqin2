@@ -460,7 +460,7 @@ class CargoAcceptView(generics.GenericAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CloseItemView(generics.GenericAPIView):
+class CloseCargoView(generics.GenericAPIView):
     serializer_class = CargoSerializer
     authentication_classes = [authentication.TokenAuthentication, ]
     permission_classes = [permissions.IsAuthenticated, ]
