@@ -749,10 +749,11 @@ class CheckPaymentView(generics.GenericAPIView):
 
 class CheckMerchantView(generics.GenericAPIView):
     serializer_class = UserCashSerializer
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    # authentication_classes = (authentication.TokenAuthentication,)
+    # permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
+        # request.META.get("HTTP_AUTHORIZATION", None)
         account_id = request.data.get('account_id')
         amount = int(request.data.get('amount'))
         if account_id and amount:
