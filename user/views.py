@@ -146,13 +146,23 @@ class DeleteAccountView(generics.GenericAPIView):
         user = User.objects.get(id=id)
         password = request.data.get('password')
         check = user.check_password(password)
+        jobs = user.jobs.count()
+        cargos = user.workes.count()
+
         if check:
-            user.delete()
-            return Response({
-                "msg": "Account deleted"
-            }, status=status.HTTP_200_OK)
+            if jobs == 0 and cargos == 0:
+                user.delete()
+                return Response({
+                    "msg": "Аккаунт удален"
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "msg": "У вас есть незаконченное дело"
+                }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response("Invalid password", status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "msg": "Неверный пароль"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
