@@ -18,27 +18,32 @@ class RegisterPhoneView(generics.GenericAPIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         phone = request.data.get('phone')
-
-        if serializer.is_valid():
-            code = str(random.randint(100000, 1000000))
-            if VerifyEmail.objects.filter(phone=phone).first():
-                vers = VerifyEmail.objects.filter(phone=phone)
-                for ver in vers:
-                    ver.delete()
-            if len(phone) == 13:
-                verify(phone, code)
-                msg_s = "Отправлен одноразовый код для подтверждения номера телефона."
-                VerifyEmail.objects.create(phone=phone, code=code)
-                return Response({
-                    "phone": phone,
-                    "msg": msg_s
-                }, status=status.HTTP_200_OK)
+        user  = User.objects.filter(phone=phone).last()
+        if user is None
+            if serializer.is_valid():
+                code = str(random.randint(100000, 1000000))
+                if VerifyEmail.objects.filter(phone=phone).first():
+                    vers = VerifyEmail.objects.filter(phone=phone)
+                    for ver in vers:
+                        ver.delete()
+                if len(phone) == 13:
+                    verify(phone, code)
+                    msg_s = "Отправлен одноразовый код для подтверждения номера телефона."
+                    VerifyEmail.objects.create(phone=phone, code=code)
+                    return Response({
+                        "phone": phone,
+                        "msg": msg_s
+                    }, status=status.HTTP_200_OK)
+                else:
+                    return Response({
+                        "msg": "Номер телефона введен неправильно"
+                    }, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({
-                    "msg": "Номер телефона введен неправильно"
-                }, status=status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "msg": "Пользователь уже зарегистрирован"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class VerifyView(generics.GenericAPIView):
@@ -753,7 +758,7 @@ class CheckMerchantView(generics.GenericAPIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        # request.META.get("HTTP_AUTHORIZATION", None)
+        authn = request.META.get("HTTP_AUTHORIZATION", None)
         account_id = request.data.get('account_id')
         amount = int(request.data.get('amount'))
         if account_id and amount:
