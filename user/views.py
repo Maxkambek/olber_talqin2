@@ -39,7 +39,7 @@ class RegisterPhoneView(generics.GenericAPIView):
                         "msg": "Номер телефона введен неправильно"
                     }, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.errors, status=status.HTTP_409_CONFLICT)
         else:
             return Response({
                 "msg": "Пользователь уже зарегистрирован"
@@ -689,6 +689,7 @@ class CartCheck(generics.GenericAPIView):
 
     def post(self, request):
         token = request.data.get('token')
+        card = request.data.get('card')
         result = payme_subscribe_cards._cards_check(123, token)
         return Response(result['error'])
 
@@ -765,3 +766,4 @@ class CheckMerchantView(generics.GenericAPIView):
             return Response("Success", status=status.HTTP_200_OK)
         else:
             return Response("Invali data", status=status.HTTP_400_BAD_REQUEST)
+63047bbcd15d8d8d093b36ce_dqDbXSSUKAeFQsxpfbHTvz27535Hk55SCu7aDkz3NxxNHd1gcWqOFbgHircX3qG03jxj57ABGNIi0IJrtGqIwqXpGhUtroJcE00mQuthAmV0mcOzgIdgV8nfYGd54AAxNdMugRfFHNnC2sEGPWfAxncJNvjZF6dWzcwffszmtDRmaAj2viDVjyVkXGuD0SbGSDVbsEnPF3DSo9AOwjmy8RtarA2IzjcIFyZjdeBXdAaOah5YIRH7j8i6QsFwKKpWnMcyWnX03kG4QyNU9bhuFNAYGW65HE8sV4Dpa0HWNwms1RoRoS8YDYccdzkY3f6IGN2IIoMqyaqm8oc35TAaAf2m7GQNWMvE2HMwXnjIguOAHzYoRKK01q0RVB31HVUwi4Cmkk
