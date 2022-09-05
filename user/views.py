@@ -689,9 +689,9 @@ class CartCheck(generics.GenericAPIView):
 
     def post(self, request):
         token = request.data.get('token')
-        card = request.data.get('card')
+        # card = request.data.get('card')
         result = payme_subscribe_cards._cards_check(123, token)
-        return Response(result['error'])
+        return Response(result)
 
 
 class CartRemove(generics.GenericAPIView):
