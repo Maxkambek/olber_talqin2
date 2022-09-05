@@ -19,7 +19,7 @@ class RegisterPhoneView(generics.GenericAPIView):
         serializer = RegisterSerializer(data=request.data)
         phone = request.data.get('phone')
         user  = User.objects.filter(phone=phone).last()
-        if user is None
+        if user is None:
             if serializer.is_valid():
                 code = str(random.randint(100000, 1000000))
                 if VerifyEmail.objects.filter(phone=phone).first():
