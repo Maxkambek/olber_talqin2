@@ -717,12 +717,13 @@ class CartCheck(generics.GenericAPIView):
         card = request.data.get('card')
         account_id = request.user.account
         result = payme_subscribe_cards._cards_check(123, token)
+        user = request.user
         if "error" in result:
             return Response({
                 "msg": "Неверные данные"
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            CardData.objects.create(user=request.user.id, card=card, account=account_id)
+            CardData.objects.create(user=user, card=card, account=account_id)
             return Response({
                 "msg": "Прошла успешно",
                 "result": result['result']
