@@ -788,4 +788,6 @@ class CheckMerchantView(generics.GenericAPIView):
                 "header": auth
             }, status=status.HTTP_200_OK)
         else:
-            return Response("Invali data", status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "msg": "Неверные данные"
+            }, status=status.HTTP_400_BAD_REQUEST)
