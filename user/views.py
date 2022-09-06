@@ -4,6 +4,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
+from rest_framework import HTTP_HEADER_ENCODING, exceptions
+from six import text_type
 
 from .models import *
 from .pagination import CustomPagination
@@ -764,11 +766,27 @@ class CheckMerchantView(generics.GenericAPIView):
     # authentication_classes = (authentication.TokenAuthentication,)
     # permission_classes = (permissions.IsAuthenticated,)
 
+
+    # should this be in settings.py ?
+        """
+        Return request's 'X-Mirror-Authorization:' header, as a bytestring.
+        Hide some test client ickyness where the header can be unicode.
+        """
+
     def post(self, request):
-        authn = request.META.get("HTTP_AUTHORIZATION", None)
+        AUTHORIZATION_HEADER = 'HTTP_X_CUSTOM_AUTHORIZATION'
+        auth = request.META.get(AUTHORIZATION_HEADER, b'')
+        if isinstance(auth, text_type):
+            # Work around django test client oddness
+            auth = auth.encode(HTTP_HEADER_ENCODING)
+
+
         account_id = request.data.get('account_id')
         amount = int(request.data.get('amount'))
         if account_id and amount:
-            return Response("Success", status=status.HTTP_200_OK)
+            return Response({
+                "msg": "Success",
+                "header": auth
+            }, status=status.HTTP_200_OK)
         else:
             return Response("Invali data", status=status.HTTP_400_BAD_REQUEST)
