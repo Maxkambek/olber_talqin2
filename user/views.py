@@ -728,7 +728,7 @@ class CartCheck(generics.GenericAPIView):
             return Response({
                 "msg": "Прошла успешно",
                 "result": result['result'],
-                "user": user
+                "user": request.user
 
             }, status=status.HTTP_200_OK)
 
