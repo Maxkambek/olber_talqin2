@@ -658,8 +658,14 @@ class CartCreate(generics.GenericAPIView):
         number = request.data.get('card')
         expire = request.data.get('expire')
         result = payme_subscribe_cards._cards_create(123, number, expire, True)
-        print(result)
-        return Response(result)
+        if result['error']:
+            return Response({
+                "msg": "Неверные данные"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Регистрация прошла успешно"
+            }, status=status.HTTP_200_OK)
 
 class CartGetVerify(generics.GenericAPIView):
     serializer_class = UserSerializer
