@@ -717,7 +717,8 @@ class CartCheck(generics.GenericAPIView):
         card = request.data.get('card')
         account_id = request.user.account
         result = payme_subscribe_cards._cards_check(123, token)
-        user = request.user[0]
+        user_id = request.user.id
+        user = User.objects.get(id=user_id)
         if "error" in result:
             return Response({
                 "msg": "Неверные данные"
