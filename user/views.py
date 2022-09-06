@@ -774,19 +774,22 @@ class CheckMerchantView(generics.GenericAPIView):
 
     def post(self, request):
         AUTHORIZATION_HEADER = 'HTTP_X_CUSTOM_AUTHORIZATION'
-        auth = request.META.get(AUTHORIZATION_HEADER, b'')
+        auth = request.META.get(AUTHORIZATION_HEADER) #(AUTHORIZATION_HEADER, b'')
         if isinstance(auth):
             # Work around django test client oddness
             auth = auth.encode(HTTP_HEADER_ENCODING)
 
-        account_id = request.data.get('account_id')
-        amount = int(request.data.get('amount'))
-        if account_id and amount:
-            return Response({
-                "msg": "Success",
-                "header": auth
-            }, status=status.HTTP_200_OK)
+            account_id = request.data.get('account_id')
+            amount = int(request.data.get('amount'))
+            if account_id and amount:
+                return Response({
+                    "msg": "Success",
+                    "header": auth
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "msg": "Неверные данные",
+
+                }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({
-                "msg": "Неверные данные"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(request.headers)
