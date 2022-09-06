@@ -768,10 +768,10 @@ class CheckMerchantView(generics.GenericAPIView):
 
 
     # should this be in settings.py ?
-        """
-        Return request's 'X-Mirror-Authorization:' header, as a bytestring.
-        Hide some test client ickyness where the header can be unicode.
-        """
+    """
+    Return request's 'X-Mirror-Authorization:' header, as a bytestring.
+    Hide some test client ickyness where the header can be unicode.
+    """
 
     def post(self, request):
         AUTHORIZATION_HEADER = 'HTTP_X_CUSTOM_AUTHORIZATION'
