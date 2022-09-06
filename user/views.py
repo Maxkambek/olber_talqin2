@@ -724,10 +724,12 @@ class CartCheck(generics.GenericAPIView):
                 "msg": "Неверные данные"
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            CardData.objects.create(user=user, card=card, account=account_id)
+            # CardData.objects.create(user=user, card=card, account=account_id)
             return Response({
                 "msg": "Прошла успешно",
-                "result": result['result']
+                "result": result['result'],
+                "user": user
+
             }, status=status.HTTP_200_OK)
 
 
