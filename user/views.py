@@ -662,10 +662,12 @@ class CartCreate(generics.GenericAPIView):
         if "error" in result:
             return Response({
                 "msg": "Неверные данные"
+
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
-                "msg": "Регистрация прошла успешно"
+                "msg": "Регистрация прошла успешно",
+                "result": result['result']
             }, status=status.HTTP_200_OK)
 
 class CartGetVerify(generics.GenericAPIView):
