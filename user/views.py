@@ -4,8 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
-from rest_framework import HTTP_HEADER_ENCODING, exceptions
-from six import text_type
+from rest_framework import HTTP_HEADER_ENCODING
 
 from .models import *
 from .pagination import CustomPagination
@@ -776,7 +775,7 @@ class CheckMerchantView(generics.GenericAPIView):
     def post(self, request):
         AUTHORIZATION_HEADER = 'HTTP_X_CUSTOM_AUTHORIZATION'
         auth = request.META.get(AUTHORIZATION_HEADER, b'')
-        if isinstance(auth, text_type):
+        if isinstance(auth):
             # Work around django test client oddness
             auth = auth.encode(HTTP_HEADER_ENCODING)
 
