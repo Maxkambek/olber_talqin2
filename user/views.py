@@ -684,7 +684,8 @@ class CartGetVerify(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
-                "msg": "Верификация прошла успешно"
+                "msg": "Верификация прошла успешно",
+                "result": result['result']
             }, status=status.HTTP_200_OK)
 
 class CartVerify(generics.GenericAPIView):
@@ -721,7 +722,8 @@ class CartCheck(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
-                "msg": "Прошла успешно"
+                "msg": "Прошла успешно",
+                "result": result['result']
             }, status=status.HTTP_200_OK)
 
 
@@ -739,7 +741,8 @@ class CartRemove(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
-                "msg": "Прошла успешно"
+                "msg": "Прошла успешно",
+                "result": result['result']
             }, status=status.HTTP_200_OK)
 
 
@@ -759,7 +762,8 @@ class CreateInvoice(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
-                "msg": "Прошла успешно"
+                "msg": "Прошла успешно",
+                "result": result['result']
             }, status=status.HTTP_200_OK)
 
 
@@ -779,7 +783,8 @@ class PayInvoice(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
-                "msg": "Прошла успешно"
+                "msg": "Прошла успешно",
+                "result": result['result']
             }, status=status.HTTP_200_OK)
 
 
@@ -799,7 +804,10 @@ class CheckPaymentView(generics.GenericAPIView):
         if state == 4 and user.account == account_id:
             user.money += (amount/100)
             user.save()
-            return Response("Payment success", status=status.HTTP_200_OK)
+            return Response({
+                "msg": "Payment success",
+                "result": result['result']
+            }, status=status.HTTP_200_OK)
         else:
             return Response("To'lov bilan bog'liq xatolik bo'ldi")
 
