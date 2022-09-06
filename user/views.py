@@ -780,7 +780,6 @@ class CheckMerchantView(generics.GenericAPIView):
             # Work around django test client oddness
             auth = auth.encode(HTTP_HEADER_ENCODING)
 
-
         account_id = request.data.get('account_id')
         amount = int(request.data.get('amount'))
         if account_id and amount:
