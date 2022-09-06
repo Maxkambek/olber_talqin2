@@ -136,5 +136,5 @@ class VerifyEmail(models.Model):
 
 
 class CardData(models.Model):
-    card = models.PositiveIntegerField(verbose_name="Card number")
+    card = models.CharField(max_length=20, verbose_name="Card number")
     account = models.CharField(max_length=10, verbose_name="Account id")
