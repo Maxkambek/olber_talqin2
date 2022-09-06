@@ -659,7 +659,7 @@ class CartCreate(generics.GenericAPIView):
         number = request.data.get('card')
         expire = request.data.get('expire')
         result = payme_subscribe_cards._cards_create(123, number, expire, True)
-        if "error" in result:# == 'error':
+        if "error" in result:
             return Response({
                 "msg": "Неверные данные"
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -676,7 +676,14 @@ class CartGetVerify(generics.GenericAPIView):
     def post(self, request):
         token = request.data.get('token')
         result = payme_subscribe_cards._card_get_verify_code(123, token)
-        return Response(result)
+        if "error" in result:
+            return Response({
+                "msg": "Неверные данные"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Верификация прошла успешно"
+            }, status=status.HTTP_200_OK)
 
 class CartVerify(generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -687,7 +694,14 @@ class CartVerify(generics.GenericAPIView):
         code = request.data.get('code')
         token = request.data.get('token')
         result = payme_subscribe_cards._cards_verify(123, code, token)
-        return Response(result)
+        if "error" in result:
+            return Response({
+                "msg": "Неверный код или токен"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Верификация прошла успешно"
+            }, status=status.HTTP_200_OK)
 
 class CartCheck(generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -698,7 +712,14 @@ class CartCheck(generics.GenericAPIView):
         token = request.data.get('token')
         # card = request.data.get('card')
         result = payme_subscribe_cards._cards_check(123, token)
-        return Response(result)
+        if "error" in result:
+            return Response({
+                "msg": "Неверные данные"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Прошла успешно"
+            }, status=status.HTTP_200_OK)
 
 
 class CartRemove(generics.GenericAPIView):
@@ -709,7 +730,14 @@ class CartRemove(generics.GenericAPIView):
     def post(self, request):
         token = request.data.get('token')
         result = payme_subscribe_cards._cards_remove(123, token)
-        return Response(result)
+        if "error" in result:
+            return Response({
+                "msg": "Неверные данные"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Прошла успешно"
+            }, status=status.HTTP_200_OK)
 
 
 class CreateInvoice(generics.GenericAPIView):
@@ -721,8 +749,15 @@ class CreateInvoice(generics.GenericAPIView):
         amount = float(request.data.get('amount'))
         order_id = request.data.get('order_id')
         result = payme_subscribe_receipts._receipts_create(123, amount, order_id)
-        print(result)
-        return Response(result)
+        client = User.objects.filter(account=order_id).first()
+        if not client or "error" in result:
+            return Response({
+                "msg": "Неверные данные"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Прошла успешно"
+            }, status=status.HTTP_200_OK)
 
 
 class PayInvoice(generics.GenericAPIView):
@@ -735,8 +770,14 @@ class PayInvoice(generics.GenericAPIView):
         token = request.data.get('token')
         phone = request.data.get('phone')
         result = payme_subscribe_receipts._receipts_pay(123, invoice_id, token, phone)
-        print(result)
-        return Response(result)
+        if "error" in result:
+            return Response({
+                "msg": "Неправильный номер телефона"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Прошла успешно"
+            }, status=status.HTTP_200_OK)
 
 
 class CheckPaymentView(generics.GenericAPIView):
