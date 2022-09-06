@@ -136,6 +136,6 @@ class VerifyEmail(models.Model):
 
 
 class CardData(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="card")
     card = models.CharField(max_length=20, verbose_name="Card number")
     account = models.CharField(max_length=10, verbose_name="Account id")
