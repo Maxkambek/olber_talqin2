@@ -714,13 +714,15 @@ class CartCheck(generics.GenericAPIView):
 
     def post(self, request):
         token = request.data.get('token')
-        # card = request.data.get('card')
+        card = request.data.get('card')
+        account_id = request.user.account
         result = payme_subscribe_cards._cards_check(123, token)
         if "error" in result:
             return Response({
                 "msg": "Неверные данные"
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
+            CardData.objects.create(card=card, account=account_id)
             return Response({
                 "msg": "Прошла успешно",
                 "result": result['result']
@@ -729,17 +731,20 @@ class CartCheck(generics.GenericAPIView):
 
 class CartRemove(generics.GenericAPIView):
     serializer_class = UserSerializer
-    # authentication_classes = (authentication.TokenAuthentication,)
-    # permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         token = request.data.get('token')
+        account_id = request.user.account
         result = payme_subscribe_cards._cards_remove(123, token)
         if "error" in result:
             return Response({
                 "msg": "Неверные данные"
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
+            card = CardData.objects.filter(account=account_id).last()
+            card.delete()
             return Response({
                 "msg": "Прошла успешно",
                 "result": result['result']
@@ -756,7 +761,9 @@ class CreateInvoice(generics.GenericAPIView):
         order_id = request.data.get('order_id')
         result = payme_subscribe_receipts._receipts_create(123, amount, order_id)
         client = User.objects.filter(account=order_id).first()
-        if not client or "error" in result:
+        account_id = request.user.account
+        card = CardData.objects.filter(account=account_id).last()
+        if not card or not client or "error" in result:
             return Response({
                 "msg": "Неверные данные"
             }, status=status.HTTP_400_BAD_REQUEST)
