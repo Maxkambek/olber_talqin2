@@ -694,14 +694,15 @@ class CartVerify(generics.GenericAPIView):
         code = request.data.get('code')
         token = request.data.get('token')
         result = payme_subscribe_cards._cards_verify(123, code, token)
-        if "error" in result:
-            return Response({
-                "msg": "Неверный код или токен"
-            }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({
-                "msg": "Верификация прошла успешно"
-            }, status=status.HTTP_200_OK)
+        return Response(result)
+        # if "error" in result:
+        #     return Response({
+        #         "msg": "Неверный код или токен"
+        #     }, status=status.HTTP_400_BAD_REQUEST)
+        # else:
+        #     return Response({
+        #         "msg": "Верификация прошла успешно"
+        #     }, status=status.HTTP_200_OK)
 
 class CartCheck(generics.GenericAPIView):
     serializer_class = UserSerializer
