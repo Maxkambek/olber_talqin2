@@ -658,7 +658,7 @@ class CartCreate(generics.GenericAPIView):
         number = request.data.get('card')
         expire = request.data.get('expire')
         result = payme_subscribe_cards._cards_create(123, number, expire, True)
-        if result['error']:# == 'error':
+        if result['error'].exists():# == 'error':
             return Response({
                 "msg": "Неверные данные"
             }, status=status.HTTP_400_BAD_REQUEST)
