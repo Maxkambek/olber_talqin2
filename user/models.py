@@ -136,6 +136,10 @@ class VerifyEmail(models.Model):
 
 
 class CardData(models.Model):
+    class Meta:
+        verbose_name = _("Karta ma'lumotlari")
+        verbose_name_plural = _("Karta ma'lumotlari")
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     card = models.CharField(max_length=20, verbose_name="Card number")
     account = models.CharField(max_length=10, verbose_name="Account id")
