@@ -694,7 +694,7 @@ class CartVerify(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        code = int(request.data.get('code'))
+        code = str(request.data.get('code'))
         token = request.data.get('token')
         result = payme_subscribe_cards._cards_verify(123, code, token)
         return Response(result)
