@@ -697,7 +697,7 @@ class CartVerify(generics.GenericAPIView):
         code = request.data.get('code')
         token = request.data.get('token')
         result = payme_subscribe_cards._cards_verify(123, code, token)
-        return result
+        return Response(result)
         # if "error" in result:
         #     return Response({
         #         "msg": "Неверный код или токен"
