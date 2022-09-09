@@ -56,14 +56,14 @@ class PaymeSubscribeCards:
         }
         return self.__request(self._parse_to_json(**context))
 
-    def _cards_verify(self, id: int, verify_code: int, token: str) -> dict:
+    def _cards_verify(self, id: int, code: int, token: str) -> dict:
         """Верификация карты с помощью кода отправленного по СМС."""
         context: dict = {
             "id": id,
             "method": self.__methods.get("cards_verify"),
             "params": {
                 "token": token,
-                "code": verify_code
+                "code": code
             }
         }
         return self.__request(self._parse_to_json(**context))
