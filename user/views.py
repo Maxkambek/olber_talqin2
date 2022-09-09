@@ -659,17 +659,16 @@ class CartCreate(generics.GenericAPIView):
         number = request.data.get('card')
         expire = request.data.get('expire')
         result = payme_subscribe_cards._cards_create(123, number, expire, True)
-        return Response(result)
-        # if "error" in result:
-        #     return Response({
-        #         "msg": "Неверные данные"
-        #
-        #     }, status=status.HTTP_400_BAD_REQUEST)
-        # else:
-        #     return Response({
-        #         "msg": "Регистрация прошла успешно",
-        #         "result": result['result']
-        #     }, status=status.HTTP_200_OK)
+        if "error" in result:
+            return Response({
+                "msg": "Неверные данные"
+
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Регистрация прошла успешно",
+                "result": result['result']
+            }, status=status.HTTP_200_OK)
 
 class CartGetVerify(generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -698,16 +697,15 @@ class CartVerify(generics.GenericAPIView):
         code = str(request.data.get('code'))
         token = request.data.get('token')
         result = payme_subscribe_cards._cards_verify(123, code, token)
-        return Response(result)
-        # if "error" in result:
-        #     return Response({
-        #         "msg": "Неверный код или токен"
-        #     }, status=status.HTTP_400_BAD_REQUEST)
-        # else:
-        #     return Response({
-        #         "msg": "Верификация прошла успешно",
-        #         'result': result['result']
-        #     }, status=status.HTTP_200_OK)
+        if "error" in result:
+            return Response({
+                "msg": "Неверный код или токен"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "msg": "Верификация прошла успешно",
+                'result': result['result']
+            }, status=status.HTTP_200_OK)
 
 class CartCheck(generics.GenericAPIView):
     serializer_class = UserSerializer
