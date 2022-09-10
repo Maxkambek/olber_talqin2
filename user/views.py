@@ -762,10 +762,9 @@ class CreateInvoice(generics.GenericAPIView):
 
     def post(self, request):
         amount = float(request.data.get('amount'))
-        order_id = request.data.get('order_id')
-        result = payme_subscribe_receipts._receipts_create(123, amount, order_id)
-        client = User.objects.filter(account=order_id).first()
         account_id = request.user.account
+        result = payme_subscribe_receipts._receipts_create(123, amount, account_id)
+        client = User.objects.filter(account=account_id).first()
         card = CardData.objects.filter(account=account_id).last()
         if not card or not client or "error" in result:
             return Response({
