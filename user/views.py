@@ -804,22 +804,27 @@ class CheckPaymentView(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        user = request.user
         invoice_id = request.data.get('invoice_id')
-        account_id = request.data.get('account_id')
+        user = request.user
         amount = int(request.data.get('amount'))
         result = payme_subscribe_receipts._receipts_check(123, invoice_id)
-        print(result)
-        state = result['result']['state']
-        if state == 4 and user.account == account_id:
-            user.money += (amount/100)
-            user.save()
+        if "error" in result:
             return Response({
-                "msg": "Payment success",
-                "result": result['result']
-            }, status=status.HTTP_200_OK)
+                "msg": "Неверные данные"
+            }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response("To'lov bilan bog'liq xatolik bo'ldi")
+            state = result['result']['state']
+            if state == 4:
+                user.money += (amount/100)
+                user.save()
+                return Response({
+                    "msg": "Оплата успешно",
+                    "result": result['result']
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "msg":"Произошла ошибка при оплате"}, status=status.HTTP_400_BAD_REQUEST
+                )
 
 
 class CheckMerchantView(generics.GenericAPIView):
