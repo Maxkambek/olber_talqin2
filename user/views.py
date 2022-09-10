@@ -661,8 +661,8 @@ class CartCreate(generics.GenericAPIView):
         result = payme_subscribe_cards._cards_create(123, number, expire, True)
         if "error" in result:
             return Response({
-                "msg": "Неверные данные"
-
+                "msg": "Неверные данные",
+                "error": result['error']
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
@@ -680,7 +680,8 @@ class CartGetVerify(generics.GenericAPIView):
         result = payme_subscribe_cards._card_get_verify_code(123, token)
         if "error" in result:
             return Response({
-                "msg": "Неверные данные"
+                "msg": "Неверные данные",
+                "error": result['error']
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
@@ -699,7 +700,8 @@ class CartVerify(generics.GenericAPIView):
         result = payme_subscribe_cards._cards_verify(123, code, token)
         if "error" in result:
             return Response({
-                "msg": "Неверный код или токен"
+                "msg": "Неверные данные",
+                "error": result['error']
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
@@ -721,7 +723,8 @@ class CartCheck(generics.GenericAPIView):
         user = User.objects.get(id=user_id)
         if "error" in result:
             return Response({
-                "msg": "Неверные данные"
+                "msg": "Неверные данные",
+                "error": result['error']
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             user.carddata_set.get_or_create(card=card, account=account_id)
@@ -744,7 +747,8 @@ class CartRemove(generics.GenericAPIView):
         result = payme_subscribe_cards._cards_remove(123, token)
         if "error" in result:
             return Response({
-                "msg": "Неверные данные"
+                "msg": "Неверные данные",
+                "error": result['error']
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             card = CardData.objects.filter(account=account_id).last()
@@ -768,7 +772,8 @@ class CreateInvoice(generics.GenericAPIView):
         card = CardData.objects.filter(account=account_id).last()
         if not card or not client or "error" in result:
             return Response({
-                "msg": "Неверные данные"
+                "msg": "Неверные данные",
+                "error": result['error']
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
@@ -789,18 +794,18 @@ class PayInvoice(generics.GenericAPIView):
         amount = int(request.data.get('amount'))
         user = request.user
         result = payme_subscribe_receipts._receipts_pay(123, invoice_id, token, phone)
-        return Response(result)
-        # if "error" in result:
-        #     return Response({
-        #         "msg": "Неправильный номер телефона"
-        #     }, status=status.HTTP_400_BAD_REQUEST)
-        # else:
-        #     user.money += amount
-        #     user.save()
-        #     return Response({
-        #         "msg": "Прошла успешно",
-        #         "result": result['result']
-        #     }, status=status.HTTP_200_OK)
+        if "error" in result:
+            return Response({
+                "msg": "Неверные данные",
+                "error": result['error']
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user.money += amount
+            user.save()
+            return Response({
+                "msg": "Прошла успешно",
+                "result": result['result']
+            }, status=status.HTTP_200_OK)
 
 
 class CheckPaymentView(generics.GenericAPIView):
@@ -813,7 +818,8 @@ class CheckPaymentView(generics.GenericAPIView):
         result = payme_subscribe_receipts._receipts_check(123, invoice_id)
         if "error" in result:
             return Response({
-                "msg": "Неверные данные"
+                "msg": "Неверные данные",
+                "error": result['error']
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             state = result['result']['state']
