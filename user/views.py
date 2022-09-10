@@ -786,12 +786,16 @@ class PayInvoice(generics.GenericAPIView):
         invoice_id = request.data.get('invoice_id')
         token = request.data.get('token')
         phone = request.data.get('phone')
+        amount = int(request.data.get('amount'))
+        user = request.user
         result = payme_subscribe_receipts._receipts_pay(123, invoice_id, token, phone)
         if "error" in result:
             return Response({
                 "msg": "Неправильный номер телефона"
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
+            user.money += amount
+            user.save()
             return Response({
                 "msg": "Прошла успешно",
                 "result": result['result']
@@ -805,8 +809,6 @@ class CheckPaymentView(generics.GenericAPIView):
 
     def post(self, request):
         invoice_id = request.data.get('invoice_id')
-        user = request.user
-        amount = int(request.data.get('amount'))
         result = payme_subscribe_receipts._receipts_check(123, invoice_id)
         if "error" in result:
             return Response({
@@ -815,8 +817,7 @@ class CheckPaymentView(generics.GenericAPIView):
         else:
             state = result['result']['state']
             if state == 4:
-                user.money += (amount/100)
-                user.save()
+
                 return Response({
                     "msg": "Оплата успешно",
                     "result": result['result']
