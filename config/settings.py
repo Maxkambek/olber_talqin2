@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-m!+d_2&e-oq+(dttt%c^3rhx(d_c5%)r0!@jf&00(ouvjv*&!u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'http://localhost:3000']
+ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'http://localhost:3000', '1426-213-230-121-237.ngrok.io']
 
 CORS_ALLOWED_ORIGINS = [
     'https://dostavka-android.herokuapp.com',

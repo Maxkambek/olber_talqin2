@@ -3,9 +3,7 @@ from rest_framework import generics, status, authentication, permissions, filter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.views import APIView
-from rest_framework import HTTP_HEADER_ENCODING
-
+import base64, zlib
 from .models import *
 from .pagination import CustomPagination
 from user.payment import *
@@ -848,8 +846,12 @@ class CheckMerchantView(generics.GenericAPIView):
     """
 
     def post(self, request):
-        auth = request.headers.authorization
+        auth = request.headers
+        meta = request.META
+        # print(meta)
+        print(auth)
         if auth:
+            # header = zlib.decompress(base64.b64decode(auth))
             return Response(auth)
         else:
             return Response("Authorization")
