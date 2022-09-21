@@ -6,7 +6,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-import base64, zlib
+# import base64, zlib
 
 from rest_framework.views import APIView
 
@@ -15,7 +15,11 @@ from .pagination import CustomPagination
 from user.payment import *
 from .serializers import *
 from .send_message import verify
-from geopy.geocoders import Nominatim
+# from geopy.geocoders import Nominatim
+
+# from paycomuz.views import MerchantAPIView
+# from paycomuz import Paycom
+# from django.urls import path
 
 
 class RegisterPhoneView(generics.GenericAPIView):
@@ -929,37 +933,32 @@ class CheckMerchantView(generics.GenericAPIView):
         #     return Response(request.headers)
 
 
-class GetStreetView(generics.GenericAPIView):
-    serializer_class = AddressSerializer
-
-    def post(self, request):
-        locator = Nominatim(user_agent="myGeocoder")
-        lat = request.data.get("lat")
-        lng = request.data.get("lng")
-        if lat and lng:
-            geocode = lambda query: locator.geocode("%s, Tashkent City" % query)
-            print(geocode("Muhammad Yusuf"))
-            return Response(geocode("Muhammad Yusuf"))
-            # from geopy.geocoders import GoogleV3
-            # geolocator = GoogleV3(api_key='AIzaSyBrrRsUfg7xCMN4-nRb47Wb98WmZS65VkM')
-            # location = geolocator.reverse([lat, lng], timeout=25, sensor=True)
-            # print(location)
-            # print(location.address)
-
-            # location = locator.reverse(f"{lat}, {lng}")
-            # print(location.raw)
-            # return Response({
-            #     "msg": location.raw['display_name']
-            # }, status=status.HTTP_200_OK)
-        else:
-            return Response({
-                "msg": "Неверные данные"
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-
-from paycomuz.views import MerchantAPIView
-from paycomuz import Paycom
-from django.urls import path
+# class GetStreetView(generics.GenericAPIView):
+#     serializer_class = AddressSerializer
+#
+#     def post(self, request):
+#         locator = Nominatim(user_agent="myGeocoder")
+#         lat = request.data.get("lat")
+#         lng = request.data.get("lng")
+#         if lat and lng:
+#             geocode = lambda query: locator.geocode("%s, Tashkent City" % query)
+#             print(geocode("Muhammad Yusuf"))
+#             return Response(geocode("Muhammad Yusuf"))
+#             # from geopy.geocoders import GoogleV3
+#             # geolocator = GoogleV3(api_key='AIzaSyBrrRsUfg7xCMN4-nRb47Wb98WmZS65VkM')
+#             # location = geolocator.reverse([lat, lng], timeout=25, sensor=True)
+#             # print(location)
+#             # print(location.address)
+#
+#             # location = locator.reverse(f"{lat}, {lng}")
+#             # print(location.raw)
+#             # return Response({
+#             #     "msg": location.raw['display_name']
+#             # }, status=status.HTTP_200_OK)
+#         else:
+#             return Response({
+#                 "msg": "Неверные данные"
+#             }, status=status.HTTP_400_BAD_REQUEST)
 
 
 # class MerchantAPIView(APIView):
@@ -1172,18 +1171,18 @@ from django.urls import path
 #         ))
 
 
-class CheckOrder(Paycom):
-    def check_order(self, amount, account, *args, **kwargs):
-        return self.ORDER_FOUND
-
-
-    def successfully_payment(self, account, transaction, *args, **kwargs):
-        print(account)
-
-
-    def cancel_payment(self, account, transaction, *args, **kwargs):
-        print(account)
-
-
-class TestView(MerchantAPIView):
-    VALIDATE_CLASS = CheckOrder
+# class CheckOrder(Paycom):
+#     def check_order(self, amount, account, *args, **kwargs):
+#         return self.ORDER_FOUND
+#
+#
+#     def successfully_payment(self, account, transaction, *args, **kwargs):
+#         print(account)
+#
+#
+#     def cancel_payment(self, account, transaction, *args, **kwargs):
+#         print(account)
+#
+#
+# class TestView(MerchantAPIView):
+#     VALIDATE_CLASS = CheckOrder
