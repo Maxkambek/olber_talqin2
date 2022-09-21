@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token
 
 from rest_framework.views import APIView
 
-from user.models import *
+from .models import *
 from .pagination import CustomPagination
 from user.payment import *
 from .serializers import *
@@ -92,9 +92,10 @@ class RegisterView(generics.GenericAPIView):
                 car_image_1 = request.data.get('car_image_1')
                 car_image_2 = request.data.get('car_image_2')
                 car_type = request.data.get('car_type')
-                User.objecs.create_user(username=username, password=password, phone=phone, user_type=user_type,
+                user = User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type,
                                                 car_number=car_number, car_image_1=car_image_1,
                                                 car_image_2=car_image_2, car_type=car_type, is_verified = True)
+                user.save()
                 verify.delete()
             else:
                 User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type, is_verified = True)
