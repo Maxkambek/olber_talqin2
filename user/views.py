@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token
 
 from rest_framework.views import APIView
 
-from .models import *
+from user.models import *
 from .pagination import CustomPagination
 from user.payment import *
 from .serializers import *
