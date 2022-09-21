@@ -44,4 +44,8 @@ urlpatterns = [
     path('check-invoice/', CheckPaymentView.as_view()),
     path('check-merchant/', CheckMerchantView.as_view()),
 
+    path('get-street/', GetStreetView.as_view()),
+
+    path('paycom/', TestView.as_view())
+
 ]

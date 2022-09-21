@@ -228,3 +228,8 @@ class UserPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'rating')
+
+
+class AddressSerializer(serializers.Serializer):
+    lat = serializers.CharField(max_length=50)
+    lng = serializers.CharField(max_length=50)

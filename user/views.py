@@ -1,14 +1,21 @@
+import binascii
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, authentication, permissions, filters
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 import base64, zlib
+
+from rest_framework.views import APIView
+
 from .models import *
 from .pagination import CustomPagination
 from user.payment import *
 from .serializers import *
 from .send_message import verify
+from geopy.geocoders import Nominatim
 
 
 class RegisterPhoneView(generics.GenericAPIView):
@@ -77,12 +84,12 @@ class RegisterView(generics.GenericAPIView):
         if verify and verify.is_verify == True:
             if user_type == 'driver':
                 car_number = request.data.get('car_number')
-                drive_doc = request.data.get('drive_doc')
+                # drive_doc = request.data.get('drive_doc')
                 car_image_1 = request.data.get('car_image_1')
                 car_image_2 = request.data.get('car_image_2')
                 car_type = request.data.get('car_type')
-                User.objects.create_user(username=username, password=password, phone=phone, user_type=user_type,
-                                                car_number=car_number, drive_doc=drive_doc, car_image_1=car_image_1,
+                User.objecs.create_user(username=username, password=password, phone=phone, user_type=user_type,
+                                                car_number=car_number, car_image_1=car_image_1,
                                                 car_image_2=car_image_2, car_type=car_type, is_verified = True)
                 verify.delete()
             else:
@@ -845,16 +852,60 @@ class CheckMerchantView(generics.GenericAPIView):
     Hide some test client ickyness where the header can be unicode.
     """
 
+    @staticmethod
+    def authorize(password: str) -> None:
+        # if not isinstance(password, str):
+        #     logger.error("Request from an unauthorized source!")
+        #     raise PermissionDenied()
+
+        password = password.split()[-1]
+        print(password)
+        # try:
+        #     password = base64.b64decode(password).decode('utf-8')
+        # except (binascii.Error, UnicodeDecodeError):
+        #     logger.error("Error when authorize request to merchant!")
+        #     raise PermissionDenied()
+
+        merchant_key = password.split(':')[-1]
+
+        # фильтруем метод по ключу, если ключа нету у нас в системе возвращаем ошибку авторизации
+        # if merchant_key == settings.PAYCOM_KEY:
+        #     return BasePaycomMerchantMethod.ORDER_DEBT
+        # elif merchant_key == settings.PAYCOM_DRIVER_KEY:
+        #     return BasePaycomMerchantMethod.DRIVER_REFILL
+        # else:
+        #     logger.error("Invalid key in request!")
+        #     raise PermissionDenied()
+
     def post(self, request):
-        auth = request.headers
-        meta = request.META
-        # print(meta)
-        print(auth)
-        if auth:
-            # header = zlib.decompress(base64.b64decode(auth))
-            return Response(auth)
-        else:
-            return Response("Authorization")
+        password = request.META.get('HTTP_AUTHORIZATION')
+        print(password)
+        # по ключу который в заголовке запроса мы узнаем какому НАШЕМУ МЕРЧАНТ методу  обращается пейком
+        merchant_method = self.authorize(password)
+
+        data = request.data
+        # logger.info(f'Method: {data["method"]}')
+        #
+        # try:
+        #     # определяем какой ПЕЙКОМ МЕТОД
+        #     # ссылочка на список мерчант методов пейкома - https://developer.help.paycom.uz/ru/metody-merchant-api
+        #     paycom_method = self.get_paycom_method_by_name(data.get('method'))
+        # except ValidationError:
+        #     logger.error(f'Paycom method not found. Request data: \n{request.data}')
+        #     raise MethodNotFoundError()
+
+        # result = paycom_method(data.get('params'), merchant_method)
+        return Response({'result': merchant_method})
+
+    # def post(self, request):
+    #     auth = request.headers
+    #     # meta = request.META
+    #     password = request.META.get('HTTP_AUTHORIZATION')
+    #     print(password)
+    #     if auth:
+    #         return Response(auth)
+    #     else:
+    #         return Response("Authorization")
 
         # AUTHORIZATION_HEADER = 'HTTP_X_CUSTOM_AUTHORIZATION'
         # auth = request.META.get(AUTHORIZATION_HEADER) #(AUTHORIZATION_HEADER, b'')
@@ -876,3 +927,263 @@ class CheckMerchantView(generics.GenericAPIView):
         #         }, status=status.HTTP_400_BAD_REQUEST)
         # else:
         #     return Response(request.headers)
+
+
+class GetStreetView(generics.GenericAPIView):
+    serializer_class = AddressSerializer
+
+    def post(self, request):
+        locator = Nominatim(user_agent="myGeocoder")
+        lat = request.data.get("lat")
+        lng = request.data.get("lng")
+        if lat and lng:
+            geocode = lambda query: locator.geocode("%s, Tashkent City" % query)
+            print(geocode("Muhammad Yusuf"))
+            return Response(geocode("Muhammad Yusuf"))
+            # from geopy.geocoders import GoogleV3
+            # geolocator = GoogleV3(api_key='AIzaSyBrrRsUfg7xCMN4-nRb47Wb98WmZS65VkM')
+            # location = geolocator.reverse([lat, lng], timeout=25, sensor=True)
+            # print(location)
+            # print(location.address)
+
+            # location = locator.reverse(f"{lat}, {lng}")
+            # print(location.raw)
+            # return Response({
+            #     "msg": location.raw['display_name']
+            # }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "msg": "Неверные данные"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+from paycomuz.views import MerchantAPIView
+from paycomuz import Paycom
+from django.urls import path
+
+
+# class MerchantAPIView(APIView):
+#     permission_classes = [AllowAny]
+#     CHECK_PERFORM_TRANSACTION = 'CheckPerformTransaction'
+#     CREATE_TRANSACTION = 'CreateTransaction'
+#     PERFORM_TRANSACTION = 'PerformTransaction'
+#     CHECK_TRANSACTION = 'CheckTransaction'
+#     CANCEL_TRANSACTION = 'CancelTransaction'
+#     http_method_names = ['post']
+#     authentication_classes = []
+#     VALIDATE_CLASS: Paycom = None
+#     reply = None
+#     ORDER_KEY = KEY = settings.PAYCOM_SETTINGS['ACCOUNTS']['KEY']
+#
+#     def __init__(self):
+#         self.METHODS = {
+#             self.CHECK_PERFORM_TRANSACTION: self.check_perform_transaction,
+#             self.CREATE_TRANSACTION: self.create_transaction,
+#             self.PERFORM_TRANSACTION: self.perform_transaction,
+#             self.CHECK_TRANSACTION: self.check_transaction,
+#             self.CANCEL_TRANSACTION: self.cancel_transaction
+#         }
+#         self.REPLY_RESPONSE = {
+#             ORDER_FOUND: self.order_found,
+#             ORDER_NOT_FOUND: self.order_not_found,
+#             INVALID_AMOUNT: self.invalid_amount
+#         }
+#         super(MerchantAPIView, self).__init__()
+#
+#     def post(self, request):
+#         check = authentication(request)
+#         if check is False or not check:
+#             return Response(AUTH_ERROR)
+#         serializer = PaycomOperationSerialzer(data=request.data, many=False)
+#         serializer.is_valid(raise_exception=True)
+#         method = serializer.validated_data['method']
+#         self.METHODS[method](serializer.validated_data)
+#
+#         assert self.reply != None
+#         return Response(self.reply)
+#
+#     def check_perform_transaction(self, validated_data):
+#         """
+#         >>> self.check_perform_transaction(validated_data)
+#         """
+#         assert self.VALIDATE_CLASS != None
+#         validate_class: Paycom = self.VALIDATE_CLASS()
+#         result: int = validate_class.check_order(**validated_data['params'])
+#         assert result != None
+#         self.REPLY_RESPONSE[result](validated_data)
+#
+#     def create_transaction(self, validated_data):
+#         """
+#         >>> self.create_transaction(validated_data)
+#         """
+#         order_key = validated_data['params']['account'].get(self.ORDER_KEY)
+#         if not order_key:
+#             raise serializers.ValidationError(f"{self.ORDER_KEY} required field")
+#
+#         validate_class: Paycom = self.VALIDATE_CLASS()
+#         result: int = validate_class.check_order(**validated_data['params'])
+#         assert result != None
+#         if result != ORDER_FOUND:
+#             self.REPLY_RESPONSE[result](validated_data)
+#             return
+#
+#         _id = validated_data['params']['id']
+#         check_transaction = Transaction.objects.filter(order_key=order_key).order_by('-id')
+#         if check_transaction.exists():
+#             transaction = check_transaction.first()
+#             if transaction.status != Transaction.CANCELED and transaction._id == _id:
+#                 self.reply = dict(result=dict(
+#                     create_time=int(transaction.created_datetime),
+#                     transaction=str(transaction.id),
+#                     state=CREATE_TRANSACTION
+#                 ))
+#             else:
+#                 self.reply = dict(error=dict(
+#                     id=validated_data['id'],
+#                     code=ORDER_NOT_FOUND,
+#                     message=ORDER_NOT_FOND_MESSAGE
+#                 ))
+#         else:
+#             current_time = datetime.now()
+#             current_time_to_string = int(round(current_time.timestamp()) * 1000)
+#             obj = Transaction.objects.create(
+#                 request_id=validated_data['id'],
+#                 _id=validated_data['params']['id'],
+#                 amount=validated_data['params']['amount'] / 100,
+#                 order_key=validated_data['params']['account'][self.ORDER_KEY],
+#                 state=CREATE_TRANSACTION,
+#                 created_datetime=current_time_to_string
+#             )
+#             self.reply = dict(result=dict(
+#                 create_time=current_time_to_string,
+#                 transaction=str(obj.id),
+#                 state=CREATE_TRANSACTION
+#             ))
+#
+#     def perform_transaction(self, validated_data):
+#         """
+#         >>> self.perform_transaction(validated_data)
+#         """
+#         id = validated_data['params']['id']
+#         request_id = validated_data['id']
+#         try:
+#             obj = Transaction.objects.get(_id=id)
+#             if obj.state not in [CANCEL_TRANSACTION_CODE]:
+#                 obj.state = CLOSE_TRANSACTION
+#                 obj.status = Transaction.SUCCESS
+#                 if not obj.perform_datetime:
+#                     current_time = datetime.now()
+#                     current_time_to_string = int(round(current_time.timestamp()) * 1000)
+#                     obj.perform_datetime = current_time_to_string
+#                     self.VALIDATE_CLASS().successfully_payment(validated_data['params'], obj)
+#
+#                 self.reply = dict(result=dict(
+#                     transaction=str(obj.id),
+#                     perform_time=int(obj.perform_datetime),
+#                     state=CLOSE_TRANSACTION
+#                 ))
+#             else:
+#                 obj.status = Transaction.FAILED
+#
+#                 self.reply = dict(error=dict(
+#                     id=request_id,
+#                     code=UNABLE_TO_PERFORM_OPERATION,
+#                     message=UNABLE_TO_PERFORM_OPERATION_MESSAGE
+#                 ))
+#             obj.save()
+#         except Transaction.DoesNotExist:
+#             self.reply = dict(error=dict(
+#                 id=request_id,
+#                 code=TRANSACTION_NOT_FOUND,
+#                 message=TRANSACTION_NOT_FOUND_MESSAGE
+#             ))
+#
+#     def check_transaction(self, validated_data):
+#         """
+#         >>> self.check_transaction(validated_data)
+#         """
+#         id = validated_data['params']['id']
+#         request_id = validated_data['id']
+#
+#         try:
+#             transaction = Transaction.objects.get(_id=id)
+#             self.response_check_transaction(transaction)
+#         except Transaction.DoesNotExist:
+#             self.reply = dict(error=dict(
+#                 id=request_id,
+#                 code=TRANSACTION_NOT_FOUND,
+#                 message=TRANSACTION_NOT_FOUND_MESSAGE
+#             ))
+#
+#     def cancel_transaction(self, validated_data):
+#         id = validated_data['params']['id']
+#         reason = validated_data['params']['reason']
+#         request_id = validated_data['id']
+#
+#         try:
+#             transaction = Transaction.objects.get(_id=id)
+#             if transaction.state == 1:
+#                 transaction.state = CANCEL_TRANSACTION_CODE
+#             elif transaction.state == 2:
+#                 transaction.state = PERFORM_CANCELED_CODE
+#                 self.VALIDATE_CLASS().cancel_payment(validated_data['params'], transaction)
+#             transaction.reason = reason
+#             transaction.status = Transaction.CANCELED
+#
+#             current_time = datetime.now()
+#             current_time_to_string = int(round(current_time.timestamp()) * 1000)
+#             if not transaction.cancel_datetime:
+#                 transaction.cancel_datetime = current_time_to_string
+#             transaction.save()
+#
+#             self.response_check_transaction(transaction)
+#         except Transaction.DoesNotExist:
+#             self.reply = dict(error=dict(
+#                 id=request_id,
+#                 code=TRANSACTION_NOT_FOUND,
+#                 message=TRANSACTION_NOT_FOUND_MESSAGE
+#             ))
+#
+#     def order_found(self, validated_data):
+#         self.reply = dict(result=dict(allow=True))
+#
+#     def order_not_found(self, validated_data):
+#         self.reply = dict(error=dict(
+#             id=validated_data['id'],
+#             code=ORDER_NOT_FOUND,
+#             message=ORDER_NOT_FOND_MESSAGE
+#         ))
+#
+#     def invalid_amount(self, validated_data):
+#         self.reply = dict(error=dict(
+#             id=validated_data['id'],
+#             code=INVALID_AMOUNT,
+#             message=INVALID_AMOUNT_MESSAGE
+#         ))
+#
+#     def response_check_transaction(self, transaction: Transaction):
+#         self.reply = dict(result=dict(
+#             create_time=int(transaction.created_datetime) if transaction.created_datetime else 0,
+#             perform_time=int(transaction.perform_datetime) if transaction.perform_datetime else 0,
+#             cancel_time=int(transaction.cancel_datetime) if transaction.cancel_datetime else 0,
+#             transaction=str(transaction.id),
+#             state=transaction.state,
+#             reason=transaction.reason
+#         ))
+
+
+class CheckOrder(Paycom):
+    def check_order(self, amount, account, *args, **kwargs):
+        return self.ORDER_FOUND
+
+
+    def successfully_payment(self, account, transaction, *args, **kwargs):
+        print(account)
+
+
+    def cancel_payment(self, account, transaction, *args, **kwargs):
+        print(account)
+
+
+class TestView(MerchantAPIView):
+    VALIDATE_CLASS = CheckOrder
