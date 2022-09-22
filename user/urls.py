@@ -45,6 +45,6 @@ urlpatterns = [
     path('check-merchant/', CheckMerchantView.as_view()),
 
     # path('get-street/', GetStreetView.as_view()),
-    path('paycom/', TestView.as_view())
+    # path('paycom/', TestView.as_view())
 
 ]

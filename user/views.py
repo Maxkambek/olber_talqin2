@@ -1,5 +1,3 @@
-import binascii
-
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, authentication, permissions, filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -17,8 +15,8 @@ from .serializers import *
 from .send_message import verify
 # from geopy.geocoders import Nominatim
 
-from paycomuz.views import MerchantAPIView
-from paycomuz import Paycom
+# from paycomuz.views import MerchantAPIView
+# from paycomuz import Paycom
 
 
 class RegisterPhoneView(generics.GenericAPIView):
@@ -165,7 +163,6 @@ class DeleteAccountView(generics.GenericAPIView):
         cargos = user.workes.count()
         print(jobs)
         print(cargos)
-
 
         if check:
             if jobs == 0 and cargos == 0:
@@ -493,7 +490,7 @@ class CloseCargoView(generics.GenericAPIView):
             cargo.save()
             if cargo.doer:
                 doer = cargo.doer
-                doer.works.remove(str(pk))
+                doer.workes.remove(str(pk))
                 doer.save()
             return Response({
                 'msg': "Груз закрыта"
@@ -966,36 +963,36 @@ class CheckMerchantView(generics.GenericAPIView):
 #             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CheckOrder(Paycom):
-    def check_order(self, amount, account, *args, **kwargs):
-        return self.ORDER_FOUND
-
-
-    def successfully_payment(self, account, transaction, *args, **kwargs):
-        print(account)
-
-
-    def cancel_payment(self, account, transaction, *args, **kwargs):
-        print(account)
-
-
-class TestView(MerchantAPIView):
-    VALIDATE_CLASS = CheckOrder
-
-    @staticmethod
-    def authorize(password: str) -> None:
-        # if not isinstance(password, str):
-        #     logger.error("Request from an unauthorized source!")
-        #     raise PermissionDenied()
-
-        password = password.split()[-1]
-        print(password)
-        # try:
-        #     password = base64.b64decode(password).decode('utf-8')
-        # except (binascii.Error, UnicodeDecodeError):
-        #     logger.error("Error when authorize request to merchant!")
-        #     raise PermissionDenied()
-
-        merchant_key = password.split(':')[-1]
+# class CheckOrder(Paycom):
+#     def check_order(self, amount, account, *args, **kwargs):
+#         return self.ORDER_FOUND
+#
+#
+#     def successfully_payment(self, account, transaction, *args, **kwargs):
+#         print(account)
+#
+#
+#     def cancel_payment(self, account, transaction, *args, **kwargs):
+#         print(account)
+#
+#
+# class TestView(MerchantAPIView):
+#     VALIDATE_CLASS = CheckOrder
+#
+#     @staticmethod
+#     def authorize(password: str) -> None:
+#         # if not isinstance(password, str):
+#         #     logger.error("Request from an unauthorized source!")
+#         #     raise PermissionDenied()
+#
+#         password = password.split()[-1]
+#         print(password)
+#         # try:
+#         #     password = base64.b64decode(password).decode('utf-8')
+#         # except (binascii.Error, UnicodeDecodeError):
+#         #     logger.error("Error when authorize request to merchant!")
+#         #     raise PermissionDenied()
+#
+#         merchant_key = password.split(':')[-1]
 
 
