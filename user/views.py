@@ -161,8 +161,7 @@ class DeleteAccountView(generics.GenericAPIView):
         check = user.check_password(password)
         jobs = user.jobs.count()
         workes = user.workes.count()
-        print(jobs)
-        print(workes)
+
 
         if check:
             if jobs == 0 and workes == 0:
@@ -493,6 +492,7 @@ class CloseCargoView(generics.GenericAPIView):
                 doer.workes.remove(str(pk))
                 print(doer.workes)
                 doer.save()
+                cargo.delete()
             return Response({
                 'msg': "Груз закрыта",
                 'work': doer.workes
@@ -654,6 +654,7 @@ class CloseWorkView(generics.GenericAPIView):
                 doer = work.doer
                 doer.jobs.remove(str(pk))
                 doer.save()
+                work.delete()
             return Response({
                 'msg': "Работа закрыта"
             }, status=status.HTTP_200_OK)
