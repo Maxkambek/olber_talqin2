@@ -165,7 +165,7 @@ class DeleteAccountView(generics.GenericAPIView):
         print(workes)
 
         if check:
-            if jobs == 0 and cargos == 0:
+            if jobs == 0 and workes == 0:
                 user.delete()
                 return Response({
                     "msg": "Аккаунт удален"
