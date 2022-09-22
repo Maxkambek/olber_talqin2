@@ -22,5 +22,15 @@ class PayComResponse(object):
         params = f"m={TOKEN};ac.{KEY}={order_id};a={amount};c={return_url}"
         encode_params = base64.b64encode(params.encode("utf-8"))
         encode_params = str(encode_params, 'utf-8')
+        print(encode_params)
         url = f"{self.LINK}/{encode_params}"
         return url
+
+    @staticmethod
+    def authorize(password: str) -> None:
+        # if not isinstance(password, str):
+        #     logger.error("Request from an unauthorized source!")
+        #     raise PermissionDenied()
+
+        password = password.split()[-1]
+        print(password)
