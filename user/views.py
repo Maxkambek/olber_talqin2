@@ -488,14 +488,14 @@ class CloseCargoView(generics.GenericAPIView):
         if cargo.user_id == user.id:
             cargo.status = 'finished'
             cargo.save()
+            doer = cargo.doer
             if cargo.doer:
-                doer = cargo.doer
                 doer.workes.remove(str(pk))
                 print(doer.workes)
                 doer.save()
             return Response({
                 'msg': "Груз закрыта",
-                'work': cargo.doer.workes
+                'work': doer.workes
 
             }, status=status.HTTP_200_OK)
         else:
