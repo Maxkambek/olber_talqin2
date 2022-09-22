@@ -160,9 +160,9 @@ class DeleteAccountView(generics.GenericAPIView):
         password = request.data.get('password')
         check = user.check_password(password)
         jobs = user.jobs.count()
-        cargos = user.workes.count()
+        workes = user.workes.count()
         print(jobs)
-        print(cargos)
+        print(workes)
 
         if check:
             if jobs == 0 and cargos == 0:
@@ -174,7 +174,7 @@ class DeleteAccountView(generics.GenericAPIView):
                 return Response({
                     "msg": "У вас есть незаконченное дело",
                     'jobs': jobs,
-                    'cargos': cargos
+                    'cargos': workes
                 }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
