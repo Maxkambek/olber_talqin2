@@ -18,6 +18,7 @@ psycopg2 = "*"
 drf-yasg = "*"
 django-modeltranslation = "*"
 paycomuz = "*"
+drf-yasg2 = "*"
 
 [dev-packages]
 

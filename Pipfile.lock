@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "28ca2235454322d38abd79505ffd31cddc5d94564d3899b1a4be092182fb0d99"
+            "sha256": "8c2509cd99a2f73aeeedb40d4bd7d7db7afef59d5ab5eb3c1783ce74abfe7425"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -239,6 +239,14 @@
             ],
             "index": "pypi",
             "version": "==1.21.3"
+        },
+        "drf-yasg2": {
+            "hashes": [
+                "sha256:7037a8041eb5d1073fa504a284fc889685f93d0bfd008a963db1b366db786734",
+                "sha256:75e661ca5cf15eb44fcfab408c7b864f87c20794f564aa08b3a31817a857f19d"
+            ],
+            "index": "pypi",
+            "version": "==1.19.4"
         },
         "environs": {
             "hashes": [
@@ -563,6 +571,14 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==65.3.0"
+        },
+        "six": {
+            "hashes": [
+                "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
+                "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==1.16.0"
         },
         "sqlparse": {
             "hashes": [
