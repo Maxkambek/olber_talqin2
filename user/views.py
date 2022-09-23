@@ -57,20 +57,20 @@ class VerifyView(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
     def post(self, request):
-        try:
-            phone = request.data.get('phone')
-            code = request.data.get('code')
-            verify = VerifyEmail.objects.get(phone=phone, code=code)
-            if verify:
-                verify.is_verify = True
-                verify.save()
-                return Response({
-                    'msg': "Пользователь проверен",
-                }, status=status.HTTP_200_OK)
-            else:
-                return Response("Номер телефона или код неверно", status=status.HTTP_400_BAD_REQUEST)
-        except:
+        # try:
+        phone = request.data.get('phone')
+        code = request.data.get('code')
+        verify = VerifyEmail.objects.filter(phone=phone, code=code).last()
+        if verify:
+            verify.is_verify = True
+            verify.save()
+            return Response({
+                'msg': "Пользователь проверен",
+            }, status=status.HTTP_200_OK)
+        else:
             return Response("Номер телефона или код неверно", status=status.HTTP_400_BAD_REQUEST)
+        # except:
+        #     return Response("Номер телефона или код неверно", status=status.HTTP_400_BAD_REQUEST)
 
 
 class RegisterView(generics.GenericAPIView):
