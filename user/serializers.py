@@ -213,6 +213,27 @@ class UserProfileSerializer(serializers.ModelSerializer):
             )
 
 
+class EditProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'works',
+            'telegram',
+            'image',
+            'rating',
+            'user_type',
+            'car_type',
+            'drive_doc',
+            'car_image_1',
+            'car_image_2',
+            'car_number',
+            )
+
+
 class UserAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

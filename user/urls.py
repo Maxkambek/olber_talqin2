@@ -15,6 +15,7 @@ urlpatterns = [
     path('account', UserAccountView.as_view()),
     path('rating', AddPointView.as_view()),
     path('detail/<int:pk>', UserDetailView.as_view()),
+    path('update/<int:pk>', UserUpdateView.as_view()),
     path('works', UserWorksView.as_view()),
     path('jobs', UserJobsView.as_view()),
 

@@ -314,6 +314,12 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
 
 
+class UserUpdateView(generics.UpdateAPIView):
+
+    serializer_class = EditProfileSerializer
+    queryset = User.objects.all()
+
+
 class AddPointView(generics.GenericAPIView):
     serializer_class = UserPointSerializer
     authentication_classes = (authentication.TokenAuthentication,)
