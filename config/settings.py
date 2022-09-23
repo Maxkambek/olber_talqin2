@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-m!+d_2&e-oq+(dttt%c^3rhx(d_c5%)r0!@jf&00(ouvjv*&!u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'http://localhost:3000', '1426-213-230-121-237.ngrok.io']
+ALLOWED_HOSTS = ['2d78-213-230-121-237.ngrok.io', '.herokuapp.com', '127.0.0.1', 'http://localhost:3000']
 
 CORS_ALLOWED_ORIGINS = [
     'https://dostavka-android.herokuapp.com',
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'django_filters',
+    'paycomuz',
 
     #internal apps
     'user'
@@ -134,6 +135,9 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    )
 }
 
 # Internationalization
@@ -184,18 +188,28 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #     "PATH_CLASS":"apps.user.views", #Paycom classini qayerga yozgan bo'lsangiz o'sha joyni ko'rsating
 #     "ACCOUNTS":{
 #             "KEY":"order_id",
-#             "KEY2":None #or "type"
 #     }
 # }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+PAYCOM_SETTINGS = {
+    "KASSA_ID": "63034fd046dc858668f64b48",  # token
+    "TOKEN": '63034fd046dc858668f64b48',
+    "SECRET_KEY": "Fa@AchD9qaiqs4Pi9N@SM49XIgksScgJtB&w",  # password
+    "ACCOUNTS": {
+        "KEY": "order_id"
+    }
+}
 
 
 SITE_ID = 1
 AUTH_USER_MODEL = "user.User"
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'shxbiznes@gmail.com'
-EMAIL_HOST_PASSWORD = 'qynkzdjsmgiiacnv'
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'shxbiznes@gmail.com'
+# EMAIL_HOST_PASSWORD = 'qynkzdjsmgiiacnv'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
