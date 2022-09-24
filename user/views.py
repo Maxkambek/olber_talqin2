@@ -580,9 +580,9 @@ class WorkOfferView(generics.GenericAPIView):
     def post(self, request, pk=None):
         work = Work.objects.get(id=pk)
         user = request.user
-
+        print(user.id)
         if not work.offers.filter(id=user.id).exists():
-            work.offers.add(*[user, ])
+            work.offers.add(*[user,])
             work.save()
             return Response({
                 'msg': f"Offer belgilandi {work.title} uchun"

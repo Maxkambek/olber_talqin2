@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-m!+d_2&e-oq+(dttt%c^3rhx(d_c5%)r0!@jf&00(ouvjv*&!u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['2d78-213-230-121-237.ngrok.io', '.herokuapp.com', '127.0.0.1', 'http://localhost:3000']
+ALLOWED_HOSTS = ['*']
 
 CORS_ALLOWED_ORIGINS = [
     'https://dostavka-android.herokuapp.com',
@@ -107,6 +107,12 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'main.db'),
     # }
+    # 'ENGINE': 'django.db.backends.postgresql',
+    #         'NAME': "kokoagen_olber_db",
+    #         'USER': "kokoagen_onzone",
+    #         'PASSWORD': "mahkam_0646",
+    #         'HOST': 'localhost',
+    #         'PORT': "5432"
 }
 
 
