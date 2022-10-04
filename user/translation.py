@@ -1,7 +1,6 @@
 from modeltranslation.translator import translator, TranslationOptions
 
-from user.models import Cargo
-
+from cargo.models import Cargo
 
 class CargoTranslationOptions(TranslationOptions):
     fields = ('title', 'description')

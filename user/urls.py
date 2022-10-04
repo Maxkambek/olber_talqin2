@@ -1,4 +1,7 @@
 from django.urls import path
+from work.views import *
+from cargo.views import *
+from payment.views import CreateTransactionView
 from .views import *
 urlpatterns = [
     path('registerphone/', RegisterPhoneView.as_view()),
@@ -18,6 +21,7 @@ urlpatterns = [
     path('update/<int:pk>', UserUpdateView.as_view()),
     path('works', UserWorksView.as_view()),
     path('jobs', UserJobsView.as_view()),
+    path('workes', UserWorkesView.as_view()),
 
     path('cargo', CargoCreateView.as_view()),
     path('cargo/<int:pk>', CargoDetailView.as_view()),
@@ -30,22 +34,21 @@ urlpatterns = [
     path('work/list', WorkListView.as_view()),
     path('work/create', WorkView.as_view()),
     path('work/<int:pk>', WorkDetailView.as_view()),
-    path('workes' , UserWorkesView.as_view()),
     path('workoffer/<int:pk>', WorkOfferView.as_view()),
     path('workaccept', WorkAcceptView.as_view()),
     path('work/close/<int:pk>', CloseWorkView.as_view()),
 
     path('cart-subs/', CartCreate.as_view()),
-    path('cart-get-verify/', CartGetVerify.as_view()),
     path('cart-verify/', CartVerify.as_view()),
     path('cart-check/', CartCheck.as_view()),
     path('cart-remove/', CartRemove.as_view()),
     path('create-invoice/', CreateInvoice.as_view()),
     path('pay-invoice/', PayInvoice.as_view()),
     path('check-invoice/', CheckPaymentView.as_view()),
-    path('check-merchant/', CheckMerchantView.as_view()),
+    path('check-merchant/', CreateTransactionView.as_view()),
+
+    path('paycom/', TestView.as_view())
 
     # path('get-street/', GetStreetView.as_view()),
-    # path('paycom/', TestView.as_view())
 
 ]

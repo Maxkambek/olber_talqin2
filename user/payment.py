@@ -1,5 +1,6 @@
 import json
 import requests
+from django.conf import settings
 
 
 class PaymeSubscribeCards:
@@ -103,7 +104,7 @@ class PaymeSubscribeCards:
 
 payme_subscribe_cards = PaymeSubscribeCards(
     base_url="https://checkout.paycom.uz/api",
-    paycom_id="6305bbae7066d254af799087", #"6304712d3326a116239403c9", #"62e28cbc39c675be34e4bbd2"
+    paycom_id=settings.SUBSC_KASSA_ID
 )
 
 
@@ -253,6 +254,6 @@ class PaymeSubscribeReceipts:
 
 payme_subscribe_receipts = PaymeSubscribeReceipts(
     base_url="https://checkout.paycom.uz/api",
-    paycom_id="6305bbae7066d254af799087", #"6304712d3326a116239403c9", #62e28cbc39c675be34e4bbd2"
-    paycom_key="WBU%0cezoay2@CJXb9H9Zv@o#jX0b524bi30" #"NZ#vW1eSa&8?k7z2PJC8DdkHCgm7KPs9fKHk" #"FrGWGMFoI?6cSyzdkovezesOA?TbKCQ8TDQU",
+    paycom_id=settings.SUBSC_KASSA_ID,
+    paycom_key=settings.PAYCOM_REAL_KEY
 )

@@ -19,7 +19,6 @@ env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -46,9 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    'drf_yasg2',
+    'drf_yasg',
     'django.contrib.sites',
 
     #third party packages
@@ -59,7 +57,10 @@ INSTALLED_APPS = [
     'paycomuz',
 
     #internal apps
-    'user'
+    'user',
+    'cargo',
+    'work',
+    'payment',
 
 ]
 
@@ -68,7 +69,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -143,6 +143,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
     )
 }
 
@@ -178,36 +180,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')# 'media' is my media folder
 MEDIA_URL = '/media/'
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 
-# PAYCOM_SETTINGS = {
-#     "HOST":"https://checkout.test.paycom.uz/api", #test host
-#     "TOKEN":"62e28cbc39c675be34e4bbd2", #token
-#     "KASSA_ID": "62e28cbc39c675be34e4bbd2", 63034fd046dc858668f64b48
-#     "SECRET_KEY":"FrGWGMFoI?6cSyzdkovezesOA?TbKCQ8TDQU", #password
-#     "PATH_CLASS":"apps.user.views", #Paycom classini qayerga yozgan bo'lsangiz o'sha joyni ko'rsating
-#     "ACCOUNTS":{
-#             "KEY":"order_id",
-#     }
-# }
-
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 PAYCOM_SETTINGS = {
-    "KASSA_ID": "63034fd046dc858668f64b48",  # token
-    "TOKEN": '63034fd046dc858668f64b48',
-    "SECRET_KEY": "Fa@AchD9qaiqs4Pi9N@SM49XIgksScgJtB&w",  # password
+    "KASSA_ID": env.str('MERCH_KASSA_ID'),  # token
+    "TOKEN": env.str('MERCH_KASSA_ID'),
+    "SECRET_KEY": env.str('PAYCOM_TEST_KEY'),  # password
     "ACCOUNTS": {
         "KEY": "order_id"
     }
 }
 
+PAYCOM_KEY = env.str('PAYCOM_TEST_KEY')
+SUBSC_KASSA_ID = env.str('SUBSC_KASSA_ID')
+PAYCOM_REAL_KEY = env.str('MERCH_REAL_KEY')
 
 SITE_ID = 1
 AUTH_USER_MODEL = "user.User"
@@ -215,7 +209,7 @@ AUTH_USER_MODEL = "user.User"
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST = "smtp.gmail.com"
 # EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'shxbiznes@gmail.com'
-# EMAIL_HOST_PASSWORD = 'qynkzdjsmgiiacnv'
+# EMAIL_HOST_USER = ''
+# EMAIL_HOST_PASSWORD = ''
 # EMAIL_USE_TLS = True
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

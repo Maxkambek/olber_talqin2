@@ -1,13 +1,19 @@
+import binascii
+
 from django_filters.rest_framework import DjangoFilterBackend
+from paycomuz import Paycom
 from rest_framework import generics, status, authentication, permissions, filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-# import base64, zlib
-
+import base64, zlib, logging
 from rest_framework.views import APIView
 
+from cargo.models import Cargo
+from config import settings
+
+logger = logging.getLogger(__name__)
 from .models import *
 from .pagination import CustomPagination
 from user.payment import *
@@ -15,7 +21,7 @@ from .serializers import *
 from .send_message import verify
 # from geopy.geocoders import Nominatim
 
-# from paycomuz.views import MerchantAPIView
+from paycomuz.views import MerchantAPIView
 # from paycomuz import Paycom
 
 
@@ -338,176 +344,6 @@ class AddPointView(generics.GenericAPIView):
         }, status=status.HTTP_200_OK)
 
 
-class CargoCreateView(generics.CreateAPIView):
-    serializer_class = CargoCreateSerializer
-    queryset = Cargo.objects.all()
-
-
-class CargoListView(generics.ListAPIView):
-    serializer_class = CargoListSerializer
-    queryset = Cargo.objects.all()
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['status', 'cargo_type']
-    pagination_class = CustomPagination
-    # authentication_classes = (authentication.TokenAuthentication,)
-    # permission_classes = (permissions.IsAuthenticated,)
-
-    def list(self, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        statusfilter = self.request.query_params.get('status', None)
-        typefilter = self.request.query_params.get('cargo_type', None)
-        serializer = self.get_serializer(queryset, many=True)
-        count = Cargo.objects.count()
-        if count > 0:
-
-            p_min = self.request.GET.get('p_min')
-            p_max = self.request.GET.get('p_max')
-            d_min = self.request.GET.get('d_min')
-            d_max = self.request.GET.get('d_max')
-            w_min = self.request.GET.get('w_min')
-            w_max = self.request.GET.get('w_max')
-
-            if not p_min or p_min == '':
-                p_min = 0
-            if not p_max or p_max == '':
-                p_max = Cargo.objects.all().order_by('-price').first().price
-            if not d_min or d_min == '':
-                d_min = 0
-            if not d_max or d_max == '':
-                d_max = Cargo.objects.all().order_by('-distance').first().distance
-            if not w_min or w_min == '':
-                w_min = 0
-            if not w_max or w_max == '':
-                w_max = Cargo.objects.all().order_by('-weight').first().weight
-
-            if p_min or p_max or d_min or d_max or w_min or w_max:
-                queryset = Cargo.objects.filter(price__range=(p_min, p_max), distance__range=(d_min, d_max), weight__range=(w_min, w_max),).order_by('-id')
-            else:
-                queryset = Cargo.objects.all().order_by('-id')
-
-            if statusfilter is not None:
-                queryset = Cargo.objects.filter(status=statusfilter)
-
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                serializer = self.get_serializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
-            return Response({
-                'results': serializer.data,
-            }, status=status.HTTP_200_OK)#.exclude(user=self.request.user)
-        else:
-            queryset = "Hozircha e'lonlar yo'q"
-            return Response({queryset}, status=status.HTTP_204_NO_CONTENT)
-
-
-class CargoDetailView(generics.RetrieveUpdateAPIView):
-    serializer_class = CargoSerializer
-    queryset = Cargo.objects.all()
-
-
-class CargoUDView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = CargoSerializer
-    queryset = Cargo.objects.all()
-
-
-class OfferView(generics.GenericAPIView):
-    serializer_class = CargoSerializer
-    authentication_classes = [authentication.TokenAuthentication,]
-    permission_classes = [permissions.IsAuthenticated,]
-
-    def post(self, request, pk=None):
-        cargo = Cargo.objects.get(id=pk)
-        user = request.user
-
-        if not cargo.offers.filter(id=user.id).exists():
-            if len(user.works) < 3:
-
-                cargo.offers.add(*[user,])
-                cargo.save()
-                return Response({
-                    'msg': f"{cargo.title} uchun offer belgilandi."
-                }, status=status.HTTP_200_OK)
-            else:
-                return Response({
-                    'msg': f"Siz maksimal 3 ta ish olishingiz mumkin"
-                }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({
-                'msg': "Offer yozilib bo'lingan"
-            }, status=status.HTTP_423_LOCKED)
-
-
-class CargoAcceptView(generics.GenericAPIView):
-    authentication_classes = [authentication.TokenAuthentication, ]
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def post(self, request):
-        serializer = CargoAcceptSerializer(data = request.data)
-        user_id = request.user.id
-        if serializer.is_valid():
-            item_id = request.data.get("id")
-            doer_id = request.data.get("doer")
-            cargo = Cargo.objects.filter(id=item_id).first()
-            if cargo.user_id == user_id:
-                user = User.objects.get(id=doer_id)
-                check = cargo.offers.filter(id=doer_id).first()
-                if cargo.status != 'new':
-                    return Response({
-                        'msg': "Bu zakaz band qilingan"
-                    }, status=status.HTTP_400_BAD_REQUEST)
-                if not check:
-                    return Response({
-                        'msg': "Taklif bermagan odamlarni tanlab bo'lmaydi"
-                    }, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    cargo.doer = user
-                    cargo.status = 'selected'
-                    if user.works:
-                        user.works.append(item_id)
-                    else:
-                        user.works.insert(0, item_id)
-                        print('none')
-                    cargo.offers.clear()
-
-                    user.save()
-                    cargo.save()
-                    return Response({
-                        'msg': "Успешно",
-                    }, status=status.HTTP_200_OK)
-            else:
-                return Response({
-                    'msg': "Пользователь не владелец"
-                }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CloseCargoView(generics.GenericAPIView):
-    serializer_class = CargoSerializer
-    authentication_classes = [authentication.TokenAuthentication, ]
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def post(self, request, pk=None):
-        cargo = Cargo.objects.get(id=pk)
-        user = request.user
-        if cargo.user_id == user.id:
-            cargo.status = 'finished'
-            cargo.save()
-            if cargo.doer:
-                doer = cargo.doer
-                doer.workes.remove(str(pk))
-                doer.save()
-                cargo.delete()
-            return Response({
-                'msg': "Груз закрыта",
-
-            }, status=status.HTTP_200_OK)
-        else:
-            return Response({
-                'msg': "Пользователь не владелец"
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-
 class UserAccountView(generics.GenericAPIView):
     serializer_class = UserAccountSerializer
     authentication_classes = [authentication.TokenAuthentication, ]
@@ -554,119 +390,6 @@ class UserJobsView(generics.ListAPIView):
         return result #Response({"works"}, status=status.HTTP_200_OK)
 
 
-class WorkListView(generics.ListAPIView):
-    serializer_class = WorkListSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['status']
-    pagination_class = CustomPagination
-    queryset = Work.objects.all().order_by('-id')
-
-
-class WorkView(generics.CreateAPIView):
-    serializer_class = WorkSerializer
-    queryset = Work.objects.all()
-
-
-class WorkDetailView(generics.RetrieveUpdateAPIView):
-    serializer_class = WorkDetailSerializer
-    queryset = Work.objects.all()
-
-
-class WorkOfferView(generics.GenericAPIView):
-    serializer_class = WorkSerializer
-    authentication_classes = [authentication.TokenAuthentication, ]
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def post(self, request, pk=None):
-        work = Work.objects.get(id=pk)
-        user = request.user
-        print(user.id)
-        if not work.offers.filter(id=user.id).exists():
-            work.offers.add(*[user,])
-            work.save()
-            return Response({
-                'msg': f"Offer belgilandi {work.title} uchun"
-            }, status=status.HTTP_200_OK)
-        else:
-            return Response({
-                'msg': "Offer yozilib bo'lingan"
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-
-class WorkAcceptView(generics.GenericAPIView):
-    authentication_classes = [authentication.TokenAuthentication, ]
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def post(self, request):
-        # try:
-        serializer = WorkAcceptSerializer(data = request.data)
-        user_id = request.user.id
-        if serializer.is_valid():
-            item_id = request.data.get("id")
-            doer_id = request.data.get("doer")
-            work = Work.objects.filter(id=item_id).first()
-            if work.user_id == user_id:
-                user = User.objects.get(id=doer_id)
-                check = work.offers.filter(id=doer_id).first()
-                if work.status != 'new':
-                    return Response({
-                        'msg': "Bu zakaz band qilingan"
-                    }, status=status.HTTP_400_BAD_REQUEST)
-                if not check:
-                    return Response({
-                        'msg': "Taklif bermagan odamlarni tanlab bo'lmaydi"
-                    }, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    work.doer = user
-                    work.status = 'selected'
-                    # if user.works is not None:
-                    # user.works.append(item_id)
-                    # else:
-                    #     print('Yo')
-                    #     user.works = list(item_id)
-                    user.save()
-                    work.offers.clear()
-                    work.save()
-                    return Response({
-                        'msg': "Успешно"
-                    }, status=status.HTTP_200_OK)
-            else:
-                return Response({
-                    'msg': "Пользователь не владелец"
-                }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # except:
-        #     return Response({
-        #         'msg': "Bad request"
-        #     }, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CloseWorkView(generics.GenericAPIView):
-    serializer_class = WorkSerializer
-    authentication_classes = [authentication.TokenAuthentication, ]
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def post(self, request, pk=None):
-        work = Work.objects.get(id=pk)
-        user = request.user
-        if work.user_id == user.id:
-            work.status = 'finished'
-            work.save()
-            if work.doer:
-                doer = work.doer
-                doer.jobs.remove(str(pk))
-                doer.save()
-                work.delete()
-            return Response({
-                'msg': "Работа закрыта"
-            }, status=status.HTTP_200_OK)
-        else:
-            return Response({
-                'msg': "Пользователь не владелец"
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-
 #Payment system
 class CartCreate(generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -683,29 +406,20 @@ class CartCreate(generics.GenericAPIView):
                 "error": result['error']
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({
-                "msg": "Регистрация прошла успешно",
-                "result": result['result']
-            }, status=status.HTTP_200_OK)
+            token = result['result']['card']['token']
+            ver_code = payme_subscribe_cards._card_get_verify_code(123, token)
+            if "error" in ver_code:
+                return Response({
+                    "msg": "Неверные данные",
+                    "error": result['error']
+                }, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({
+                    "msg": "Регистрация прошла успешно",
+                    "token": token,
+                    "result": ver_code['result']
+                }, status=status.HTTP_200_OK)
 
-class CartGetVerify(generics.GenericAPIView):
-    serializer_class = UserSerializer
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def post(self, request):
-        token = request.data.get('token')
-        result = payme_subscribe_cards._card_get_verify_code(123, token)
-        if "error" in result:
-            return Response({
-                "msg": "Неверные данные",
-                "error": result['error']
-            }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({
-                "msg": "Верификация прошла успешно",
-                "result": result['result']
-            }, status=status.HTTP_200_OK)
 
 class CartVerify(generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -853,7 +567,20 @@ class CheckPaymentView(generics.GenericAPIView):
                 )
 
 
-class CheckMerchantView(generics.GenericAPIView):
+class CheckOrder(Paycom):
+    def check_order(self, amount, account, *args, **kwargs):
+        return self.ORDER_FOUND
+
+
+    def successfully_payment(self, account, transaction, *args, **kwargs):
+        print(account)
+
+
+    def cancel_payment(self, account, transaction, *args, **kwargs):
+        print(account)
+
+
+class CheckMerchantView(MerchantAPIView):
     serializer_class = UserCashSerializer
     # authentication_classes = (authentication.TokenAuthentication,)
     # permission_classes = (permissions.IsAuthenticated,)
@@ -865,21 +592,21 @@ class CheckMerchantView(generics.GenericAPIView):
     Hide some test client ickyness where the header can be unicode.
     """
 
-    @staticmethod
-    def authorize(password: str) -> None:
-        # if not isinstance(password, str):
-        #     logger.error("Request from an unauthorized source!")
-        #     raise PermissionDenied()
-
-        password = password.split()[-1]
-        print(password)
-        # try:
-        #     password = base64.b64decode(password).decode('utf-8')
-        # except (binascii.Error, UnicodeDecodeError):
-        #     logger.error("Error when authorize request to merchant!")
-        #     raise PermissionDenied()
-
-        merchant_key = password.split(':')[-1]
+    # @staticmethod
+    # def authorize(password: str) -> None:
+    #     # if not isinstance(password, str):
+    #     #     logger.error("Request from an unauthorized source!")
+    #     #     raise PermissionDenied()
+    #
+    #     password = password.split()[-1]
+    #     print(password)
+    #     # try:
+    #     #     password = base64.b64decode(password).decode('utf-8')
+    #     # except (binascii.Error, UnicodeDecodeError):
+    #     #     logger.error("Error when authorize request to merchant!")
+    #     #     raise PermissionDenied()
+    #
+    #     merchant_key = password.split(':')[-1]
 
         # фильтруем метод по ключу, если ключа нету у нас в системе возвращаем ошибку авторизации
         # if merchant_key == settings.PAYCOM_KEY:
@@ -890,13 +617,9 @@ class CheckMerchantView(generics.GenericAPIView):
         #     logger.error("Invalid key in request!")
         #     raise PermissionDenied()
 
-    def post(self, request):
-        password = request.META.get('HTTP_AUTHORIZATION')
-        print(password)
-        # по ключу который в заголовке запроса мы узнаем какому НАШЕМУ МЕРЧАНТ методу  обращается пейком
-        merchant_method = self.authorize(password)
 
-        data = request.data
+
+
         # logger.info(f'Method: {data["method"]}')
         #
         # try:
@@ -908,7 +631,10 @@ class CheckMerchantView(generics.GenericAPIView):
         #     raise MethodNotFoundError()
 
         # result = paycom_method(data.get('params'), merchant_method)
-        return Response({'result': merchant_method})
+        # print(request.data)
+        # paycom_method = self.get_paycom_method_by_name(data.get('method'))
+        # result = paycom_method(data.get('params'), merchant_method)
+        # return Response({"jsonrpc": "2.0",  "id": 1, "error": {"code": -32504, "message": "Invalid Request."}})
 
     # def post(self, request):
     #     auth = request.headers
@@ -970,36 +696,23 @@ class CheckMerchantView(generics.GenericAPIView):
 #             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class CheckOrder(Paycom):
-#     def check_order(self, amount, account, *args, **kwargs):
-#         return self.ORDER_FOUND
-#
-#
-#     def successfully_payment(self, account, transaction, *args, **kwargs):
-#         print(account)
-#
-#
-#     def cancel_payment(self, account, transaction, *args, **kwargs):
-#         print(account)
-#
-#
-# class TestView(MerchantAPIView):
-#     VALIDATE_CLASS = CheckOrder
-#
-#     @staticmethod
-#     def authorize(password: str) -> None:
-#         # if not isinstance(password, str):
-#         #     logger.error("Request from an unauthorized source!")
-#         #     raise PermissionDenied()
-#
-#         password = password.split()[-1]
-#         print(password)
-#         # try:
-#         #     password = base64.b64decode(password).decode('utf-8')
-#         # except (binascii.Error, UnicodeDecodeError):
-#         #     logger.error("Error when authorize request to merchant!")
-#         #     raise PermissionDenied()
-#
-#         merchant_key = password.split(':')[-1]
+class TestView(MerchantAPIView):
+    VALIDATE_CLASS = CheckOrder
+
+    # @staticmethod
+    # def authorize(password: str) -> None:
+    #     # if not isinstance(password, str):
+    #     #     logger.error("Request from an unauthorized source!")
+    #     #     raise PermissionDenied()
+    #
+    #     password = password.split()[-1]
+    #     print(password)
+    #     # try:
+    #     #     password = base64.b64decode(password).decode('utf-8')
+    #     # except (binascii.Error, UnicodeDecodeError):
+    #     #     logger.error("Error when authorize request to merchant!")
+    #     #     raise PermissionDenied()
+    #
+    #     merchant_key = password.split(':')[-1]
 
 
