@@ -131,10 +131,10 @@ class CargoAcceptView(generics.GenericAPIView):
                 else:
                     cargo.doer = user
                     cargo.status = 'selected'
-                    if user.works:
-                        user.works.append(item_id)
+                    if user.cargos:
+                        user.cargos.append(item_id)
                     else:
-                        user.works.insert(0, item_id)
+                        user.cargos.insert(0, item_id)
                         print('none')
                     cargo.offers.clear()
 
@@ -160,14 +160,20 @@ class CloseCargoView(generics.GenericAPIView):
         cargo = Cargo.objects.get(id=pk)
         user = request.user
         if cargo.user_id == user.id:
-            cargo.status = 'finished'
-            cargo.save()
             if cargo.doer:
                 doer = cargo.doer
+                print(doer.cargos)
                 doer.workes.remove(cargo)
+                doer.cargos.remove(str(pk))
+                cargo.status = 'finished'
+                cargo.save()
                 doer.save()
-                cargo.delete()
-            return Response({
+                return Response({
+                    'msg': "Груз закрыта",
+                }, status=status.HTTP_200_OK)
+            else:
+                 cargo.status = 'finished'
+                 return Response({
                 'msg': "Груз закрыта",
 
             }, status=status.HTTP_200_OK)

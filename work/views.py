@@ -109,11 +109,15 @@ class CloseWorkView(generics.GenericAPIView):
             if work.doer:
                 doer = work.doer
                 doer.jobs.remove(work)
+                doer.works.remove(str(pk))
                 doer.save()
-                work.delete()
-            return Response({
-                'msg': "Работа закрыта"
-            }, status=status.HTTP_200_OK)
+                return Response({
+                    'msg': "Работа закрыта"
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    'msg': "Груз закрыта",
+                    }, status=status.HTTP_200_OK)
         else:
             return Response({
                 'msg': "Пользователь не владелец"

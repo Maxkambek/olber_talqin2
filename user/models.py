@@ -34,6 +34,7 @@ class User(AbstractUser):
     point = models.FloatField(verbose_name="Umumiy ball", default=0)
     count = models.IntegerField(verbose_name="Ishlar soni", default=0)
     works = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+    cargos = ArrayField(models.CharField(max_length=50), blank=True, default=list)
     status = models.BooleanField(default=False)
     car_type = models.CharField(max_length=15, verbose_name="Mashina turi", choices=CAR_TYPES, default="0")
     drive_doc = models.ImageField(verbose_name="Guvohnoma", null=True, blank=True)

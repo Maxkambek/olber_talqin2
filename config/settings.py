@@ -102,19 +102,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    "default": env.dj_db_url("DATABASE_URL")
-    # 'default': {
+    # "default": env.dj_db_url("DATABASE_URL")
+     'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'main.db'),
     # }
-    # 'ENGINE': 'django.db.backends.postgresql',
-    #         'NAME': "kokoagen_olber_db",
-    #         'USER': "kokoagen_onzone",
-    #         'PASSWORD': "mahkam_0646",
-    #         'HOST': 'localhost',
-    #         'PORT': "5432"
+     'ENGINE': 'django.db.backends.postgresql',
+             'NAME': "olber_db",
+             'USER': "olber_user",
+             'PASSWORD': "olber",
+             'HOST': 'localhost',
+             'PORT': "5432"
 }
-
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

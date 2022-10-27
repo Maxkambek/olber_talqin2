@@ -22,6 +22,7 @@ class WorkSerializer(serializers.ModelSerializer):
 
 class WorkListSerializer(serializers.ModelSerializer):
     class Meta:
+        ref_name = 'Work_w'
         model = Work
         fields = ('id', 'title', 'price', 'image', 'status')
 

@@ -131,7 +131,7 @@ class LoginView(generics.GenericAPIView):
                     'phone': phone,
                     'user_type': user.user_type,
                     'id': user.id
-                })
+                }, status=status.HTTP_200_OK)
             else:
                 return Response("Неверное имя пользователя или пароль", status=status.HTTP_400_BAD_REQUEST)
         except:
@@ -165,12 +165,12 @@ class DeleteAccountView(generics.GenericAPIView):
         user = User.objects.get(id=id)
         password = request.data.get('password')
         check = user.check_password(password)
-        jobs = user.jobs.count()
-        workes = user.workes.count()
+        works = len(user.works)
+        cargos = len(user.cargos)
 
 
         if check:
-            if jobs == 0 and workes == 0:
+            if works == 0:
                 user.delete()
                 return Response({
                     "msg": "Аккаунт удален"
@@ -178,8 +178,8 @@ class DeleteAccountView(generics.GenericAPIView):
             else:
                 return Response({
                     "msg": "У вас есть незаконченное дело",
-                    'jobs': jobs,
-                    'cargos': workes
+                    'работы': f"{works} штук",
+                    'доставкы': f"{cargos} штук",
                 }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
@@ -213,7 +213,7 @@ class ChangePasswordView(generics.UpdateAPIView):
                 }
             }
 
-            return Response(response)
+            return Response(response, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -374,7 +374,8 @@ class UserWorksView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         works = Cargo.objects.filter(doer=user.id).order_by('-id')
-        return works #Response({"works"}, status=status.HTTP_200_OK)
+        return works 
+        #return Response({"results": works}, status=status.HTTP_200_OK)
 
 
 class UserJobsView(generics.ListAPIView):
@@ -387,7 +388,8 @@ class UserJobsView(generics.ListAPIView):
         user = self.request.user
         works = Work.objects.filter(doer=user.id).order_by('-id')
         result = works.exclude(status='finished')
-        return result #Response({"works"}, status=status.HTTP_200_OK)
+        return result 
+        #return Response({"jobs": result}, status=status.HTTP_200_OK)
 
 
 #Payment system

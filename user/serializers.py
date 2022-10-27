@@ -7,6 +7,7 @@ from .models import User, VerifyEmail
 
 class WorkListSerializer(serializers.ModelSerializer):
     class Meta:
+        ref_name = 'Work_u'
         model = Work
         fields = ('id', 'title', 'price', 'image', 'status')
 
@@ -40,7 +41,6 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-
     model = User
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
@@ -73,6 +73,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
+        ref_name = 'User_u'
         model = User
         fields = ('id', 'username', 'image', 'rating')
 
